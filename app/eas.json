@@ -1,0 +1,63 @@
+{
+    "cli": {
+        "version": ">= 14.0.0",
+        "appVersionSource": "local"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal",
+            "ios": {
+                "simulator": true
+            },
+            "android": {
+                "buildType": "apk"
+            },
+            "env": {
+                "APP_ENV": "development"
+            }
+        },
+        "preview": {
+            "distribution": "internal",
+            "android": {
+                "buildType": "apk"
+            },
+            "ios": {
+                "simulator": false
+            },
+            "env": {
+                "APP_ENV": "preview",
+                "SENTRY_DISABLE_AUTO_UPLOAD": "true",
+                "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyBC7HcOFJqICM1JOXUa8pUtdCBF0IUm4aU",
+                "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "pregnancy-app-1f939.firebaseapp.com",
+                "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "pregnancy-app-1f939",
+                "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "pregnancy-app-1f939.firebasestorage.app",
+                "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "990840531114",
+                "EXPO_PUBLIC_FIREBASE_APP_ID": "1:990840531114:web:cfc23b9320bfd4481a08d3"
+            }
+        },
+        "production": {
+            "autoIncrement": true,
+            "distribution": "store",
+            "android": {
+                "buildType": "app-bundle"
+            },
+            "env": {
+                "APP_ENV": "production"
+            }
+        }
+    },
+    "submit": {
+        "production": {
+            "ios": {
+                "appleId": "YOUR_APPLE_ID@email.com",
+                "ascAppId": "YOUR_APP_STORE_CONNECT_APP_ID",
+                "appleTeamId": "YOUR_TEAM_ID"
+            },
+            "android": {
+                "serviceAccountKeyPath": "./google-service-account.json",
+                "track": "internal"
+            }
+        }
+    }
+}

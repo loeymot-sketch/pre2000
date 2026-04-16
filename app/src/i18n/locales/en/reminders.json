@@ -1,0 +1,79 @@
+{
+    "card": {
+        "days": "Days",
+        "daysLabel": "Days:",
+        "advancedOptions": "🔧 Advanced Options",
+        "undefined": "Undefined",
+        "customize": "Customize",
+        "intensity": "Intensity:",
+        "timesPerDay": "{{count}}×/day",
+        "scheduledHours": "📅 Scheduled times:",
+        "weekTitle": "Weekly reminders",
+        "viewAll": "View all →",
+        "priorityHigh": "High",
+        "priorityMedium": "Medium",
+        "priorityLow": "Low",
+        "priorityLabel": "Priority: {{level}}",
+        "notifBody": "Mama, {{description}} 💕"
+    },
+    "hydration": {
+        "title": "Hydration",
+        "subtitle": "Daily Goal",
+        "addWater": "Add a glass (250ml)",
+        "settingsTitle": "🎯 Goals",
+        "dailyGoalInput": "Daily Goal (ml)",
+        "remindersPerDay": "Reminders per day",
+        "remindersTimeRange": "Between 8am and 10pm",
+        "enableReminders": "Enable reminders",
+        "save": "Save",
+        "concept": "On conception date"
+    },
+    "frequenciesShort": {
+        "per_day": "day",
+        "per_week": "wk",
+        "per_month": "mo"
+    },
+    "myDay": {
+        "title": "MY DAY",
+        "loading": "Loading...",
+        "emptyTitle": "No actions for today.",
+        "emptyMsg": "Enable reminders in the Reminders tab! 💡",
+        "allDone": "All done! Rest well 💖",
+        "remainingTasks": "{{count}} tasks remaining",
+        "hideTodayTitle": "Hide for today?",
+        "hideTodayMsg": "This reminder will remain hidden today, but will return tomorrow.",
+        "hide": "Hide",
+        "cancel": "Cancel"
+    },
+    "frequency": {
+        "per_day": "day",
+        "per_week": "week",
+        "per_month": "month",
+        "one_off": "time"
+    },
+    "reminderEdit": {
+        "invalidTime": "\"{{time}}\" is invalid. Use HH:MM format 💕",
+        "saveError": "Oops, something went wrong. Try again 💕",
+        "nameOptional": "Name (optional)",
+        "addTime": "+ Add schedule",
+        "resetToDefault": "↩ Recommended rhythm",
+        "duplicate": "Duplicate detected",
+        "minLimit": "Minimum limit reached",
+        "maxLimit": "Maximum limit reached",
+        "yourSchedule": "Your schedule",
+        "hint": "Tip",
+        "recommendedPace": "Recommended pace"
+    },
+    "types": {
+        "title": "My Day",
+        "loading": "Loading...",
+        "emptyTitle": "All done!",
+        "emptyMsg": "No tasks for today",
+        "allDone": "All tasks completed!",
+        "remainingTasks": "{{count}} tasks remaining",
+        "hideTodayTitle": "Hide for today?",
+        "hideTodayMsg": "This task will reappear tomorrow",
+        "hide": "Hide",
+        "cancel": "Cancel"
+    }
+}

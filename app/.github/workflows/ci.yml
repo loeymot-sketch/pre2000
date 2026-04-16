@@ -1,0 +1,41 @@
+name: App CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint (ESLint)
+        # Assuming eslint is configured in package.json. If not, we might need to skip or add it.
+        # Verified package.json has "lint": "tsc --noEmit", so we use that for now as 'Type Check'.
+        run: npm run lint
+
+      - name: Type Check (TSC)
+        # Redundant if "npm run lint" is just tsc, but good to be explicit if we add real eslint later.
+        run: npx tsc --noEmit
+
+      - name: Run Unit Tests
+        run: npx jest --passWithNoTests

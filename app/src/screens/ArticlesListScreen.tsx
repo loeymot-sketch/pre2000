@@ -1,0 +1,291 @@
+import { createLogger } from '../utils/logger';
+const log = createLogger('ArticlesListScreen');
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
+import { collection, getDocs } from 'firebase/firestore';
+import { LinearGradient } from 'expo-linear-gradient';
+import { db } from '../config/firebase';
+import { Article, ArticleAntigravity } from '../types';
+import { getLocalizedContent } from '../utils/i18nHelpers';
+import { getAntigravityArticlesByCategory } from '../services/contentService'; // ANTIGRAVITY
+import { theme } from '../theme';
+import { Card } from '../components/common/Card';
+import { Tag } from '../components/common/Tag';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+const CATEGORY_ICONS: Record<string, string> = {
+    nutrition: '🍎',
+    examens: '🩺',
+    sante: '❤️',
+    developpement: '👶',
+    preparation: '🎒',
+    lifestyle: '🌸',
+    administratif: '📄',
+    medical: '⚕️',
+};
+
+export const ArticlesListScreen = () => {
+    useScreenAnalytics('ArticlesListScreen');
+    const [articles, setArticles] = useState<(Article | ArticleAntigravity)[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(true);
+    const navigation = useNavigation();
+    const route = useRoute<any>();
+    const searchInputRef = React.useRef<TextInput>(null);
+    const { t, i18n } = useTranslation();
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout>;
+        if (route.params?.openSearch && searchInputRef.current) {
+            timer = setTimeout(() => {
+                searchInputRef.current?.focus();
+            }, 500);
+        }
+        return () => { if (timer) clearTimeout(timer); };
+    }, [route.params?.openSearch]);
+
+    const [error, setError] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const retryLoad = () => setRefreshKey(k => k + 1);
+
+    useEffect(() => {
+        let isMounted = true;
+        const load = async () => {
+            setLoading(true);
+            setError(false);
+            log.debug('[ArticlesListScreen] 📚 Fetching all articles (old + Antigravity)...');
+            try {
+                const [oldSnapshot, agSnapshot] = await Promise.all([
+                    getDocs(collection(db, 'articles')),
+                    getDocs(collection(db, 'articlesAntigravity')),
+                ]);
+                if (!isMounted) return;
+                const oldArts = oldSnapshot.docs.map(doc => doc.data() as Article);
+                const agArts = agSnapshot.docs.map(doc => doc.data() as ArticleAntigravity);
+                setArticles([...oldArts, ...agArts]);
+            } catch (err) {
+                log.error('[ArticlesListScreen] ❌ Error fetching articles:', err);
+                if (isMounted) setError(true);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+        load();
+        return () => { isMounted = false; };
+    }, [refreshKey]);
+
+    const filteredArticles = React.useMemo(() => {
+        if (!searchQuery.trim()) return articles;
+
+        const query = searchQuery.toLowerCase().trim();
+        return articles.filter(article => {
+            const title = getLocalizedContent(article, 'title', i18n.language).toLowerCase();
+            const summary = getLocalizedContent(article, 'summary', i18n.language).toLowerCase();
+            const categoryKey = (article.category || '').toLowerCase();
+            const categoryLabel = t(`categories.${categoryKey}`, { defaultValue: article.category }).toLowerCase();
+
+            return title.includes(query) || summary.includes(query) || categoryLabel.includes(query);
+        });
+    }, [articles, searchQuery, i18n.language]);
+
+    const getCategoryIcon = (category: string) => {
+        return CATEGORY_ICONS[category] || '📚';
+    };
+
+    const handleArticlePress = useCallback((articleId: string) => {
+        navigation.navigate('ArticleDetail', { articleId });
+    }, [navigation]);
+
+    const renderItem = useCallback(({ item }: { item: Article | ArticleAntigravity }) => {
+        // Handle both old and Antigravity article types
+        const title = getLocalizedContent(item, 'title', i18n.language);
+        const summary = getLocalizedContent(item, 'summary', i18n.language);
+        const categoryKey = (item.category || '').toLowerCase();
+        const categoryLabel = t(`categories.${categoryKey}`, { defaultValue: item.category });
+
+        return (
+            <TouchableOpacity
+                onPress={() => handleArticlePress(item.article_id)}
+                activeOpacity={0.7}
+            >
+                <Card style={styles.card}>
+                    <View style={styles.iconContainer}>
+                        <Text style={styles.categoryIcon}>{getCategoryIcon(item.category)}</Text>
+                    </View>
+                    <View style={styles.content}>
+                        <View style={styles.headerRow}>
+                            <Text style={[theme.typography.h3, styles.title] as any}>{title}</Text>
+                        </View>
+                        <Tag label={categoryLabel} />
+                        <Text numberOfLines={2} style={[theme.typography.body, styles.summary]}>
+                            {summary || t('common.seeMore')}
+                        </Text>
+                        <View style={styles.footer}>
+                            <Text style={styles.readMore}>{t('common.seeDetails')}</Text>
+                        </View>
+                    </View>
+                </Card>
+            </TouchableOpacity>
+        );
+    }, [handleArticlePress, i18n.language, t]);
+
+    if (loading) {
+        return (
+            <View style={styles.centerContainer}>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.centerContainer}>
+                <Text style={theme.typography.h3}>{t('common.errorBoundary.title')}</Text>
+                <Text style={{ textAlign: 'center', marginVertical: 10, color: theme.colors.textLight }}>
+                    {t('common.errorBoundary.message')}
+                </Text>
+                <TouchableOpacity onPress={retryLoad} style={{ backgroundColor: theme.colors.primary, padding: 10, borderRadius: 8 }}>
+                    <Text style={{ color: 'white' }}>{t('common.errorBoundary.retry')}</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.searchContainer}>
+                <View style={styles.searchBar}>
+                    <Text style={styles.searchIcon}>🔍</Text>
+                    <TextInput
+                        ref={searchInputRef}
+                        style={styles.searchInput}
+                        placeholder={t('common.searchArticlePlaceholder')}
+                        placeholderTextColor="#999"
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        returnKeyType="search"
+                    />
+                    {searchQuery.length > 0 && (
+                        <TouchableOpacity onPress={() => setSearchQuery('')}>
+                            <Text style={styles.clearIcon}>✕</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+
+            <FlatList<Article | ArticleAntigravity>
+                data={filteredArticles}
+                renderItem={renderItem}
+                keyExtractor={item => item.article_id}
+                contentContainerStyle={styles.listContent}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={
+                    <View style={styles.emptyState}>
+                        <Text style={styles.emptyEmoji}>🤷‍♀️</Text>
+                        <Text style={styles.emptyText}>{t('common.noResultsFor', { query: searchQuery })}</Text>
+                    </View>
+                }
+            />
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    searchContainer: {
+        padding: 16,
+        backgroundColor: theme.colors.white,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.borderLight,
+    },
+    searchBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#F5F5F5',
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        height: 44,
+    },
+    searchIcon: {
+        fontSize: 16,
+        marginEnd: 8,
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        color: '#333',
+        height: '100%',
+    },
+    clearIcon: {
+        fontSize: 16,
+        color: '#999',
+        padding: 4,
+    },
+    listContent: {
+        padding: theme.spacing.m,
+    },
+    card: {
+        marginBottom: theme.spacing.m,
+        flexDirection: 'row',
+        overflow: 'hidden',
+    },
+    iconContainer: {
+        width: 70,
+        backgroundColor: theme.colors.secondary,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    categoryIcon: {
+        fontSize: 32,
+    },
+    content: {
+        flex: 1,
+        padding: theme.spacing.m,
+    },
+    headerRow: {
+        marginBottom: theme.spacing.xs,
+    },
+    title: {
+        marginBottom: theme.spacing.xs,
+    },
+    summary: {
+        marginTop: theme.spacing.s,
+        color: theme.colors.textLight,
+        lineHeight: 20,
+    },
+    footer: {
+        marginTop: theme.spacing.s,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    readMore: {
+        color: theme.colors.primary,
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    emptyState: {
+        alignItems: 'center',
+        marginTop: 40,
+        padding: 20,
+    },
+    emptyEmoji: {
+        fontSize: 48,
+        marginBottom: 16,
+    },
+    emptyText: {
+        fontSize: 16,
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
+    },
+});
+

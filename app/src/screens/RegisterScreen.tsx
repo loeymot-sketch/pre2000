@@ -1,0 +1,396 @@
+import { createLogger } from '../utils/logger';
+const log = createLogger('RegisterScreen');
+import React, { useState, useMemo, useRef } from 'react';
+import { analyticsService } from '../services/analyticsService';
+import {
+    View, Text, StyleSheet, TextInput, ScrollView,
+    TouchableOpacity, KeyboardAvoidingView, Platform,
+    I18nManager, TouchableWithoutFeedback, Keyboard,
+} from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import { theme } from '../theme';
+import { Button } from '../components/common/Button';
+import { ErrorMessage } from '../components/common/ErrorMessage';
+import { useNavigation } from '@react-navigation/native';
+import { validateEmail, validatePassword, validatePasswordMatch } from '../utils/validation';
+import { getFirebaseErrorMessage } from '../utils/firebaseErrors';
+import { AuthScreenNavigationProp } from '../types/navigation';
+import { useAuthLoading } from '../hooks/useAuthLoading';
+import { retryOperation } from '../utils/retry';
+import { useTranslation } from 'react-i18next';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+export const RegisterScreen = () => {
+    useScreenAnalytics('RegisterScreen');
+    const { t } = useTranslation();
+    const { register } = useAuth();
+    const navigation = useNavigation<AuthScreenNavigationProp>();
+    const { loading, withLoading } = useAuthLoading();
+    const isRTL = I18nManager.isRTL;
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const [passwordFocused, setPasswordFocused] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const passwordRef = useRef<TextInput>(null);
+    const confirmRef = useRef<TextInput>(null);
+
+    // Password strength: 0=empty, 1=too short, 2=no digit, 3=valid
+    const passwordStrength = useMemo(() => {
+        if (!password) return 0;
+        if (password.length < 8) return 1;
+        if (!/\d/.test(password)) return 2;
+        return 3;
+    }, [password]);
+
+    const strengthColor = ['transparent', '#EF5350', '#FF9800', '#4CAF50'][passwordStrength];
+    const strengthLabel = [
+        '',
+        t('errors.passwordLength', { defaultValue: 'Min. 8 caractères' }),
+        t('errors.passwordComplexity', { defaultValue: 'Ajouter un chiffre' }),
+        '✓',
+    ][passwordStrength];
+
+    const handleRegister = async () => {
+        setError('');
+
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.valid) {
+            setError(t(emailValidation.error || 'invalidEmail'));
+            return;
+        }
+
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.valid) {
+            setError(t(passwordValidation.error || 'invalidPassword'));
+            return;
+        }
+
+        const passwordMatchValidation = validatePasswordMatch(password, confirmPassword);
+        if (!passwordMatchValidation.valid) {
+            setError(t(passwordMatchValidation.error || 'errors.passwordMismatch'));
+            return;
+        }
+
+        await withLoading(async () => {
+            try {
+                await retryOperation(() => register(email.trim(), password));
+                navigation.navigate('Onboarding');
+            } catch (error: any) {
+                log.error('[RegisterScreen] Registration error:', error);
+                const errorMessage = error.code
+                    ? t(getFirebaseErrorMessage(error.code))
+                    : t('errors.createAccount');
+                setError(errorMessage);
+            }
+        });
+    };
+
+    return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView
+                    contentContainerStyle={styles.container}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    {/* Back arrow */}
+                    <TouchableOpacity
+                        style={[styles.backButton, isRTL && styles.backButtonRTL]}
+                        onPress={() => navigation.navigate('AuthChoice' as any)}
+                        accessibilityRole="button"
+                        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                    >
+                        <Text style={styles.backArrow}>{isRTL ? '→' : '←'}</Text>
+                    </TouchableOpacity>
+
+                    <Text style={[styles.title, isRTL && styles.rtlText]}>{t('register')}</Text>
+                    <Text style={[styles.subtitle, isRTL && styles.rtlText]}>
+                        {t('secureData')}
+                    </Text>
+
+                    <View style={styles.form}>
+                        {/* Email */}
+                        <Text style={[styles.label, isRTL && styles.rtlText]}>{t('email')}</Text>
+                        <TextInput
+                            style={[styles.input, isRTL && styles.inputRTL]}
+                            placeholder={t('emailPlaceholder')}
+                            value={email}
+                            onChangeText={(text) => { setEmail(text); setError(''); }}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            returnKeyType="next"
+                            onSubmitEditing={() => passwordRef.current?.focus()}
+                            testID="register_email_input"
+                        />
+
+                        {/* Password */}
+                        <Text style={[styles.label, { marginTop: theme.spacing.m }, isRTL && styles.rtlText]}>
+                            {t('password')}
+                        </Text>
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                ref={passwordRef}
+                                style={[styles.passwordInput, isRTL && styles.inputRTL]}
+                                placeholder={t('passwordMin')}
+                                value={password}
+                                onChangeText={(text) => { setPassword(text); setError(''); }}
+                                onFocus={() => setPasswordFocused(true)}
+                                onBlur={() => setPasswordFocused(false)}
+                                secureTextEntry={!showPassword}
+                                autoCapitalize="none"
+                                returnKeyType="next"
+                                onSubmitEditing={() => confirmRef.current?.focus()}
+                                testID="register_password_input"
+                            />
+                            <TouchableOpacity
+                                style={styles.eyeButton}
+                                onPress={() => setShowPassword(v => !v)}
+                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                            >
+                                <Text style={styles.eyeIcon}>{showPassword ? '🙈' : '👁'}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Password Strength Bar */}
+                        {(passwordFocused || password.length > 0) && (
+                            <View style={styles.strengthContainer}>
+                                <View style={styles.strengthBarBg}>
+                                    <View
+                                        style={[
+                                            styles.strengthBarFill,
+                                            {
+                                                width: `${(passwordStrength / 3) * 100}%` as any,
+                                                backgroundColor: strengthColor,
+                                            },
+                                        ]}
+                                    />
+                                </View>
+                                <Text style={[styles.strengthLabel, { color: strengthColor }]}>
+                                    {strengthLabel}
+                                </Text>
+                            </View>
+                        )}
+
+                        {/* Confirm Password */}
+                        <Text style={[styles.label, { marginTop: theme.spacing.m }, isRTL && styles.rtlText]}>
+                            {t('confirmPassword')}
+                        </Text>
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                ref={confirmRef}
+                                style={[styles.passwordInput, isRTL && styles.inputRTL]}
+                                placeholder={t('retypePassword')}
+                                value={confirmPassword}
+                                onChangeText={(text) => { setConfirmPassword(text); setError(''); }}
+                                secureTextEntry={!showConfirm}
+                                autoCapitalize="none"
+                                returnKeyType="done"
+                                onSubmitEditing={handleRegister}
+                                testID="register_confirm_input"
+                            />
+                            <TouchableOpacity
+                                style={styles.eyeButton}
+                                onPress={() => setShowConfirm(v => !v)}
+                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                            >
+                                <Text style={styles.eyeIcon}>{showConfirm ? '🙈' : '👁'}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <ErrorMessage message={error} />
+
+                        <Button
+                            title={t('createMyAccount')}
+                            onPress={handleRegister}
+                            style={styles.button}
+                            loading={loading}
+                            testID="register_submit_button"
+                        />
+
+                        {/* Terms */}
+                        <TouchableOpacity
+                            style={styles.termsContainer}
+                            onPress={() => navigation.navigate('PrivacyPolicy' as any)}
+                        >
+                            <Text style={[styles.termsText, isRTL && styles.rtlText]}>
+                                {t('termsDisclaimer')}
+                            </Text>
+                        </TouchableOpacity>
+
+                        {/* Separator */}
+                        <View style={styles.separator}>
+                            <View style={styles.separatorLine} />
+                            <Text style={styles.separatorText}>{'·'}</Text>
+                            <View style={styles.separatorLine} />
+                        </View>
+
+                        {/* Cross-nav: Already have account → Login */}
+                        <TouchableOpacity
+                            style={styles.crossNavButton}
+                            onPress={() => navigation.navigate('Login' as any)}
+                            accessibilityRole="button"
+                        >
+                            <Text style={[styles.crossNavText, isRTL && styles.rtlText]}>
+                                {t('alreadyHaveAccount', { defaultValue: 'Already have an account? Sign in' })}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flexGrow: 1,
+        backgroundColor: theme.colors.background,
+        padding: theme.spacing.l,
+        paddingTop: 60,
+        justifyContent: 'center',
+    },
+    backButton: {
+        position: 'absolute',
+        top: 54,
+        left: theme.spacing.l,
+        padding: 4,
+    },
+    backButtonRTL: {
+        left: undefined,
+        right: theme.spacing.l,
+    },
+    backArrow: {
+        fontSize: 24,
+        color: theme.colors.textSecondary,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginTop: theme.spacing.xl,
+    },
+    subtitle: {
+        marginTop: theme.spacing.s,
+        fontSize: 15,
+        color: theme.colors.textLight,
+        marginBottom: theme.spacing.xl,
+    },
+    rtlText: {
+        textAlign: 'right',
+        writingDirection: 'rtl',
+    },
+    form: {
+        gap: theme.spacing.xs,
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: theme.colors.text,
+        marginBottom: 4,
+    },
+    input: {
+        borderWidth: 1.5,
+        borderColor: theme.colors.border,
+        borderRadius: theme.borderRadius.m,
+        padding: theme.spacing.m,
+        fontSize: 16,
+        backgroundColor: theme.colors.white,
+    },
+    inputRTL: {
+        textAlign: 'right',
+        writingDirection: 'rtl',
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1.5,
+        borderColor: theme.colors.border,
+        borderRadius: theme.borderRadius.m,
+        backgroundColor: theme.colors.white,
+        overflow: 'hidden',
+    },
+    passwordInput: {
+        flex: 1,
+        padding: theme.spacing.m,
+        fontSize: 16,
+    },
+    eyeButton: {
+        paddingHorizontal: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    eyeIcon: {
+        fontSize: 18,
+    },
+    strengthContainer: {
+        marginTop: 6,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    strengthBarBg: {
+        flex: 1,
+        height: 4,
+        backgroundColor: '#E0E0E0',
+        borderRadius: 2,
+        overflow: 'hidden',
+    },
+    strengthBarFill: {
+        height: 4,
+        borderRadius: 2,
+    },
+    strengthLabel: {
+        fontSize: 11,
+        fontWeight: '500',
+        minWidth: 90,
+        textAlign: 'right',
+    },
+    button: {
+        marginTop: theme.spacing.l,
+    },
+    termsContainer: {
+        marginTop: 16,
+        alignItems: 'center',
+        paddingHorizontal: 8,
+    },
+    termsText: {
+        fontSize: 11,
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
+        textDecorationLine: 'underline',
+        lineHeight: 16,
+    },
+    separator: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: theme.spacing.m,
+        gap: 8,
+    },
+    separatorLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: theme.colors.borderLight,
+    },
+    separatorText: {
+        color: theme.colors.textLight,
+        fontSize: 16,
+    },
+    crossNavButton: {
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    crossNavText: {
+        color: theme.colors.primary,
+        fontSize: 14,
+        fontWeight: '600',
+        textAlign: 'center',
+    },
+});

@@ -1,0 +1,61 @@
+task_id,labl_fr,labl_ar,labl_,wk_mi,wk_max,typ,pririty,likd_articl_ids,likd_caldar_tmplat_ids,surcs
+t01_rdv_mdci,Prdr RDV pur la prmièr csultati préatal,,,1,4,mdical,high,a03_examens_médicaux_pendant,c01_consultation_mensuelle,HAS
+t02_acid_fliqu,Cmmcr la pris d'acid fliqu,,,1,4,mdical,high,a02_alimentation_pendant_la,,HAS
+t03_dclarati,Fair la déclarati d grssss (CAF/Sécurité Scial),,,5,14,admi,high,a17_droits_et_aides,,HAS
+t04_ch_t1,Prdr RDV pur l'échgraphi du 1r trimstr (T1),,,8,12,mdical,high,a03_examens_médicaux_pendant,c02_echographie_t1,HAS
+t05_bila_sagui,"Fair l prmir bila sagui (tx, rubél, grup sagui)",,,5,8,mdical,high,a03_examens_médicaux_pendant,c03_bilan_sanguin_t1,HAS
+t06_alimtati_sai,Rvir ls bass d l'alimtati sai (évitr ls risqus),,,1,4,utriti,mdium,a02_alimentation_pendant_la,,OMS
+t07_sprt_dux,"Cmmcr u activité physiqu duc (march, yga)",,,1,4,sprt,mdium,a05_exercice_physique_pendant,,ACOG
+t08_chix_matrit,Cmmcr à s rsigr sur ls matrités,,,8,16,admi,mdium,a09_préparation_à_laccouchement,,slf_car
+t09_parlr_partair,Discutr ds chagmts émtils avc l partair,,,5,12,mtis,lw,a07_changements_émotionnels_pendant,,slf_car
+t10_lctur_grssss,Cmmcr la lctur d'u livr sur la grssss,,,1,4,slf_car,lw,a07_changements_émotionnels_pendant,,slf_car
+t11_iscripti_matrit,S'iscrir à la matrité chisi,,,12,20,admi,high,a09_préparation_à_laccouchement,,slf_car
+t12_ch_t2,Prdr RDV pur l'échgraphi du 2èm trimstr (T2),,,18,22,mdical,high,a03_examens_médicaux_pendant,c04_echographie_t2,HAS
+t13_curs_prp,S'iscrir aux curs d préparati à la aissac,,,16,24,prparati,mdium,a09_préparation_à_laccouchement,c10_cours_preparation,HS
+t14_achats_list,Fair la list ds achats sstils pur l bébé,,,14,20,prparati,mdium,a08_liste_dachats_pour,,slf_car
+t15_chambr_bb,Cmmcr à préparr la chambr du bébé,,,20,28,prparati,lw,a08_liste_dachats_pour,,slf_car
+t16_bila_diabt,Fair l tst d dépistag du diabèt gstatil (HGPO),,,24,28,mdical,high,a03_examens_médicaux_pendant,c07_test_diabete,HAS
+t17_vacci_cquluch,Discutr du vacci ctr la cquluch avc l médci,,,24,32,mdical,mdium,a03_examens_médicaux_pendant,c01_consultation_mensuelle,HAS
+t18_valis_matrit,Cmmcr à préparr la valis d matrité,,,30,34,prparati,mdium,a08_liste_dachats_pour,,slf_car
+t19_ch_t3,Prdr RDV pur l'échgraphi du 3èm trimstr (T3),,,30,34,mdical,high,a03_examens_médicaux_pendant,c09_echographie_t3,HAS
+t20_rdv_asthsist,Prdr RDV avc l'asthésist (bligatir),,,32,36,mdical,high,a11_péridurale,c16_rdv_anesthesiste,HAS
+t21_rps_frc,Cmmcr à s rpsr au maximum (cgé préatal),,,34,37,slf_car,high,a06_sommeil_pendant_la,,slf_car
+t22_massag_pri,Cmmcr l massag du périé (si suhaité),,,36,40,prparati,mdium,a09_préparation_à_laccouchement,,HS
+t23_rpas_cg,Préparr ds rpas à cglr pur l pst-partum,,,36,40,prparati,lw,a14_post-partum,,slf_car
+t24_sigs_travail,Révisr ls sigs du début du travail,,,37,40,prparati,mdium,a12_signes_du_travail,,HS
+t25_rdv_pstatal,Prdr RDV pur la csultati pst-atal (6-8 smais après),,,38,40,mdical,lw,a14_post-partum,c32_consultation_postnatale,HAS
+t26_pri_ki,Obtir l'rdac pur la rééducati du périé,,,38,40,mdical,mdium,a14_post-partum,,HAS
+t27_chix_pdiatr,Chisir t ctactr l futur pédiatr,,,30,36,admi,mdium,a08_liste_dachats_pour,,slf_car
+t28_iscripti_crch,Fair ls démarchs d'iscripti  crèch/gard,,,12,24,admi,lw,a17_droits_et_aides,,slf_car
+t29_pla_aissac,Rédigr l prjt d aissac (si suhaité),,,28,34,prparati,lw,a09_préparation_à_laccouchement,,slf_car
+t30_ctrl_tsi,Ctrôlr sa tsi artérill (si risqu),,,28,40,mdical,high,a03_examens_médicaux_pendant,,ACOG
+t31_vitami_d,Vérifir la pris d Vitami D,,,1,40,utriti,mdium,a02_alimentation_pendant_la,,HAS
+t32_fr,Vérifir la pris d Fr (si aémi),,,14,40,utriti,mdium,a02_alimentation_pendant_la,,HAS
+t33_grssss_travail,"S rsigr sur ls drits au travail (améagmt, cgé)",,,1,12,admi,mdium,a16_grossesse_et_travail,,slf_car
+t34_achat_pusstt,Achtr la pusstt t l sièg aut,,,20,30,prparati,mdium,a08_liste_dachats_pour,,slf_car
+t35_achat_vtmts,Lavr ls vêtmts d bébé (taill aissac t 1 mis),,,34,38,prparati,lw,a08_liste_dachats_pour,,slf_car
+t36_rpas_cg_2,Préparr d'autrs rpas à cglr pur l pst-partum,,,38,40,prparati,lw,a14_post-partum,,slf_car
+t37_curs_allaitmt,Suivr u curs d préparati à l'allaitmt (si suhaité),,,28,34,prparati,lw,a13_allaitement,c10_cours_preparation,HS
+t38_massag_ds,Dmadr u massag du ds (si dulurs),,,14,40,slf_car,lw,a01_symptômes_de_grossesse,,slf_car
+t39_lctur_pstpartum,Cmmcr la lctur sur l pst-partum t l uvau-é,,,30,40,slf_car,lw,a14_post-partum,,slf_car
+t40_muvmts_bb_suivi,Êtr atttiv aux muvmts du bébé (qutidi),,,24,40,mdical,high,a20_mouvements_du_bébé,,ACOG
+t41_hydratati_suivi,Bir au mis 1.5L d'au par jur,,,1,40,utriti,mdium,a02_alimentation_pendant_la,,OMS
+t42_march_qutidi,Fair u march d 30 miuts,,,1,40,sprt,mdium,a05_exercice_physique_pendant,,ACOG
+t43_rps_sist,Fair u sist si pssibl,,,1,40,smmil,lw,a06_sommeil_pendant_la,,slf_car
+t44_vitami_c,Csmmr ds alimts richs  Vitami C,,,1,40,utriti,lw,a02_alimentation_pendant_la,,OMS
+t45_mga3,Csmmr ds alimts richs  Oméga-3 (pisss gras),,,1,40,utriti,mdium,a02_alimentation_pendant_la,,OMS
+t46_tirmts_qutidis,Fair ds étirmts qutidis,,,1,40,sprt,lw,a05_exercice_physique_pendant,,slf_car
+t47_rspirati_prfd,Pratiqur la rspirati prfd,,,1,40,slf_car,lw,a07_changements_émotionnels_pendant,,slf_car
+t48_vitr_txiqus,Évitr l'alcl t l tabac,,,1,40,sat,high,a01_symptômes_de_grossesse,,HAS
+t49_ctrl_pids,Ctrôlr sa pris d pids,,,1,40,utriti,lw,a02_alimentation_pendant_la,,HAS
+t50_rdv_dtist,Prdr RDV chz l dtist,,,1,20,mdical,mdium,a03_examens_médicaux_pendant,c19_rdv_dentiste,HAS
+t51_achat_cuchs,Achtr ls prmièrs cuchs t prduits d si,,,30,36,prparati,mdium,a08_liste_dachats_pour,,slf_car
+t52_achat_tir_lait,S rsigr sur la lcati/achat d'u tir-lait,,,30,36,prparati,lw,a13_allaitement,,slf_car
+t53_rducati_pri_pst,Cmmcr la rééducati du périé (après 6-8 smais),,,48,60,mdical,high,a14_post-partum,c23_reeducation_perinee,HAS
+t54_rdv_pstatal_6sm,Fair la csultati pst-atal ds 6-8 smais,,,46,48,mdical,high,a14_post-partum,c32_consultation_postnatale,HAS
+t55_rpris_sprt_dux,"Rprdr u activité physiqu duc (march, atati)",,,48,60,sprt,mdium,a05_exercice_physique_pendant,,slf_car
+t56_ctracpti,Discutr d la ctracpti avc l médci,,,46,48,mdical,high,a18_grossesse_et_sexualité,c32_consultation_postnatale,HAS
+t57_rpris_travail,Préparr la rpris du travail (md d gard),,,40,52,admi,mdium,a16_grossesse_et_travail,,slf_car
+t58_suti_mral,Dmadr d l'aid si baby blus u tristss,,,40,52,mtis,high,a15_dépression_post-partum,,slf_car
+t59_ctrl_thyrid,Ctrôlr la thyrïd (si atécédts),,,1,12,mdical,mdium,a03_examens_médicaux_pendant,c03_bilan_sanguin_t1,HAS
+t60_achat_vtmts,Achtr ls vêtmts d bébé (taill 3 t 6 mis),,,20,30,prparati,lw,a08_liste_dachats_pour,,slf_car

@@ -1,0 +1,110 @@
+{
+    "month1": {
+        "comparison": "Graine de pavot",
+        "facts": {
+            "0": "Le cœur commence à battre dès la 4ème semaine",
+            "1": "L'embryon mesure environ 2mm",
+            "2": "Les organes principaux commencent à se former"
+        },
+        "highlights": {
+            "0": "Formation du tube neural",
+            "1": "Début du système circulatoire"
+        }
+    },
+    "month2": {
+        "comparison": "Myrtille",
+        "facts": {
+            "0": "Le visage commence à se dessiner",
+            "1": "Les doigts et orteils apparaissent",
+            "2": "Le cerveau se développe rapidement"
+        },
+        "highlights": {
+            "0": "Développement des membres",
+            "1": "Formation des yeux et des oreilles"
+        }
+    },
+    "month3": {
+        "comparison": "Prune",
+        "facts": {
+            "0": "Tous les organes sont formés",
+            "1": "Bébé peut bouger ses membres",
+            "2": "Les empreintes digitales se forment"
+        },
+        "highlights": {
+            "0": "Fin de la période embryonnaire",
+            "1": "Début de la période fœtale"
+        }
+    },
+    "month4": {
+        "comparison": "Avocat",
+        "facts": {
+            "0": "Bébé peut sucer son pouce",
+            "1": "Les cheveux commencent à pousser",
+            "2": "Il peut percevoir la lumière"
+        },
+        "highlights": {
+            "0": "Développement de l'ouïe",
+            "1": "Mouvements plus coordonnés"
+        }
+    },
+    "month5": {
+        "comparison": "Mangue",
+        "facts": {
+            "0": "Vous pouvez sentir les premiers coups",
+            "1": "Bébé reconnaît votre voix",
+            "2": "Le vernix protège sa peau"
+        },
+        "highlights": {
+            "0": "Premiers mouvements perceptibles",
+            "1": "Développement des sens"
+        }
+    },
+    "month6": {
+        "comparison": "Épi de maïs",
+        "facts": {
+            "0": "Les poumons se développent",
+            "1": "Bébé a des cycles de sommeil",
+            "2": "Il peut ouvrir et fermer les yeux"
+        },
+        "highlights": {
+            "0": "Maturation pulmonaire",
+            "1": "Réponse aux stimuli externes"
+        }
+    },
+    "month7": {
+        "comparison": "Chou-fleur",
+        "facts": {
+            "0": "Le cerveau se développe rapidement",
+            "1": "Bébé prend du poids",
+            "2": "Il peut rêver pendant son sommeil"
+        },
+        "highlights": {
+            "0": "Développement cérébral intense",
+            "1": "Prise de poids accélérée"
+        }
+    },
+    "month8": {
+        "comparison": "Ananas",
+        "facts": {
+            "0": "Les poumons sont presque matures",
+            "1": "Bébé se retourne tête en bas",
+            "2": "La peau devient plus lisse"
+        },
+        "highlights": {
+            "0": "Position pour l'accouchement",
+            "1": "Maturation des organes"
+        }
+    },
+    "month9": {
+        "comparison": "Pastèque",
+        "facts": {
+            "0": "Bébé est prêt à naître",
+            "1": "Il pèse environ 3-4 kg",
+            "2": "Tous les organes sont fonctionnels"
+        },
+        "highlights": {
+            "0": "Prêt pour le monde extérieur",
+            "1": "Dernière phase de développement"
+        }
+    }
+}

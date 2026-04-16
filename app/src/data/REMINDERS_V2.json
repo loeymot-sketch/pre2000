@@ -1,0 +1,1253 @@
+{
+    "version": "2.1.1",
+    "categories": [
+        {
+            "id": "hyd",
+            "title": {
+                "fr": "Hydratation",
+                "ar": "ترطيب",
+                "tn": "شرب الماء",
+                "en": "Hydration"
+            },
+            "icon": "💧",
+            "order": 1
+        },
+        {
+            "id": "nut",
+            "title": {
+                "fr": "Nutrition",
+                "ar": "تغذية",
+                "tn": "الماكلة",
+                "en": "Nutrition"
+            },
+            "icon": "🥗",
+            "order": 2
+        },
+        {
+            "id": "act",
+            "title": {
+                "fr": "Activité",
+                "ar": "نشاط",
+                "tn": "حركة",
+                "en": "Activity"
+            },
+            "icon": "🏃",
+            "order": 3
+        },
+        {
+            "id": "sleep",
+            "title": {
+                "fr": "Sommeil",
+                "ar": "نوم",
+                "tn": "النوم",
+                "en": "Sleep"
+            },
+            "icon": "😴",
+            "order": 4
+        },
+        {
+            "id": "med",
+            "title": {
+                "fr": "Médication",
+                "ar": "أدوية",
+                "tn": "الدواء",
+                "en": "Medication"
+            },
+            "icon": "💊",
+            "order": 5
+        },
+        {
+            "id": "follow",
+            "title": {
+                "fr": "Suivi médical",
+                "ar": "متابعة طبية",
+                "tn": "المتابعة مع الطبيب",
+                "en": "Medical follow-up"
+            },
+            "icon": "🏥",
+            "order": 6
+        },
+        {
+            "id": "well",
+            "title": {
+                "fr": "Bien-être",
+                "ar": "رفاه",
+                "tn": "الراحة",
+                "en": "Well-being"
+            },
+            "icon": "🧘‍♀️",
+            "order": 7
+        },
+        {
+            "id": "prep",
+            "title": {
+                "fr": "Préparation",
+                "ar": "تحضير",
+                "tn": "التحضير للولادة",
+                "en": "Preparation"
+            },
+            "icon": "🤰",
+            "order": 8
+        },
+        {
+            "id": "fam",
+            "title": {
+                "fr": "Famille",
+                "ar": "عائلة",
+                "tn": "العايلة",
+                "en": "Family"
+            },
+            "icon": "👨‍👩‍👧",
+            "order": 9
+        }
+    ],
+    "reminders": [
+        {
+            "id": "rem_hyd_water",
+            "category_id": "hyd",
+            "title": {
+                "fr": "Boire de l'eau",
+                "ar": "شرب الماء",
+                "tn": "شرب الماء (اشربي الماء)",
+                "en": "Drink water"
+            },
+            "description": {
+                "fr": "Reste bien hydratée pour ton énergie et le confort de bébé.",
+                "ar": "حافظي على الترطيب لصحتك وراحة الطفل.",
+                "tn": "اشربي بارشا ماء باش تكوني في فورمة انتي والبيبي.",
+                "en": "Stay hydrated for your energy and baby's comfort."
+            },
+            "default_enabled": true,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                3,
+                5,
+                7
+            ],
+            "preset_times": {
+                "3": [
+                    "08:00",
+                    "13:00",
+                    "18:00"
+                ],
+                "5": [
+                    "08:00",
+                    "11:00",
+                    "14:00",
+                    "17:00",
+                    "20:00"
+                ],
+                "7": [
+                    "07:00",
+                    "09:00",
+                    "11:00",
+                    "13:00",
+                    "15:00",
+                    "17:00",
+                    "19:00"
+                ]
+            },
+            "snooze_minutes_default": 15,
+            "snooze_count_max": 3,
+            "tips_linked_ids": [
+                "tip_w04_d04"
+            ],
+            "linked_article_ids": [
+                "art_002"
+            ],
+            "sources": [
+                "ACOG",
+                "CNGOF"
+            ],
+            "context_rules": [
+                {
+                    "when": {
+                        "is_hot_season": true
+                    },
+                    "then": {
+                        "override_intensity": 7
+                    },
+                    "priority": 1
+                },
+                {
+                    "when": {
+                        "is_ramadan": true
+                    },
+                    "then": {
+                        "override_times": [
+                            "21:30",
+                            "23:30",
+                            "03:30"
+                        ]
+                    },
+                    "priority": 2
+                }
+            ],
+            "source_ui": "both_but_single_entry",
+            "ui": {
+                "icon": "💧",
+                "essential_rank": 1
+            },
+            "notification_messages": {
+                "fr": [
+                    "Maman, bois un verre d'eau 💧",
+                    "Un petit verre d'eau pour toi et bébé 💦",
+                    "C'est l'heure de s'hydrater !"
+                ],
+                "ar": [
+                    "ماما، اشربي كوب ماء 💧",
+                    "وقت الترطيب للصحة والطاقة"
+                ],
+                "en": [
+                    "Mama, drink some water 💧",
+                    "Time to hydrate for you and baby 💦"
+                ],
+                "tn": [
+                    "ماما، اشربي كاس ماء 💧",
+                    "وقت الماء ليك وللبيبي 💦"
+                ]
+            }
+        },
+        {
+            "id": "rem_med_prenatal_vitamins",
+            "category_id": "med",
+            "title": {
+                "fr": "Vitamines prénatales",
+                "ar": "فيتامينات الحمل",
+                "tn": "فيتامينات الحمل (الدواء)",
+                "en": "Prenatal vitamins"
+            },
+            "description": {
+                "fr": "Prends ta vitamine chaque jour pour couvrir les besoins de bébé.",
+                "ar": "خذي فيتاميناتك يومياً لدعم احتياجات الطفل.",
+                "tn": "خذي الدواء متاعك كل نهار باش البيبي يكبر بالصحة.",
+                "en": "Take your daily vitamin to support baby's needs."
+            },
+            "default_enabled": true,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2,
+                3
+            ],
+            "preset_times": {
+                "1": [
+                    "09:00"
+                ],
+                "2": [
+                    "09:00",
+                    "20:00"
+                ],
+                "3": [
+                    "09:00",
+                    "14:00",
+                    "20:00"
+                ]
+            },
+            "snooze_minutes_default": 30,
+            "snooze_count_max": 2,
+            "tips_linked_ids": [
+                "tip_w10_d05"
+            ],
+            "linked_article_ids": [
+                "art_001"
+            ],
+            "sources": [
+                "HAS"
+            ],
+            "source_ui": "both_but_single_entry",
+            "ui": {
+                "icon": "💊",
+                "essential_rank": 2
+            },
+            "notification_messages": {
+                "fr": [
+                    "{name}, c'est l'heure de ta vitamine 💊",
+                    "N'oublie pas ta vitamine du jour !",
+                    "Ta vitamine t'attend, bébé en a besoin 💕"
+                ],
+                "ar": [
+                    "{name}، وقت الفيتامين 💊",
+                    "لا تنسي فيتاميناتك اليوم"
+                ],
+                "en": [
+                    "{name}, time for your vitamin 💊",
+                    "Don't forget your daily vitamin!"
+                ],
+                "tn": [
+                    "{name}، وقت الدواء 💊",
+                    "ما تنساش الدواء متاعك!"
+                ]
+            }
+        },
+        {
+            "id": "rem_act_walk",
+            "category_id": "act",
+            "title": {
+                "fr": "Marche douce",
+                "ar": "مشي خفيف",
+                "tn": "مشي خفيف (تخربيشة)",
+                "en": "Gentle walk"
+            },
+            "description": {
+                "fr": "10-30 min de marche pour la circulation et le moral.",
+                "ar": "10-30 دقيقة مشي لتحسين الدورة والمزاج.",
+                "tn": "10-30 دقيقة مشي باش تحسي روحك خير وتنشطي.",
+                "en": "10–30 min walk for circulation and mood."
+            },
+            "default_enabled": true,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "18:00"
+                ],
+                "2": [
+                    "10:00",
+                    "18:00"
+                ]
+            },
+            "snooze_minutes_default": 60,
+            "snooze_count_max": 1,
+            "tips_linked_ids": [
+                "tip_w04_d06"
+            ],
+            "sources": [
+                "OMS/WHO"
+            ],
+            "context_rules": [
+                {
+                    "when": {
+                        "is_hot_season": true
+                    },
+                    "then": {
+                        "override_times": [
+                            "07:00"
+                        ]
+                    },
+                    "priority": 1
+                },
+                {
+                    "when": {
+                        "trimester": 1
+                    },
+                    "then": {
+                        "override_description": {
+                            "fr": "Même 5–10 min c'est déjà très bien 💛",
+                            "ar": "حتى 5-10 دقائق كافية 💛",
+                            "en": "Even 5–10 min is great 💛"
+                        },
+                        "override_intensity": 1
+                    },
+                    "priority": 2
+                }
+            ],
+            "source_ui": "both_but_single_entry",
+            "ui": {
+                "icon": "🚶",
+                "essential_rank": 3
+            },
+            "notification_messages": {
+                "fr": [
+                    "Une petite balade ? Bébé adore 🚶",
+                    "{name}, c'est l'heure d'une promenade 🌿",
+                    "Un peu d'air frais te fera du bien !"
+                ],
+                "ar": [
+                    "وقت المشي الخفيف 🚶",
+                    "هواء نقي لك وللطفل"
+                ],
+                "tn": [
+                    "وقت المشي (تحريكة) 🚶",
+                    "هواء نقي لك وللطفل (تشمي شوية هواء)"
+                ],
+                "en": [
+                    "Time for a gentle walk 🚶",
+                    "Fresh air for you and baby!"
+                ]
+            }
+        },
+        {
+            "id": "rem_sleep_routine",
+            "category_id": "sleep",
+            "title": {
+                "fr": "Routine sommeil",
+                "ar": "روتين النوم",
+                "tn": "روتين النوم",
+                "en": "Sleep routine"
+            },
+            "description": {
+                "fr": "Commence à ralentir pour bien préparer la nuit.",
+                "ar": "ابدئي بالاسترخاء لتحضير نوم هادئ.",
+                "tn": "ابداي هدي شوية باش ترقدي مليح.",
+                "en": "Start winding down to prepare for night."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "21:30"
+                ]
+            },
+            "snooze_minutes_default": 20,
+            "snooze_count_max": 3,
+            "sources": [
+                "Sleep Foundation"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🌙"
+            }
+        },
+        {
+            "id": "rem_sleep_nap",
+            "category_id": "sleep",
+            "title": {
+                "fr": "Sieste",
+                "ar": "قيلولة",
+                "tn": "قيلولة (غفوة)",
+                "en": "Nap"
+            },
+            "description": {
+                "fr": "Une petite sieste aide à récupérer. Écoute ton corps 💛",
+                "ar": "قيلولة قصيرة تساعدك على الاسترخاء. استمعي لجسمك 💛",
+                "tn": "غفوة صغيرة تعاونك ترتاحي. اسمعي لجسمك 💛",
+                "en": "A short nap helps recovery. Listen to your body 💛"
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "14:00"
+                ]
+            },
+            "sources": [
+                "CNGOF"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "😴"
+            }
+        },
+        {
+            "id": "rem_nut_calcium",
+            "category_id": "nut",
+            "title": {
+                "fr": "Apport en calcium",
+                "ar": "تناول الكالسيوم",
+                "tn": "الكالسيوم (للعظام)",
+                "en": "Calcium intake"
+            },
+            "description": {
+                "fr": "Produits laitiers, amandes, légumes verts pour les os de bébé.",
+                "ar": "ألبان، لوز، خضار خضراء لعظام الطفل.",
+                "tn": "حليب، لوز، خضرة باش عظام البيبي تقوى.",
+                "en": "Dairy, almonds, leafy greens for baby's bones."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "13:30"
+                ],
+                "2": [
+                    "09:00",
+                    "18:00"
+                ]
+            },
+            "sources": [
+                "ACOG"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🦴"
+            }
+        },
+        {
+            "id": "rem_nut_iron_foods",
+            "category_id": "nut",
+            "title": {
+                "fr": "Aliments riches en fer",
+                "ar": "أطعمة غنية بالحديد",
+                "tn": "ماكلة فيها حديد",
+                "en": "Iron-rich foods"
+            },
+            "description": {
+                "fr": "Lentilles, viande rouge, épinards pour éviter l'anémie.",
+                "ar": "عدس، لحم أحمر، سبانخ لتفادي فقر الدم.",
+                "tn": "عدس، لحم أحمر، سبانخ باش ما يصيرش فقر دم.",
+                "en": "Lentils, red meat, spinach to prevent anemia."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_week",
+            "intensity_options": [
+                2,
+                3
+            ],
+            "preset_times": {
+                "2": [
+                    "12:30"
+                ],
+                "3": [
+                    "12:30"
+                ]
+            },
+            "preset_days": {
+                "2": [
+                    2,
+                    5
+                ],
+                "3": [
+                    1,
+                    3,
+                    5
+                ]
+            },
+            "sources": [
+                "CNGOF"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🥩"
+            }
+        },
+        {
+            "id": "rem_nut_healthy_snack",
+            "category_id": "nut",
+            "title": {
+                "fr": "Collation saine",
+                "ar": "وجبة خفيفة صحية",
+                "tn": "كسرة صحية",
+                "en": "Healthy snack"
+            },
+            "description": {
+                "fr": "Fruits, noix ou yaourt entre les repas.",
+                "ar": "فواكه أو مكسرات أو زبادي بين الوجبات.",
+                "tn": "غلة، كاوكاو ولا ياورت بين الماكلات.",
+                "en": "Fruits, nuts or yogurt between meals."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "16:00"
+                ],
+                "2": [
+                    "10:30",
+                    "16:00"
+                ]
+            },
+            "sources": [
+                "Nutrition"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🍎"
+            }
+        },
+        {
+            "id": "rem_nut_fruits",
+            "category_id": "nut",
+            "title": {
+                "fr": "Manger des fruits",
+                "ar": "تناول الفواكه",
+                "tn": "كولي غلة",
+                "en": "Eat fruits"
+            },
+            "description": {
+                "fr": "Au moins 2-3 portions de fruits frais par jour.",
+                "ar": "على الأقل 2-3 حصص من الفواكه الطازجة يومياً.",
+                "tn": "على الأقل 2-3 غلة طازجة في النهار.",
+                "en": "At least 2-3 portions of fresh fruits daily."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                2,
+                3
+            ],
+            "preset_times": {
+                "2": [
+                    "10:00",
+                    "17:00"
+                ],
+                "3": [
+                    "08:00",
+                    "13:00",
+                    "17:00"
+                ]
+            },
+            "sources": [
+                "Nutrition"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🍊"
+            }
+        },
+        {
+            "id": "rem_follow_bp",
+            "category_id": "follow",
+            "title": {
+                "fr": "Vérifier ma tension",
+                "ar": "قياس الضغط",
+                "tn": "قيسي الضغط",
+                "en": "Check blood pressure"
+            },
+            "description": {
+                "fr": "Si ton médecin l'a conseillé, mesure 2x/semaine.",
+                "ar": "إذا نصحك الطبيب، قيسي الضغط مرتين بالأسبوع.",
+                "tn": "كان قالك الطبيب، قيسي الضغط مرتين في الجمعة.",
+                "en": "If advised, check BP twice per week."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_week",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "18:00"
+                ],
+                "2": [
+                    "18:00"
+                ]
+            },
+            "preset_days": {
+                "1": [
+                    3
+                ],
+                "2": [
+                    2,
+                    6
+                ]
+            },
+            "sources": [
+                "HAS"
+            ],
+            "context_rules": [
+                {
+                    "when": {
+                        "has_hypertension": true
+                    },
+                    "then": {
+                        "override_intensity": 2
+                    },
+                    "priority": 1
+                }
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "💓",
+                "section_group": "medical"
+            }
+        },
+        {
+            "id": "rem_follow_fetal_moves",
+            "category_id": "follow",
+            "title": {
+                "fr": "Compter les mouvements",
+                "ar": "عد حركات الطفل",
+                "tn": "احسبي حركات البيبي",
+                "en": "Count baby movements"
+            },
+            "description": {
+                "fr": "À partir de 24 SA, observe les mouvements chaque jour.",
+                "ar": "من الأسبوع 24، راقبي حركات الطفل يومياً.",
+                "tn": "من الجمعة 24، راقبي كيفاش يتحرك البيبي كل نهار.",
+                "en": "From 24w, notice baby movements daily."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "20:30"
+                ]
+            },
+            "context_rules": [
+                {
+                    "when": {
+                        "week_of_pregnancy": {
+                            "lt": 24
+                        }
+                    },
+                    "then": {
+                        "disable": true
+                    },
+                    "priority": 1
+                }
+            ],
+            "sources": [
+                "CNGOF"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "👶"
+            }
+        },
+        {
+            "id": "rem_follow_glucose",
+            "category_id": "follow",
+            "title": {
+                "fr": "Contrôle glycémie",
+                "ar": "فحص السكر",
+                "tn": "فحص السكر",
+                "en": "Glucose check"
+            },
+            "description": {
+                "fr": "Si ton médecin t'a parlé de sucre, on t'aide à suivre 💛",
+                "ar": "إذا تحدث طبيبك عن السكر، نساعدك بالمتابعة 💛",
+                "tn": "كان قالك الطبيب عالسكر، نعاونوك في المتابعة 💛",
+                "en": "If your doctor mentioned glucose, we'll help you track 💛"
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                2,
+                4
+            ],
+            "preset_times": {
+                "2": [
+                    "09:00",
+                    "14:00"
+                ],
+                "4": [
+                    "08:00",
+                    "11:00",
+                    "14:00",
+                    "21:00"
+                ]
+            },
+            "context_rules": [
+                {
+                    "when": {
+                        "has_gestational_diabetes": false
+                    },
+                    "then": {
+                        "disable": true
+                    },
+                    "priority": 1
+                }
+            ],
+            "sources": [
+                "HAS"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🩸",
+                "section_group": "medical"
+            }
+        },
+        {
+            "id": "rem_act_kegel",
+            "category_id": "act",
+            "title": {
+                "fr": "Exercices de Kegel",
+                "ar": "تمارين كيجل",
+                "tn": "تمارين كيجل (للولادة)",
+                "en": "Kegel exercises"
+            },
+            "description": {
+                "fr": "Renforce ton périnée pour l'accouchement et la récupération.",
+                "ar": "قوي عضلات الحوض للولادة والتعافي.",
+                "tn": "قوي عضلاتك باش الولادة تكون أسهل.",
+                "en": "Strengthen pelvic floor for birth and recovery."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                2,
+                3
+            ],
+            "preset_times": {
+                "2": [
+                    "10:00",
+                    "20:00"
+                ],
+                "3": [
+                    "08:00",
+                    "14:00",
+                    "20:00"
+                ]
+            },
+            "sources": [
+                "CNGOF"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "💪"
+            }
+        },
+        {
+            "id": "rem_act_stretching",
+            "category_id": "act",
+            "title": {
+                "fr": "Étirements du soir",
+                "ar": "تمديدات المساء",
+                "tn": "تمديدات في الليل",
+                "en": "Evening stretching"
+            },
+            "description": {
+                "fr": "5 min d'étirements doux pour réduire les tensions.",
+                "ar": "5 دقائق تمديدات خفيفة لتخفيف التوتر.",
+                "tn": "5 دقايق تمديد باش ترتاحي من التعب.",
+                "en": "5 min gentle stretching to relieve tension."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "21:00"
+                ]
+            },
+            "sources": [
+                "Physio"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🧘"
+            }
+        },
+        {
+            "id": "rem_well_breathing",
+            "category_id": "well",
+            "title": {
+                "fr": "Respiration profonde",
+                "ar": "تنفس عميق",
+                "tn": "تنفس عميق",
+                "en": "Deep breathing"
+            },
+            "description": {
+                "fr": "2 minutes pour calmer le stress et oxygéner bébé.",
+                "ar": "دقيقتان لتهدئة التوتر وتنفس أفضل.",
+                "tn": "دقيقتين باش تهدي وتتنفسي مليح.",
+                "en": "2 minutes to reduce stress and oxygenate."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "10:00"
+                ],
+                "2": [
+                    "10:00",
+                    "20:00"
+                ]
+            },
+            "sources": [
+                "Psy"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🌬️"
+            }
+        },
+        {
+            "id": "rem_well_relax",
+            "category_id": "well",
+            "title": {
+                "fr": "Moment de détente",
+                "ar": "وقت استرخاء",
+                "tn": "وقت راحة",
+                "en": "Relaxation time"
+            },
+            "description": {
+                "fr": "Prends 10 min pour toi, sans écran.",
+                "ar": "خذي 10 دقائق لنفسك بدون شاشات.",
+                "tn": "خذي 10 دقايق لروحك بلا تليفون.",
+                "en": "Take 10 min for yourself, screen-free."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "19:00"
+                ],
+                "2": [
+                    "12:00",
+                    "19:00"
+                ]
+            },
+            "sources": [
+                "Psy"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🧖"
+            }
+        },
+        {
+            "id": "rem_well_journal",
+            "category_id": "well",
+            "title": {
+                "fr": "Journal de grossesse",
+                "ar": "مذكرات الحمل",
+                "tn": "دفتر الحمل",
+                "en": "Pregnancy journal"
+            },
+            "description": {
+                "fr": "Note tes pensées et émotions du jour.",
+                "ar": "دوني أفكارك ومشاعر اليوم.",
+                "tn": "اكتبي شنوة تحسي وشنوة في بالك اليوم.",
+                "en": "Write down your thoughts and feelings."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "21:00"
+                ]
+            },
+            "sources": [
+                "Psy"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "📓"
+            }
+        },
+        {
+            "id": "rem_prep_hospital_bag",
+            "category_id": "prep",
+            "title": {
+                "fr": "Valise maternité",
+                "ar": "حقيبة الولادة",
+                "tn": "شانطة الولادة",
+                "en": "Hospital bag"
+            },
+            "description": {
+                "fr": "À partir du 7e mois, prépare ta valise petit à petit.",
+                "ar": "من الشهر السابع، جهزي حقيبتك تدريجياً.",
+                "tn": "من الشهر السابع، حضري شانطتك شوية بشوية.",
+                "en": "From month 7, prepare your bag gradually."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_week",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "19:00"
+                ]
+            },
+            "preset_days": {
+                "1": [
+                    5
+                ]
+            },
+            "context_rules": [
+                {
+                    "when": {
+                        "week_of_pregnancy": {
+                            "lt": 28
+                        }
+                    },
+                    "then": {
+                        "disable": true
+                    },
+                    "priority": 1
+                }
+            ],
+            "sources": [
+                "Orga"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🎒"
+            }
+        },
+        {
+            "id": "rem_prep_birthplan",
+            "category_id": "prep",
+            "title": {
+                "fr": "Projet de naissance",
+                "ar": "خطة الولادة",
+                "tn": "خطة الولادة",
+                "en": "Birth plan"
+            },
+            "description": {
+                "fr": "Réfléchis à tes souhaits pour l'accouchement.",
+                "ar": "فكري في رغباتك للولادة.",
+                "tn": "فكري شنوة تحبي في الولادة.",
+                "en": "Think about your wishes for delivery."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_week",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "19:00"
+                ]
+            },
+            "preset_days": {
+                "1": [
+                    6
+                ]
+            },
+            "context_rules": [
+                {
+                    "when": {
+                        "week_of_pregnancy": {
+                            "lt": 28
+                        }
+                    },
+                    "then": {
+                        "disable": true
+                    },
+                    "priority": 1
+                }
+            ],
+            "sources": [
+                "CNGOF"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "📋"
+            }
+        },
+        {
+            "id": "rem_fam_partner_talk",
+            "category_id": "fam",
+            "title": {
+                "fr": "Parler avec mon partenaire",
+                "ar": "التحدث مع شريكي",
+                "tn": "احكي مع راجلك",
+                "en": "Talk to partner"
+            },
+            "description": {
+                "fr": "Prends un moment pour partager tes ressentis.",
+                "ar": "خذي وقتاً لمشاركة مشاعرك.",
+                "tn": "خذي وقت باش تحكي على شنوة تحسي.",
+                "en": "Take time to share your feelings."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_week",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "20:30"
+                ],
+                "2": [
+                    "20:30"
+                ]
+            },
+            "preset_days": {
+                "1": [
+                    6
+                ],
+                "2": [
+                    3,
+                    6
+                ]
+            },
+            "sources": [
+                "Psy"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "💑"
+            }
+        },
+        {
+            "id": "rem_fam_baby_talk",
+            "category_id": "fam",
+            "title": {
+                "fr": "Parler à bébé",
+                "ar": "التحدث مع الطفل",
+                "tn": "احكي مع البيبي",
+                "en": "Talk to baby"
+            },
+            "description": {
+                "fr": "Bébé entend ta voix dès le 2e trimestre, parle-lui !",
+                "ar": "الطفل يسمع صوتك من الثلث الثاني، تحدثي معه!",
+                "tn": "البيبي يسمعك من الشهر الرابع، احكي معاه!",
+                "en": "Baby hears you from T2, talk to them!"
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "20:00"
+                ]
+            },
+            "context_rules": [
+                {
+                    "when": {
+                        "trimester": 1
+                    },
+                    "then": {
+                        "disable": true
+                    },
+                    "priority": 1
+                }
+            ],
+            "sources": [
+                "Développement"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🗣️"
+            }
+        },
+        {
+            "id": "rem_med_vitamin_d",
+            "category_id": "med",
+            "title": {
+                "fr": "Vitamine D",
+                "ar": "فيتامين د",
+                "tn": "فيتامين د",
+                "en": "Vitamin D"
+            },
+            "description": {
+                "fr": "Active ce rappel si ton médecin t'a prescrit de la vitamine D en plus de tes vitamines quotidiennes.",
+                "ar": "فعّلي هذا التذكير إذا وصف لك الطبيب فيتامين د بالإضافة إلى فيتاميناتك اليومية.",
+                "tn": "شعلي هالتذكير كان الطبيب كتبلك فيتامين د زيد على الدواء اليومي.",
+                "en": "Enable this reminder if your doctor prescribed vitamin D in addition to your daily vitamins."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "12:00"
+                ]
+            },
+            "sources": [
+                "HAS"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "☀️"
+            }
+        },
+        {
+            "id": "rem_med_iron_supplement",
+            "category_id": "med",
+            "title": {
+                "fr": "Fer (supplément)",
+                "ar": "حديد (مكمل)",
+                "tn": "حديد (دواء)",
+                "en": "Iron supplement"
+            },
+            "description": {
+                "fr": "Active ce rappel si ton médecin t'a prescrit du fer (en cas d'anémie).",
+                "ar": "فعّلي هذا التذكير إذا وصف لك الطبيب الحديد (في حالة فقر الدم).",
+                "tn": "شعلي هالتذكير كان الطبيب كتبلك حديد (لفقر الدم).",
+                "en": "Enable this reminder if your doctor prescribed iron (for anemia)."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1
+            ],
+            "preset_times": {
+                "1": [
+                    "09:00"
+                ]
+            },
+            "context_rules": [
+                {
+                    "when": {
+                        "trimester": 1
+                    },
+                    "then": {
+                        "disable": true
+                    },
+                    "priority": 1
+                }
+            ],
+            "sources": [
+                "HAS"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "💉",
+                "section_group": "medical"
+            }
+        },
+        {
+            "id": "rem_hyd_herbal_tea",
+            "category_id": "hyd",
+            "title": {
+                "fr": "Tisane",
+                "ar": "شاي أعشاب",
+                "tn": "تيزانة (شاي أعشاب)",
+                "en": "Herbal tea"
+            },
+            "description": {
+                "fr": "Une tisane (camomille, menthe) pour la digestion.",
+                "ar": "شاي أعشاب (بابونج، نعناع) للهضم.",
+                "tn": "تيزانة (بابونج، نعناع) باش تهضمي مليح.",
+                "en": "Herbal tea (chamomile, mint) for digestion."
+            },
+            "default_enabled": false,
+            "frequency_type": "per_day",
+            "intensity_options": [
+                1,
+                2
+            ],
+            "preset_times": {
+                "1": [
+                    "21:00"
+                ],
+                "2": [
+                    "10:00",
+                    "21:00"
+                ]
+            },
+            "sources": [
+                "Nutrition"
+            ],
+            "source_ui": "reminders_only",
+            "ui": {
+                "icon": "🍵"
+            }
+        }
+    ]
+}

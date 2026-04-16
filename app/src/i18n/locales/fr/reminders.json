@@ -1,0 +1,79 @@
+{
+    "card": {
+        "days": "Jours",
+        "daysLabel": "Jours :",
+        "advancedOptions": "🔧 Options avancées",
+        "undefined": "Non défini",
+        "customize": "Personnaliser",
+        "intensity": "Intensité :",
+        "timesPerDay": "{{count}}×/jour",
+        "scheduledHours": "📅 Horaires programmés :",
+        "weekTitle": "Rappels de la semaine",
+        "viewAll": "Voir tout →",
+        "priorityHigh": "Haute",
+        "priorityMedium": "Moyenne",
+        "priorityLow": "Basse",
+        "priorityLabel": "Priorité : {{level}}",
+        "notifBody": "Maman, {{description}} 💕"
+    },
+    "hydration": {
+        "title": "Hydratation",
+        "subtitle": "Objectif journalier",
+        "addWater": "Ajouter un verre (250ml)",
+        "settingsTitle": "🎯 Objectifs",
+        "dailyGoalInput": "Objectif quotidien (ml)",
+        "remindersPerDay": "Rappels par jour",
+        "remindersTimeRange": "Entre 8h et 22h",
+        "enableReminders": "Activer les rappels",
+        "concept": "Sur la date de conception",
+        "save": "Sauvegarder"
+    },
+    "frequenciesShort": {
+        "per_day": "jour",
+        "per_week": "sem",
+        "per_month": "mois"
+    },
+    "types": {
+        "title": "MA JOURNÉE",
+        "loading": "Chargement...",
+        "emptyTitle": "Aucune action pour aujourd'hui.",
+        "emptyMsg": "Active des rappels dans l'onglet Rappels ! 💡",
+        "allDone": "Tout est fait ! Repose-toi bien 💖",
+        "remainingTasks": "{{count}} tâches restantes",
+        "hideTodayTitle": "Masquer pour aujourd'hui ?",
+        "hideTodayMsg": "Ce rappel ne s'affichera plus aujourd'hui, mais reviendra demain.",
+        "hide": "Masquer",
+        "cancel": "Annuler"
+    },
+    "frequency": {
+        "per_day": "jour",
+        "per_week": "semaine",
+        "per_month": "mois",
+        "one_off": "fois"
+    },
+    "reminderEdit": {
+        "invalidTime": "\"{{time}}\" n'est pas valide. Utilise le format HH:MM 💕",
+        "saveError": "Oups, une erreur est survenue. Réessaie 💕",
+        "nameOptional": "Nom (optionnel)",
+        "addTime": "+ Ajouter un horaire",
+        "resetToDefault": "↩ Rythme recommandé",
+        "duplicate": "Doublon détecté",
+        "minLimit": "Limite minimum atteinte",
+        "maxLimit": "Limite maximum atteinte",
+        "yourSchedule": "Votre planning",
+        "hint": "Astuce",
+        "recommendedPace": "Rythme recommandé"
+    },
+    "myDay": {
+        "title": "Ma Journée",
+        "loading": "Chargement...",
+        "emptyTitle": "Tout est fait !",
+        "emptyMsg": "Pas de tâches pour aujourd'hui",
+        "allDone": "Toutes les tâches terminées !",
+        "remainingTasks": "{{count}} tâches restantes",
+        "hideTodayTitle": "Masquer pour aujourd'hui ?",
+        "hideTodayMsg": "Cette tâche réapparaîtra demain",
+        "hide": "Masquer",
+        "cancel": "Annuler"
+    }
+}

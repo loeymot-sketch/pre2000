@@ -1,0 +1,158 @@
+const fs = require('fs');
+const path = require('path');
+
+const dbPath = path.join(__dirname, '../../app/DATA_PACK_MVP_V3_FINAL/baby_messages_db_v1_2_FULL.json');
+let data = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+
+const translations = {
+    "Maman, pense à tes vitamines, c'est mes super-pouvoirs.": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "Maman, je suis ton petit trésor caché.": "ماما، أنا كنزك الصغير المخبأ.",
+    "Maman, je sens ton amour, ça me fait grandir.": "ماما، أشعر بحبك، إنه يجعلني أكبر.",
+    "Tu es mon univers tout entier.": "أنتِ عالمي بأكمله.",
+    "Je sens ton amour, ça me fait grandir.": "أشعر بحبك، إنه يجعلني أكبر.",
+    "Maman, tu es la meilleure maman du monde pour moi.": "ماما، أنتِ أفضل أم في العالم بالنسبة لي.",
+    "J'aime entendre ta voix quand tu parles ou chantes.": "أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "Maman, repose-toi bien maman, on grandit ensemble.": "ماما، ارتاحي جيدا، نحن نكبر معا.",
+    "On est une super équipe toi et moi !": "نحن فريق رائع أنا وأنتِ!",
+    "Si tu es stressée, je le sens. Détends-toi...": "إذا كنتِ متوترة، أشعر بذلك. استرخي...",
+    "Maman, j'aime entendre ta voix quand tu parles ou chantes.": "ماما، أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "Écoute ton corps, c'est moi qui te parle.": "استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "Chaque jour nous rapproche de notre rencontre.": "كل يوم يقربنا من لقائنا.",
+    "Maman, courage maman, tu fais du super boulot !": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "Dors bien maman, j'ai besoin que tu sois en forme.": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة.",
+    "Courage maman, tu fais du super boulot !": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "Maman, dors bien maman, j'ai besoin que tu sois en forme.": "ماما، نمي جيدا، أحتاجك أن تكوني بصحة جيدة.",
+    "Je me sens en sécurité avec toi.": "أشعر بالأمان معكِ.",
+    "Sais-tu que... Je suis grand comme une graine de pavot ! Je m'installe confortablement.": "هل تعلمين... أنا بحجم حبة الخشخاش! أستقر براحة.",
+    "Repose-toi bien maman, on grandit ensemble.": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "Maman, on est une super équipe toi et moi !": "ماما، نحن فريق رائع أنا وأنتِ!",
+    "Maman, Je suis grand comme une graine de pavot ! Je m'installe confortablement.": "ماما، أنا بحجم حبة الخشخاش! أستقر براحة.",
+    "Sais-tu que... Mon cœur commence à battre, c'est le tout début de la vie !": "هل تعلمين... قلبي بدأ ينبض، إنها بداية الحياة!",
+    "Maman, j'ai hâte de voir ton sourire.": "ماما، لا أطيق الانتظار لرؤية ابتسامتك.",
+    "Fais-toi chouchouter, tu le mérites.": "دللي نفسك، أنتِ تستحقين ذلك.",
+    "Incroyable : Mon cœur commence à battre, c'est le tout début de la vie !": "مذهل: قلبي بدأ ينبض، إنها بداية الحياة!",
+    "Sais-tu que... Je ressemble à un petit têtard, mes bras et jambes commencent à pousser.": "هل تعلمين... أبدو كشرغوف صغير، ذراعي وساقي تبدآن في النمو.",
+    "Maman, si tu es stressée, je le sens. Détends-toi...": "ماما، إذا كنت متوترة أشعر بذلك. استرخي...",
+    "Maman, Je ressemble à un petit têtard, mes bras et jambes commencent à pousser.": "ماما، أبدو كشرغوف صغير، ذراعي وساقي تبدآن في النمو.",
+    "Prends un moment pour toi, ça me fait du bien aussi.": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "Respire profondément, ça m'oxygène aussi.": "تنفّسي بعمق، هذا يمدني بالأكسجين أيضا.",
+    "Incroyable : Mon cerveau grandit à toute vitesse, 100 000 neurones par minute !": "مذهل: دماغي ينمو بسرعة فائقة، 100،000 خلية عصبية في الدقيقة!",
+    "Maman, Mon cerveau grandit à toute vitesse, 100 000 neurones par minute !": "ماما، دماغي ينمو بسرعة فائقة، 100،000 خلية عصبية في الدقيقة!",
+    "Tu es la meilleure maman du monde pour moi.": "أنتِ أفضل أم في العالم بالنسبة لي.",
+    "J'adore quand tu caresses ton ventre, ça me fait des guilis.": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "Merci de prendre soin de moi.": "شكرا لاهتمامك بي.",
+    "Devine quoi ? Je bouge déjà un peu, mais tu ne peux pas encore me sentir.": "احزري ماذا؟ أنا أتحرك قليلا بالفعل، لكنك لا تستطيعين الشعور بي بعد.",
+    "Sais-tu que... Je bouge déjà un peu, mais tu ne peux pas encore me sentir.": "هل تعلمين... أنا أتحرك قليلا بالفعل، لكنك لا تستطيعين الشعور بي بعد.",
+    "Maman, fais-toi chouchouter, tu le mérites.": "ماما، دللي نفسك، أنتِ تستحقين ذلك.",
+    "Maman, merci de prendre soin de moi.": "ماما، شكرا لاهتمامك بي.",
+    "Maman, Mes petits doigts de pieds se forment, bientôt je pourrai les compter.": "ماما، أصابع قدمي الصغيرة تتشكل، قريبا سأتمكن من عدها.",
+    "Maman, Je suis officiellement un fœtus ! Je ne suis plus un embryon.": "ماما، أنا رسميا جنين! لم أعد مضغة.",
+    "Maman, je t'aime déjà tellement fort.": "ماما، أنا أحبك كثيرا بالفعل.",
+    "Devine quoi ? Je suis officiellement un fœtus ! Je ne suis plus un embryon.": "احزري ماذا؟ أنا رسميا جنين! لم أعد مضغة.",
+    "Maman, Je commence à avoir des ongles, c'est fou non ?": "ماما، بدأت أظافري تنمو، أليس هذا جنونيا؟",
+    "Maman, n'oublie pas de boire de l'eau, j'ai besoin de ma piscine !": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!",
+    "Sais-tu que... Je commence à avoir des ongles, c'est fou non ?": "هل تعلمين... بدأت أظافري تنمو، أليس هذا جنونيا؟",
+    "Maman, écoute ton corps, c'est moi qui te parle.": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "Un petit fruit pour le goûter ? J'adore le sucre naturel.": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي.",
+    "Devine quoi ? Je peux ouvrir et fermer mes mains, je m'entraîne à attraper.": "احزري ماذا؟ أستطيع فتح وإغلاق يدي، أنا أتدرب على الإمساك بالأشياء.",
+    "Maman, Je peux ouvrir et fermer mes mains, je m'entraîne à attraper.": "ماما، أستطيع فتح وإغلاق يدي، أنا أتدرب على الإمساك.",
+    "Maman, je me sens en sécurité avec toi.": "ماما، أشعر بالأمان معكِ.",
+    "Maman, J'ai mes propres empreintes digitales maintenant, je suis unique !": "ماما، لدي بصمات أصابعي الخاصة الآن، أنا فريد من نوعي!",
+    "Maman, chaque jour nous rapproche de notre rencontre.": "ماما، كل يوم يقربنا من لقائنا.",
+    "Une petite marche nous ferait du bien aujourd'hui.": "مشي قليل سيفيدنا اليوم.",
+    "Maman, un petit fruit pour le goûter ? J'adore le sucre naturel.": "ماما، فاكهة صغيرة للوجبة الخفيفة؟ أحب السكر الطبيعي.",
+    "Sais-tu que... Je peux faire des grimaces, je m'entraîne à sourire.": "هل تعلمين... أستطيع أن أقوم بتعابير الوجه، أنا أتدرب على الابتسام.",
+    "Pense à tes vitamines, c'est mes super-pouvoirs.": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "Maman, Je peux faire des grimaces, je m'entraîne à sourire.": "ماما، أستطيع القيام بتعابير الوجه، أنا أتدرب على الابتسام.",
+    "Je suis ton petit trésor caché.": "أنا كنزك الصغير المخبأ.",
+    "Maman, je suis ton petit passager clandestin.": "ماما، أنا مسافرك السري الصغير.",
+    "Parfois j'ai le hoquet, hips !": "أحيانا أصاب بالفواق، هيبس!",
+    "Incroyable : Je peux percevoir la lumière à travers ta peau, même si mes yeux sont fermés.": "مذهل: أستطيع رؤية الضوء من خلال بشرتك، حتى وعيناي مغلقتان.",
+    "Sais-tu que... Je peux percevoir la lumière à travers ta peau, même si mes yeux sont fermés.": "هل تعلمين... أستطيع رؤية الضوء من خلال بشرتك، حتى لو كانت عيناي مغلقتين.",
+    "Devine quoi ? Mes jambes sont plus longues que mes bras maintenant.": "احزري ماذا؟ ساقاي أطول من ذراعي الآن.",
+    "Maman, une petite marche nous ferait du bien aujourd'hui.": "ماما، مشي قليل سيفيدنا اليوم.",
+    "Sais-tu que... Mes jambes sont plus longues que mes bras maintenant.": "هل تعلمين... ساقاي أطول من ذراعي الآن.",
+    "Devine ce que je fais ? Je suce mon pouce.": "احزري ماذا أفعل؟ أنا أمص إبهامي.",
+    "Maman, je fais des galipettes là-dedans !": "ماما، أنا أتشقلب هنا بالداخل!",
+    "Incroyable : Mon squelette change, le cartilage devient de l'os.": "مذهل: هيكلي العظمي يتغير، الغضروف يتحول إلى عظم.",
+    "Je suis ton petit passager clandestin.": "أنا مسافرك السري الصغير.",
+    "Je joue à cache-cache avec le cordon.": "أنا ألعب الغميضة مع الحبل السري.",
+    "Sais-tu que... Je peux entendre les battements de ton cœur, c'est ma berceuse.": "هل تعلمين... أستطيع سماع دقات قلبك، إنها تهويدتي.",
+    "Maman, coucou ! C'est moi !": "ماما، مرحبا! هذا أنا!",
+    "C'est un peu serré ici, non ?": "المكان ضيق قليلا هنا، أليس كذلك؟",
+    "Incroyable : Mes sens se développent : l'ouïe, l'odorat, le goût, le toucher et la vue.": "مذهل: حواسي تتطور: السمع، الشم، التذوق، اللمس والبصر.",
+    "Sais-tu que... Mes sens se développent : l'ouïe, l'odorat, le goût, le toucher et la vue.": "هل تعلمين... حواسي تتطور: السمع، الشم، التذوق، اللمس والبصر.",
+    "Maman, On est à la moitié ! Je suis grand comme une banane.": "ماما، وصلنا إلى النصف! أنا بحجم موزة.",
+    "Maman, c'est un peu serré ici, non ?": "ماما، المكان ضيق قليلا هنا، أليس كذلك؟",
+    "Maman, je joue à cache-cache avec le cordon.": "ماما، أنا ألعب الغميضة مع الحبل السري.",
+    "Maman, Je dors et je me réveille, j'ai mon petit rythme.": "ماما، أنا أنام وأستيقظ، لدي إيقاعي الخاص.",
+    "Maman, miam, c'était bon ce que tu as mangé !": "ماما، يمي، كان ما أكلتيه لذيذا!",
+    "Devine quoi ? Mes sourcils et mes cils sont là, je me fais beau/belle.": "احزري ماذا؟ حاجبي ورموشي ظهرا، أنا أتزين.",
+    "Incroyable : Mes sourcils et mes cils sont là, je me fais beau/belle.": "مذهل: حاجبي ورموشي ظهرا، أنا أتزين.",
+    "Maman, Je commence à entendre les bruits de l'extérieur, parle-moi !": "ماما، بدأت أسمع الأصوات من الخارج، تحدثي إلي!",
+    "Devine quoi ? Je commence à entendre les bruits de l'extérieur, parle-moi !": "احزري ماذا؟ بدأت أسمع الأصوات من الخارج، تحدثي إلي!",
+    "J'essaie d'attraper mes pieds.": "أحاول الإمساك بقدمي.",
+    "Je donne des coups de pied de ninja !": "أنا أركل كركلات النينجا!",
+    "Sais-tu que... Mes poumons se préparent à respirer, je fais des mouvements respiratoires.": "هل تعلمين... رئتاي تستعدان للتنفس، أقوم بحركات تنفسية.",
+    "Miam, c'était bon ce que tu as mangé !": "يمي، كان ما أكلتيه لذيذا!",
+    "Incroyable : Mes poumons se préparent à respirer, je fais des mouvements respiratoires.": "مذهل: رئتاي تستعدان للتنفس، أقوم بحركات تنفسية.",
+    "Maman, Je joue avec mon cordon ombilical, c'est mon premier jouet.": "ماما، أنا ألعب بحبلي السري، إنه لعبتي الأولى.",
+    "Sais-tu que... Je joue avec mon cordon ombilical, c'est mon premier jouet.": "هل تعلمين... أنا ألعب بحبلي السري، إنه لعبتي الأولى.",
+    "Maman, J'ouvre mes yeux ! Je peux voir un peu ce qui se passe.": "ماما، أنا أفتح عيني! أستطيع رؤية القليل مما يحدث.",
+    "Incroyable : Je reconnais ta voix et celle de papa, ça me rassure.": "مذهل: أنا أتعرف على صوتك وصوت أبي، هذا يطمئنني.",
+    "Maman, Je reconnais ta voix et celle de papa, ça me rassure.": "ماما، أنا أتعرف على صوتك وصوت أبي، هذا يطمئنني.",
+    "J'ai hâte de voir ton sourire.": "لا أطيق الانتظار لرؤية ابتسامتك.",
+    "Devine quoi ? Je rêve peut-être déjà... de toi ?": "احزري ماذا؟ ربما أحلم بالفعل... بكِ؟",
+    "N'oublie pas de boire de l'eau, j'ai besoin de ma piscine !": "لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!",
+    "Sais-tu que... Je prends du poids, je deviens tout potelé.": "هل تعلمين... أنا أكتسب الوزن، وأصبح ممتلئا.",
+    "Devine quoi ? Je prends du poids, je deviens tout potelé.": "احزري ماذا؟ أنا أكتسب الوزن، وأصبح ممتلئا.",
+    "Maman, Mon cerveau est tout plissé maintenant pour avoir plus de place.": "ماما، دماغي متجعد الآن ليكون لديه مساحة أكبر.",
+    "Incroyable : Mon cerveau est tout plissé maintenant pour avoir plus de place.": "مذهل: دماغي مجعد الآن ليكون لديه مساحة أكبر.",
+    "Devine quoi ? Je peux tourner la tête de gauche à droite.": "احزري ماذا؟ أستطيع تحريك رأسي من اليسار إلى اليمين.",
+    "Maman, tu es mon univers tout entier.": "ماما، أنتِ عالمي بأكمله.",
+    "Incroyable : Je prends beaucoup de place, désolé pour tes côtes !": "مذهل: أنا آخذ مساحة كبيرة، آسف لأضلاعك!",
+    "Sais-tu que... Je prends beaucoup de place, désolé pour tes côtes !": "هل تعلمين... أنا آخذ مساحة كبيرة، آسف لأضلاعك!",
+    "Maman, prends un moment pour toi, ça me fait du bien aussi.": "ماما، خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "Coucou ! C'est moi !": "مرحبا! هذا أنا!",
+    "Sais-tu que... Mon système immunitaire se renforce grâce à toi.": "هل تعلمين... جهاز المناعة لدي يتقوى بفضلك.",
+    "Maman, Mon système immunitaire se renforce grâce à toi.": "ماما، جهاز المناعة لدي يتقوى بفضلك.",
+    "Incroyable : Mes ongles atteignent le bout de mes doigts.": "مذهل: أظافري تصل إلى أطراف أصابعي.",
+    "Maman, Je me prépare pour la grande sortie, je descends doucement.": "ماما، أنا أستعد للخروج الكبير، أنزل ببطء.",
+    "Sais-tu que... Je me prépare pour la grande sortie, je descends doucement.": "هل تعلمين... أنا أستعد للخروج الكبير، أنزل ببطء.",
+    "Incroyable : Je perds mon duvet (lanugo), ma peau devient toute douce.": "مذهل: أفقد الوبر (الزغب)، تصبح بشرتي ناعمة جدا.",
+    "Maman, j'essaie d'attraper mes pieds.": "ماما، أحاول الإمساك بقدمي.",
+    "Maman, Je perds mon duvet (lanugo), ma peau devient toute douce.": "ماما، أفقد الوبر (الزغب)، تصبح بشرتي ناعمة جدا.",
+    "Devine quoi ? Je suis considéré comme 'à terme' bientôt, je suis prêt !": "احزري ماذا؟ سأعتبر 'مكتمل النمو' قريبا، أنا جاهز!",
+    "Maman, Je suis considéré comme 'à terme' bientôt, je suis prêt !": "ماما، سأعتبر 'مكتمل النمو' قريبا، أنا جاهز!",
+    "Maman, Je m'entraîne à cligner des yeux et à respirer.": "ماما، أتدرب على الرمش والتنفس.",
+    "Sais-tu que... Je m'entraîne à cligner des yeux et à respirer.": "هل تعلمين... أتدرب على الرمش والتنفس.",
+    "Maman, Je suis un peu à l'étroit ici, j'ai hâte de m'étirer.": "ماما، المكان ضيق قليلا هنا، لا أطيق الانتظار لأتمطط.",
+    "Sais-tu que... Je suis un peu à l'étroit ici, j'ai hâte de m'étirer.": "هل تعلمين... المكان ضيق قليلا هنا، أتوق للتمدد.",
+    "Maman, je donne des coups de pied de ninja !": "ماما، أنا أركل كركلات النينجا!",
+    "Il fait tout noir ici, mais c'est douillet.": "المكان مظلم تماما هنا، لكنه مريح.",
+    "Devine quoi ? C'est le grand jour (ou presque) ! J'arrive Maman !": "احزري ماذا؟ إنه اليوم الكبير (أو تقريبا)! أنا قادم يا ماما!",
+    "Sais-tu que... C'est le grand jour (ou presque) ! J'arrive Maman !": "هل تعلمين... إنه اليوم الكبير (أو تقريبا)! أنا قادم يا ماما!"
+};
+
+let missingCount = 0;
+let updatedCount = 0;
+
+data = data.map(item => {
+    const ar = translations[item.message_fr];
+    if (ar) {
+        updatedCount++;
+        return {
+            ...item,
+            message_ar: ar,
+            message_tn: ar // Using traditional Arabic for TN as requested
+        };
+    } else {
+        missingCount++;
+        console.warn(`Missing translation for: "${item.message_fr}"`);
+        return item;
+    }
+});
+
+fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+
+console.log(`Updated ${updatedCount} items. Missing translations for ${missingCount} items.`);

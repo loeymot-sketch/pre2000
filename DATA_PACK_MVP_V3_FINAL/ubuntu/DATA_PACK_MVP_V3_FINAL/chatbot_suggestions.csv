@@ -1,0 +1,26 @@
+suggestion_id,label_fr,label_ar,label_en,topic,linked_article_ids,linked_red_flag_ids
+cs01,J'ai des nausées matinales,لدي غثيان صباحي,,symptomes,a04_nausées_matinales,ne garde rien
+cs02,Je me sens très fatiguée,أشعر بتعب شديد,,symptomes,a01_symptômes_de_grossesse,
+cs03,J'ai des crampes dans les jambes,لدي تشنجات في الساقين,,symptomes,a05_exercice_physique_pendant,
+cs04,Je n'arrive pas à dormir,لا أستطيع النوم,,sommeil,a06_sommeil_pendant_la,
+cs05,Quels aliments éviter ?,ما هي الأطعمة التي يجب تجنبها؟,,nutrition,a02_alimentation_pendant_la,
+cs06,Je saigne un peu,لدي نزيف خفيف,,symptomes,a01_symptômes_de_grossesse,hémorragie
+cs07,Je ne sens plus mon bébé bouger,لم أعد أشعر بحركة طفلي,,mouvements_bebe,a20_mouvements_du_bébé,ne sens plus le bébé
+cs08,J'ai de fortes douleurs au ventre,لدي آلام قوية في البطن,,symptomes,,crampes sévères
+cs09,J'ai de violents maux de tête,لدي صداع عنيف,,symptomes,,céphalée
+cs10,Quand faire la première échographie ?,متى يجب إجراء أول فحص بالموجات فوق الصوتية؟,,examens,a03_examens_médicaux_pendant,
+cs11,Puis-je faire du sport ?,هل يمكنني ممارسة الرياضة؟,,sport,a05_exercice_physique_pendant,
+cs12,Quels sont les signes du travail ?,ما هي علامات المخاض؟,,accouchement,a12_signes_du_travail,
+cs13,J'ai de la fièvre,لدي حمى,,symptomes,,température élevée
+cs14,J'ai des troubles de la vision,لدي اضطرابات في الرؤية,,symptomes,,éclairs lumineux
+cs15,Comment gérer le post-partum ?,كيف أتعامل مع فترة ما بعد الولادة؟,,post_partum,a14_post-partum,pensées suicidaires
+cs16,J'ai des pensées négatives,لدي أفكار سلبية,,emotions,a07_changements_émotionnels_pendant,pensées suicidaires
+cs17,Quels suppléments prendre ?,ما هي المكملات الغذائية التي يجب تناولها؟,,nutrition,a02_alimentation_pendant_la,
+cs18,J'ai des brûlures en urinant,لدي حرقان عند التبول,,symptomes,,cystite
+cs19,Je me sens gonflée,أشعر بالانتفاخ,,symptomes,a01_symptômes_de_grossesse,gonflement visage
+cs20,Puis-je avoir des relations sexuelles ?,هل يمكنني ممارسة الجنس؟,,sexualite,a18_grossesse_et_sexualité,
+cs21,Je suis enceinte de jumeaux,أنا حامل بتوأم,,multiples,a19_grossesses_multiples,
+cs22,J'ai des contractions,لدي تقلصات,,accouchement,a12_signes_du_travail,
+cs23,Comment préparer la valise de maternité ?,كيف أجهز حقيبة الولادة؟,,preparation,a08_liste_dachats_pour,
+cs24,J'ai mal au dos,لدي ألم في الظهر,,symptomes,a05_exercice_physique_pendant,
+cs25,Je veux allaiter,أريد أن أرضع طفلي,,allaitement,a13_allaitement,

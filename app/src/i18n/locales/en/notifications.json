@@ -1,0 +1,239 @@
+{
+    "channelName": "Pregnancy Reminders",
+    "hydration": [
+        {
+            "title": "💧 Hey there!",
+            "body": "How about a little glass of water? 🥰"
+        },
+        {
+            "title": "💧 Gentle break",
+            "body": "A few sips whenever you want 💕"
+        },
+        {
+            "title": "💧 For you",
+            "body": "Take care of yourself, stay hydrated 🌸"
+        },
+        {
+            "title": "💧 Quick reminder",
+            "body": "A glass of water feels good 💙"
+        },
+        {
+            "title": "💧 Moment for you",
+            "body": "Listen to your body, it will guide you ✨"
+        },
+        {
+            "title": "💧 Self-care",
+            "body": "Sip by sip, at your own pace 💦"
+        },
+        {
+            "title": "💧 Softness",
+            "body": "A little gesture for yourself today 💗"
+        },
+        {
+            "title": "💧 Thinking of you",
+            "body": "Remember to hydrate if you can 🌸"
+        }
+    ],
+    "rdv": {
+        "j1": [
+            {
+                "title": "🤰 Appointment tomorrow",
+                "body": "{{eventTitle}} - We are with you 💕"
+            },
+            {
+                "title": "📅 Tomorrow",
+                "body": "{{eventTitle}} - Everything will be fine 🌸"
+            },
+            {
+                "title": "💕 Quick reminder",
+                "body": "{{eventTitle}} tomorrow. Thinking of you!"
+            },
+            {
+                "title": "🌸 Remember",
+                "body": "{{eventTitle}} is scheduled for tomorrow. Gently 💕"
+            }
+        ],
+        "j": [
+            {
+                "title": "🤰 It's today",
+                "body": "{{eventTitle}} - We are with you, gently 💕"
+            },
+            {
+                "title": "💕 D-Day",
+                "body": "{{eventTitle}} - Breathe, you are ready 🌸"
+            },
+            {
+                "title": "✨ Today's Appointment",
+                "body": "{{eventTitle}} - Enjoy this moment ✨"
+            }
+        ],
+        "h2": [
+            {
+                "title": "⏰ Soon",
+                "body": "{{eventTitle}} - Get ready gently 💕"
+            },
+            {
+                "title": "🕐 In 2h",
+                "body": "{{eventTitle}} is coming up. Breathe 🌸"
+            },
+            {
+                "title": "💕 Almost there",
+                "body": "{{eventTitle}} soon. You are supported ✨"
+            }
+        ]
+    },
+    "tasks": [
+        {
+            "title": "✨ Whenever you want",
+            "body": "{{taskTitle}} - At your own pace 💕"
+        },
+        {
+            "title": "📝 Quick reminder",
+            "body": "{{taskTitle}} - One step at a time 🌸"
+        },
+        {
+            "title": "💕 For you",
+            "body": "{{taskTitle}} - Do it when you feel ready"
+        },
+        {
+            "title": "🌟 Softness",
+            "body": "{{taskTitle}} - No pressure ✨"
+        }
+    ],
+    "vitamins": [
+        {
+            "title": "💊 Quick reminder",
+            "body": "Your vitamins are waiting 🌸"
+        },
+        {
+            "title": "💊 For you",
+            "body": "A healthy gesture, at your own pace 💕"
+        },
+        {
+            "title": "💊 Softness",
+            "body": "Take care of yourself today ✨"
+        },
+        {
+            "title": "💊 Thinking of you",
+            "body": "Remember your vitamins if you can 💙"
+        }
+    ],
+    "rest": [
+        {
+            "title": "😴 Gentle break",
+            "body": "Give yourself a moment of rest 💕"
+        },
+        {
+            "title": "🛋️ For you",
+            "body": "Take 5 minutes if you need it ✨"
+        },
+        {
+            "title": "💤 Listen to yourself",
+            "body": "Your body knows what it needs 😊"
+        },
+        {
+            "title": "🌙 Breathe",
+            "body": "A little break does good 💙"
+        }
+    ],
+    "exercise": [
+        {
+            "title": "🚶‍♀️ If you feel like it",
+            "body": "Some fresh air feels good 🌸"
+        },
+        {
+            "title": "💪 At your own pace",
+            "body": "Even 5 minutes count 😊"
+        },
+        {
+            "title": "🌿 Softness",
+            "body": "A gentle walk if you feel up to it 💕"
+        }
+    ],
+    "meal": [
+        {
+            "title": "🍽️ If you're hungry",
+            "body": "Have something gentle 🌸"
+        },
+        {
+            "title": "🥗 For you",
+            "body": "Listen to your body, eat at your own pace 💕"
+        },
+        {
+            "title": "🍎 Little snack?",
+            "body": "If you feel the need ✨"
+        },
+        {
+            "title": "🥐 Softness",
+            "body": "A little treat whenever you want 😊"
+        }
+    ],
+    "babyDaily": [
+        {
+            "title": "👶 Message of the day",
+            "body": "One day at a time, gently 💕"
+        },
+        {
+            "title": "💕 For you",
+            "body": "You're doing your best, that's perfect 🌸"
+        },
+        {
+            "title": "✨ Gentle thought",
+            "body": "Take care of yourself today 💙"
+        },
+        {
+            "title": "🌸 Present moment",
+            "body": "Every day is one more step ✨"
+        },
+        {
+            "title": "💗 Thinking of you",
+            "body": "You are supported on this journey 💕"
+        }
+    ],
+    "wellness": [
+        {
+            "title": "🧘 Moment for you",
+            "body": "Take a moment of calm 💕"
+        },
+        {
+            "title": "📔 Journal",
+            "body": "A few words if you feel like it 🌸"
+        },
+        {
+            "title": "✨ Breathe",
+            "body": "A moment of softness for you ✨"
+        },
+        {
+            "title": "💆 Relaxation",
+            "body": "You deserve this peace 💙"
+        }
+    ],
+    "medical": [
+        {
+            "title": "📊 Quick reminder",
+            "body": "Think about your tracking when you can 💕"
+        },
+        {
+            "title": "🩺 For you",
+            "body": "A healthy gesture, at your own pace 🌸"
+        },
+        {
+            "title": "💙 Tracking",
+            "body": "Think about your daily tracking if you can ✨"
+        }
+    ],
+    "test": {
+        "rdv": "Prenatal visit",
+        "task": "Prepare maternity bag"
+    },
+    "grouped": {
+        "single": "{{name}}, you have a reminder 💕",
+        "multiple": "{{name}}, you have {{count}} reminders 💕"
+    },
+    "encouragements": [
+        "💪 You got this!",
+        "✨ Keep it up!",
+        "💕 You're amazing!",
+        "🌟 Awesome mama!"
+    ]
+}

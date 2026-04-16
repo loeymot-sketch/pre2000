@@ -1,0 +1,839 @@
+import { createLogger } from '../utils/logger';
+const log = createLogger('ProfileScreen');
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Modal } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '../context/AuthContext';
+import { usePregnancy } from '../context/PregnancyContext';
+import { useCurrentWeek } from '../services/useCurrentWeek';
+import { theme } from '../theme';
+import { getShadowStyle } from '../utils/styleUtils';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
+import { addDays, format } from 'date-fns';
+import { useDateLocale } from '../hooks/useDateLocale';
+import { LanguageSelector } from '../components/common/LanguageSelector';
+import { useTranslation } from 'react-i18next';
+import { EmergencyContactsSection } from '../components/profile/EmergencyContactsSection';
+import { openSupportEmail } from '../services/supportService';
+import { getPickerLocale } from '../utils/pickerLocale';
+import { calculatePregnancyWeek, calculateCurrentWeek } from '../utils/pregnancyCalculator';
+
+import { LineChart } from 'react-native-chart-kit';
+import { Ionicons } from '@expo/vector-icons';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+export const ProfileScreen = () => {
+    useScreenAnalytics('ProfileScreen');
+    const { user, logout, resetProfile, updateProfile, deleteAccount } = useAuth();
+    const { profile, setProfile } = usePregnancy();
+    const { currentWeekNumber } = useCurrentWeek();
+    const navigation = useNavigation();
+    const { t, i18n } = useTranslation();
+    const [loading, setLoading] = useState(false);
+
+    // Get date locale using shared hook (handles all languages including tn → arTN)
+    const dateLocale = useDateLocale();
+
+    const [firstName, setFirstName] = useState(profile?.firstName || '');
+    const [lastName, setLastName] = useState(profile?.lastName || '');
+    const [country, setCountry] = useState(profile?.country || 'tunisia');
+    const [lmp, setLmp] = useState(
+        profile?.lmp ? new Date(profile.lmp) : new Date()
+    );
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    // PROFILE-FIX: Physical data for BMI + weight gain tracking
+    const [height, setHeight] = useState(
+        profile?.height ? String(profile.height) : ''
+    );
+    const [prePregnancyWeight, setPrePregnancyWeight] = useState(
+        profile?.prePregnancyWeight ? String(profile.prePregnancyWeight) : ''
+    );
+
+    // Update local state when profile changes
+    useEffect(() => {
+        if (profile) {
+            setFirstName(profile.firstName || '');
+            setLastName(profile.lastName || '');
+            setCountry(profile.country || 'tunisia');
+            if (profile.lmp) {
+                setLmp(new Date(profile.lmp));
+            }
+            // PROFILE-FIX: Sync physical fields from profile
+            if (profile.height) setHeight(String(profile.height));
+            if (profile.prePregnancyWeight) setPrePregnancyWeight(String(profile.prePregnancyWeight));
+        }
+    }, [profile]);
+
+    // Calculate DPA (Due Date) = LMP + 280 days
+    const calculateDPA = (lmpDate: Date): Date => {
+        return addDays(lmpDate, 280);
+    };
+
+    const dpa = calculateDPA(lmp);
+
+    const handleSave = async () => {
+        if (!firstName.trim()) {
+            Alert.alert(t('common.error'), t('profile.errorFirstName'));
+            return;
+        }
+
+        const { isInvalid } = calculatePregnancyWeek(lmp);
+        if (isInvalid) {
+            Alert.alert(
+                t('common.error'),
+                t('profile.errorInvalidDate')
+            );
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const heightNum = parseFloat(height);
+            const weightNum = parseFloat(prePregnancyWeight);
+
+            const profilePayload = {
+                firstName: firstName.trim(),
+                lastName: lastName.trim() || undefined,
+                country,
+                lmp: lmp.toISOString(),
+                dpa: dpa.toISOString(),
+            };
+
+            // 1. Update PregnancyContext (local state + guest AsyncStorage)
+            await setProfile(profilePayload);
+
+            // 2. Sync to AuthContext + Firestore (single write, no duplication)
+            await updateProfile({
+                firstName: firstName.trim(),
+                lastName: lastName.trim() || undefined,
+                country,
+                pregnancyStartDate: lmp.toISOString(),
+                lmp: lmp.toISOString(),
+                dpa: dpa.toISOString(),
+                currentWeek: calculateCurrentWeek(lmp),
+                // PROFILE-FIX: Persist physical data for BMI and weight gain calculations
+                ...(isFinite(heightNum) && heightNum > 0 ? { height: heightNum } : {}),
+                ...(isFinite(weightNum) && weightNum > 0 ? { prePregnancyWeight: weightNum } : {}),
+            });
+
+            Alert.alert(t('common.success'), t('profile.successUpdate'));
+        } catch (error) {
+            Alert.alert(t('common.error'), t('profile.errorUpdate'));
+            log.error('Error updating profile:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        Alert.alert(
+            t('profile.logoutConfirmTitle'),
+            t('profile.logoutConfirmMsg'),
+            [
+                { text: t('common.cancel'), style: 'cancel' },
+                {
+                    text: t('profile.logout'),
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await logout();
+                        } catch (error) {
+                            log.error('Logout error:', error);
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
+    const handleResetProfile = async () => {
+        Alert.alert(
+            t('profile.resetConfirmTitle'),
+            t('profile.resetConfirmMsg'),
+            [
+                { text: t('common.cancel'), style: 'cancel' },
+                {
+                    text: t('profile.reset'),
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            setLoading(true);
+                            await resetProfile();
+                            Alert.alert(
+                                t('profile.resetDoneTitle'),
+                                t('profile.resetDoneMsg'),
+                                [
+                                    {
+                                        text: t('common.ok'),
+                                        onPress: () => {
+                                            // Navigate to AuthChoice
+                                            navigation.reset({
+                                                index: 0,
+                                                routes: [{ name: 'AuthChoice' } as any],
+                                            });
+                                        },
+                                    },
+                                ]
+                            );
+                        } catch (error) {
+                            log.error('Reset profile error:', error);
+                            Alert.alert(t('common.error'), t('profile.errorReset'));
+                        } finally {
+                            setLoading(false);
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
+    const COUNTRIES = [
+        { key: 'tunisia', label: t('common.countries.tunisia') },
+        { key: 'morocco', label: t('common.countries.morocco') },
+        { key: 'algeria', label: t('common.countries.algeria') },
+        { key: 'france', label: t('common.countries.france') },
+        { key: 'belgium', label: t('common.countries.belgium') },
+        { key: 'other', label: t('common.countries.other') },
+    ];
+
+    const renderCountrySelector = () => {
+        return (
+            <View style={styles.countrySelector}>
+                {COUNTRIES.map((c) => (
+                    <TouchableOpacity
+                        key={c.key}
+                        style={[
+                            styles.countryButton,
+                            country === c.key && styles.countryButtonSelected,
+                        ]}
+                        onPress={() => setCountry(c.key)}
+                    >
+                        <Text
+                            style={[
+                                styles.countryButtonText,
+                                country === c.key && styles.countryButtonTextSelected,
+                            ]}
+                        >
+                            {c.label}
+                        </Text>
+                    </TouchableOpacity>
+                ))
+                }
+            </View >
+        );
+    };
+
+    return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+            <ScrollView style={styles.container}>
+                {/* Header with Gradient */}
+                <LinearGradient
+                    colors={[theme.colors.primary, theme.colors.accent]}
+                    style={styles.header}
+                >
+                    <View style={styles.profileCircle}>
+                        <Text style={styles.profileLetter}>
+                            {(typeof firstName === 'string' && firstName.length > 0) ? firstName.charAt(0).toUpperCase() : 'U'}
+                        </Text>
+                    </View>
+                    <Text style={styles.headerTitle}>{firstName || t('profile.title')} {lastName}</Text>
+                    <Text style={[styles.headerSubtitle, { fontWeight: 'bold' }]}>
+                        {t('common.week')} {currentWeekNumber || '—'}
+                    </Text>
+                    <Text style={styles.headerSubtitle}>
+                        {user?.email || t('profile.guestUser')}
+                    </Text>
+                </LinearGradient>
+
+                <View style={styles.content}>
+
+                    {/* Section 1: Mon Compte (Inline Edit) */}
+                    <Text style={styles.sectionTitle}>{t('profile.personalInfo')}</Text>
+                    <View style={styles.card}>
+                        <View style={styles.form}>
+                            <Text style={styles.label}>{t('common.firstName')} *</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={firstName}
+                                onChangeText={setFirstName}
+                                placeholder={t('common.enterFirstName')}
+                            />
+
+                            <Text style={styles.label}>{t('common.lastName')}</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={lastName}
+                                onChangeText={setLastName}
+                                placeholder={t('common.enterLastName')}
+                            />
+
+                            <Text style={styles.label}>{t('common.country')}</Text>
+                            {renderCountrySelector()}
+
+                            {/* PROFILE-FIX: Physical data section */}
+                            <View style={styles.physicalRow}>
+                                <View style={{ flex: 1, marginEnd: 8 }}>
+                                    <Text style={styles.label}>{t('profile.height', 'Taille (cm)')}</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={height}
+                                        onChangeText={setHeight}
+                                        placeholder="ex: 165"
+                                        keyboardType="numeric"
+                                        maxLength={3}
+                                    />
+                                </View>
+                                <View style={{ flex: 1, marginStart: 8 }}>
+                                    <Text style={styles.label}>{t('profile.prePregnancyWeight', 'Poids avant (kg)')}</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={prePregnancyWeight}
+                                        onChangeText={setPrePregnancyWeight}
+                                        placeholder="ex: 60"
+                                        keyboardType="numeric"
+                                        maxLength={5}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={styles.dateRow}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={styles.label}>{t('profile.lmpLabel')}</Text>
+                                    <Text style={styles.dateHint}>{t('profile.lmpHint')}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    style={styles.dateButton}
+                                    onPress={() => setShowDatePicker(true)}
+                                >
+                                    <Text style={styles.dateButtonText}>
+                                        {format(lmp, 'dd MMM yyyy', { locale: dateLocale })}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    value={lmp}
+                                    mode="date"
+                                    display="spinner"
+                                    onChange={(event, selectedDate) => {
+                                        setShowDatePicker(false);
+                                        if (selectedDate) {
+                                            setLmp(selectedDate);
+                                        }
+                                    }}
+                                    maximumDate={new Date()}
+                                    locale={getPickerLocale(i18n.language)}
+                                />
+                            )}
+
+                            <View style={styles.separator} />
+
+                            <View style={styles.dpaContainer}>
+                                <Text style={styles.label}>{t('profile.dpaLabel')}</Text>
+                                <Text style={styles.dpaText}>
+                                    {format(dpa, 'dd MMMM yyyy', { locale: dateLocale })}
+                                </Text>
+                                <Text style={styles.dpaSubtext}>{t('profile.dpaSubtext')}</Text>
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.saveButton, loading && styles.saveButtonDisabled]}
+                                onPress={handleSave}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <ActivityIndicator color="white" />
+                                ) : (
+                                    <Text style={styles.saveButtonText}>{t('profile.save')}</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* Section 2: Tableaux de bord */}
+                    <Text style={[styles.sectionTitle, { marginTop: 24 }]}>{t('common.dashboard')}</Text>
+                    <View style={styles.menuSection}>
+                        <TouchableOpacity style={[styles.menuRow, { borderBottomWidth: 0 }]} onPress={() => navigation.navigate('HealthDashboard')}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="heart-outline" size={24} color="#C2185B" style={styles.menuIcon} />
+                                <Text style={styles.menuLabel}>{t('profile.health')}</Text>
+                            </View>
+                            <Text style={styles.menuArrow}>›</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Section 3: Préférences */}
+                    <Text style={[styles.sectionTitle, { marginTop: 24 }]}>{t('common.preferences')}</Text>
+                    <View style={styles.menuSection}>
+                        <View style={styles.menuRow}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="globe-outline" size={24} color="#1976D2" style={styles.menuIcon} />
+                                <Text style={styles.menuLabel}>{t('profile.languageSection')}</Text>
+                            </View>
+                            <LanguageSelector isCompact={true} />
+                        </View>
+                        <TouchableOpacity style={[styles.menuRow, { borderBottomWidth: 0 }]} onPress={() => navigation.navigate('Settings')}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="notifications-outline" size={24} color="#F57C00" style={styles.menuIcon} />
+                                <Text style={styles.menuLabel}>{t('profile.notifications')}</Text>
+                            </View>
+                            <Text style={styles.menuArrow}>›</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Section 4: Légal & Support */}
+                    <Text style={[styles.sectionTitle, { marginTop: 24 }]}>{t('common.legal')}</Text>
+                    <View style={styles.menuSection}>
+                        <TouchableOpacity style={styles.menuRow} onPress={() => navigation.navigate('PrivacyPolicy')}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="shield-checkmark-outline" size={24} color="#388E3C" style={styles.menuIcon} />
+                                <Text style={styles.menuLabel}>{t('common.privacyPolicy')}</Text>
+                            </View>
+                            <Text style={styles.menuArrow}>›</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.menuRow} onPress={() => openSupportEmail(t)}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="headset-outline" size={24} color="#7B1FA2" style={styles.menuIcon} />
+                                <Text style={styles.menuLabel}>{t('support.reportProblem')}</Text>
+                            </View>
+                            <Text style={styles.menuArrow}>›</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Section 5: Zone de danger -> Sécurité */}
+                    <Text style={[styles.sectionTitle, { marginTop: 24, color: theme.colors.error }]}>{t('common.dangerZone')}</Text>
+                    <View style={styles.menuSection}>
+                        <TouchableOpacity style={styles.menuRow} onPress={handleLogout}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="log-out-outline" size={24} color="#D32F2F" style={styles.menuIcon} />
+                                <Text style={[styles.menuLabel, { color: theme.colors.error }]}>{t('profile.logout')}</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.menuRow} onPress={handleResetProfile}>
+                            <View style={styles.menuRowLeft}>
+                                <Ionicons name="refresh-circle-outline" size={24} color="#E65100" style={styles.menuIcon} />
+                                <Text style={[styles.menuLabel, { color: '#E65100' }]}>{t('profile.reset')}</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        {!user?.isGuest && (
+                            <TouchableOpacity
+                                style={[styles.menuRow, { borderBottomWidth: 0 }]}
+                                onPress={async () => {
+                                    Alert.alert(
+                                        t('profile.deleteAccountTitle'),
+                                        t('profile.deleteAccountMsg'),
+                                        [
+                                            { text: t('common.cancel'), style: 'cancel' },
+                                            {
+                                                text: t('common.delete'),
+                                                style: 'destructive',
+                                                onPress: async () => {
+                                                    try {
+                                                        setLoading(true);
+                                                        await deleteAccount();
+                                                        navigation.reset({
+                                                            index: 0,
+                                                            routes: [{ name: 'AuthChoice' } as any],
+                                                        });
+                                                    } catch (error) {
+                                                        log.error('Delete account error:', error);
+                                                        Alert.alert(t('common.error'), t('profile.deleteAccountError'));
+                                                    } finally {
+                                                        setLoading(false);
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    );
+                                }}
+                            >
+                                <View style={styles.menuRowLeft}>
+                                    <Ionicons name="trash-outline" size={24} color="#B00020" style={styles.menuIcon} />
+                                    <Text style={[styles.menuLabel, { color: theme.colors.error }]}>{t('profile.deleteAccount')}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+
+                    {/* User Type Badge */}
+                    <View style={styles.userTypeBadge}>
+                        <Text style={styles.userTypeText}>
+                            {user?.isGuest ? t('profile.guestMode') : t('profile.secureAccount')}
+                        </Text>
+                        <Text style={styles.userTypeSubtext}>
+                            {user?.isGuest
+                                ? t('profile.guestData')
+                                : t('profile.cloudData')}
+                        </Text>
+                    </View>
+
+                    {/* Emergency Contacts */}
+                    <EmergencyContactsSection />
+
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: theme.colors.surface,
+    },
+    header: {
+        paddingTop: 60,
+        paddingBottom: 32,
+        alignItems: 'center',
+    },
+    profileCircle: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 4,
+        borderColor: 'rgba(255, 255, 255, 0.5)',
+        marginBottom: 16,
+    },
+    profileLetter: {
+        fontSize: 48,
+        fontWeight: 'bold',
+        color: theme.colors.white,
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: theme.colors.white,
+        marginBottom: 4,
+    },
+    headerSubtitle: {
+        fontSize: 14,
+        color: 'rgba(255, 255, 255, 0.9)',
+    },
+    content: {
+        padding: 16,
+        paddingBottom: 32,
+    },
+    card: {
+        backgroundColor: theme.colors.white,
+        borderRadius: theme.borderRadius.l,
+        padding: 20,
+        marginBottom: 16,
+        ...getShadowStyle(3, '#000', 0.1, 6, { width: 0, height: 2 }),
+    },
+    pregnancyCard: {
+        backgroundColor: '#FFF0F7',
+        borderWidth: 1,
+        borderColor: '#FFD6E8',
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    cardTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginBottom: 16,
+    },
+    editButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: theme.borderRadius.m,
+        backgroundColor: theme.colors.primary,
+    },
+    editButtonText: {
+        color: theme.colors.white,
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    infoRow: {
+        flexDirection: 'row',
+        gap: 16,
+    },
+    infoItem: {
+        flex: 1,
+        backgroundColor: 'rgba(255, 107, 157, 0.1)',
+        padding: 16,
+        borderRadius: theme.borderRadius.m,
+        alignItems: 'center',
+    },
+    infoLabel: {
+        fontSize: 12,
+        color: theme.colors.textLight,
+        marginBottom: 8,
+        fontWeight: '600',
+        textTransform: 'uppercase',
+    },
+    infoValue: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: theme.colors.accent,
+    },
+    form: {
+        gap: 12,
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: theme.colors.text,
+        marginBottom: 4,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: theme.colors.disabled,
+        borderRadius: theme.borderRadius.m,
+        padding: 14,
+        fontSize: 16,
+        backgroundColor: theme.colors.white,
+    },
+    inputDisabled: {
+        backgroundColor: theme.colors.surface,
+        color: theme.colors.textSecondary,
+    },
+    countrySelector: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    countryButton: {
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: theme.borderRadius.xl,
+        borderWidth: 1,
+        borderColor: theme.colors.disabled,
+        backgroundColor: theme.colors.white,
+    },
+    countryButtonSelected: {
+        backgroundColor: theme.colors.primary,
+        borderColor: theme.colors.primary,
+    },
+    countryButtonText: {
+        fontSize: 14,
+        color: theme.colors.textSecondary,
+        fontWeight: '500',
+    },
+    countryButtonTextSelected: {
+        color: theme.colors.white,
+        fontWeight: '600',
+    },
+    dateRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    physicalRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+    },
+    dateHint: {
+        fontSize: 12,
+        color: theme.colors.textLight,
+        marginTop: 2,
+    },
+    dateButton: {
+        backgroundColor: '#E3F2FD',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: theme.borderRadius.m,
+    },
+    dateButtonText: {
+        fontSize: 14,
+        color: theme.colors.info,
+        fontWeight: '600',
+    },
+    dateButtonTextDisabled: {
+        color: theme.colors.textSecondary,
+    },
+    separator: {
+        height: 1,
+        backgroundColor: theme.colors.borderLight,
+        marginVertical: 8,
+    },
+    dpaContainer: {
+        backgroundColor: '#FFF8E1',
+        padding: 16,
+        borderRadius: theme.borderRadius.m,
+        borderWidth: 1,
+        borderColor: '#FFE082',
+    },
+    dpaText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#F57C00',
+        marginTop: 8,
+    },
+    dpaSubtext: {
+        fontSize: 12,
+        color: theme.colors.textLight,
+        marginTop: 4,
+        fontStyle: 'italic',
+    },
+    actions: {
+        flexDirection: 'row',
+        gap: 12,
+        marginBottom: 16,
+    },
+    actionButton: {
+        flex: 1,
+        paddingVertical: 14,
+        borderRadius: theme.borderRadius.m,
+        alignItems: 'center',
+    },
+    cancelButton: {
+        backgroundColor: theme.colors.surface,
+    },
+    cancelButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
+    },
+    saveButton: {
+        backgroundColor: theme.colors.primary,
+        paddingVertical: 14,
+        borderRadius: theme.borderRadius.m,
+        alignItems: 'center',
+        marginTop: 16,
+    },
+    saveButtonDisabled: {
+        opacity: 0.7,
+        backgroundColor: '#ccc',
+    },
+    saveButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: theme.colors.white,
+    },
+    section: {
+        marginBottom: 24,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginBottom: 12,
+        marginStart: 4,
+    },
+    languageRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    logoutButton: {
+        backgroundColor: '#FFEBEE',
+        paddingVertical: 14,
+        borderRadius: theme.borderRadius.m,
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    logoutButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: theme.colors.error,
+    },
+    resetButton: {
+        backgroundColor: '#FFF3E0',
+        paddingVertical: 14,
+        borderRadius: theme.borderRadius.m,
+        alignItems: 'center',
+        marginBottom: 16,
+        borderWidth: 2,
+        borderColor: theme.colors.warning,
+    },
+    resetButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#E65100',
+    },
+    userTypeBadge: {
+        backgroundColor: '#E3F2FD',
+        padding: 16,
+        borderRadius: theme.borderRadius.m,
+        alignItems: 'center',
+        marginTop: 16,
+    },
+    userTypeText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: theme.colors.info,
+        marginBottom: 4,
+    },
+    userTypeSubtext: {
+        fontSize: 12,
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
+    },
+    menuSection: {
+        marginTop: 24,
+        backgroundColor: '#FAFAFA',
+        borderRadius: theme.borderRadius.l,
+        borderWidth: 1,
+        borderColor: '#EFEFEF',
+        overflow: 'hidden',
+    },
+    menuRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#EFEFEF',
+        backgroundColor: theme.colors.white,
+    },
+    menuRowLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    menuIcon: {
+        fontSize: 20,
+        marginEnd: 12,
+        width: 24,
+        textAlign: 'center',
+    },
+    menuLabel: {
+        fontSize: 16,
+        color: theme.colors.text,
+        fontWeight: '500',
+    },
+    menuArrow: {
+        fontSize: 20,
+        color: '#CCC',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        paddingTop: Platform.OS === 'ios' ? 24 : 16,
+        backgroundColor: theme.colors.white,
+        borderBottomWidth: 1,
+        borderBottomColor: '#EFEFEF',
+    },
+    modalHeaderButton: {
+        padding: 8,
+    },
+    modalHeaderText: {
+        fontSize: 16,
+        color: theme.colors.primary,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+    },
+});
+

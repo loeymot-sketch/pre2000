@@ -1,0 +1,54 @@
+import { Linking, Alert, Platform } from 'react-native';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+import * as Clipboard from 'expo-clipboard';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('SupportService');
+
+const SUPPORT_EMAIL = 'support@mama-bebe.app'; // Replace with actual support email
+
+export const openSupportEmail = async (t: (key: string, options?: any) => string) => {
+    try {
+        const subject = `[${t('common.appName')}] ${t('support.reportProblemSubject')}`;
+        const body = `
+${t('support.emailBodyIntro')}
+
+--------------------------------
+${t('support.deviceInfo')}:
+App Version: ${Constants.expoConfig?.version || '1.0.0'}
+Device: ${Device.modelName || 'Unknown'}
+OS: ${Platform.OS} ${Platform.Version}
+--------------------------------
+`;
+
+        const url = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        try {
+            const canOpen = await Linking.canOpenURL(`mailto:${SUPPORT_EMAIL}`);
+            if (canOpen) {
+                await Linking.openURL(url);
+            } else {
+                // Fallback for Simulator or devices without default mail app
+                throw new Error('No mail client');
+            }
+        } catch (e) {
+            log.warn('No mail client available, copying to clipboard instead.');
+            try {
+                await Clipboard.setStringAsync(SUPPORT_EMAIL);
+                Alert.alert(
+                    t('support.reportProblem', 'Signaler un problème'),
+                    `Impossible d'ouvrir l'application Mail.\n\nL'adresse ${SUPPORT_EMAIL} a été copiée dans votre presse-papier.`
+                );
+            } catch (clipboardError) {
+                Alert.alert(
+                    t('common.error', 'Erreur'),
+                    `Veuillez nous écrire à : ${SUPPORT_EMAIL}`
+                );
+            }
+        }
+    } catch (error) {
+        log.error('Unexpected error opening support email:', error);
+        Alert.alert(t('common.error'), t('support.genericError'));
+    }
+};

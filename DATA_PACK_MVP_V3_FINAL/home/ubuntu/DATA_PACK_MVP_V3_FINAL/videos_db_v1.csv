@@ -1,0 +1,11 @@
+video_id,week_min,week_max,title_fr,description_fr,youtube_search_query_fr,youtube_url,title_ar,title_en,description_ar,description_en
+v01_semaine01_intro,1,4,Félicitations : Le début de votre grossesse,Une introduction aux premières semaines et aux premiers symptômes.,début grossesse premiers symptômes,,,,,
+v02_semaine05_coeur,5,8,Le cœur de bébé commence à battre,Explication du développement cardiaque précoce.,développement cardiaque embryon,,,,,
+v03_semaine12_echographie,11,14,L'échographie du premier trimestre,Ce que vous allez voir et les mesures clés.,échographie premier trimestre explication,,,,,
+v04_semaine20_mouvements,18,22,Sentir bébé bouger : le quickening,Comment reconnaître les premiers mouvements fœtaux.,premiers mouvements bébé grossesse,,,,,
+v05_semaine24_sommeil,20,28,Bien dormir pendant la grossesse,Conseils de position et astuces pour l'insomnie.,sommeil grossesse position,,,,,
+v06_semaine30_valise,30,36,Préparer la valise de maternité,Liste des essentiels pour la maman et le bébé.,valise maternité liste complète,,,,,
+v07_semaine37_travail,37,40,Reconnaître les signes du travail,Quand partir à la maternité ?,signes du travail accouchement,,,,,
+v08_nutrition_generale,1,40,Les bases de la nutrition pendant la grossesse,Aliments à privilégier et à éviter.,nutrition grossesse complète,,,,,
+v09_redflags_urgences,1,40,Les urgences à ne pas négliger,Quand et qui appeler en cas de doute.,urgences grossesse red flags,,,,,
+v10_postpartum_intro,40,40,Introduction au post-partum,Ce qui vous attend après la naissance.,post-partum introduction,,,,,

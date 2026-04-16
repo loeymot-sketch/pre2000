@@ -1,0 +1,348 @@
+import * as Print from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+import { format } from 'date-fns';
+import { Locale } from 'date-fns';
+import { TFunction } from 'i18next';
+import { Profile } from '../context/PregnancyContext';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('PDFExportService');
+
+interface JournalData {
+    profile: Profile;
+    weightHistory: { date: string; weight: number }[];
+    appointments: { date: string; title: string; doctor?: string; notes?: string }[];
+    notes: { date: string; content: string }[];
+}
+
+const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode: string = 'fr') => {
+    const { profile, weightHistory, appointments, notes } = data;
+    const today = format(new Date(), 'dd MMMM yyyy', { locale });
+    const displayName = profile.firstName || t('common.futureMom');
+    const isRTL = langCode === 'ar' || langCode === 'tn';
+
+    // Sort data
+    const sortedWeight = [...weightHistory].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedApps = [...appointments].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedNotes = notes ? [...notes].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) : [];
+
+    return `
+    <!DOCTYPE html>
+    <html lang="${langCode}" dir="${isRTL ? 'rtl' : 'ltr'}">
+    <head>
+        <meta charset="utf-8">
+        <title>${t('pdf.title')} - ${displayName}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            /* Google Fonts with system fallback for offline */
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
+
+            :root {
+                --primary: #FF6B9D;
+                --primary-dark: #C2185B;
+                --primary-light: #FFC1E3;
+                --bg: #FFF5F8;
+                --text: #4E342E;
+                --text-light: #8D6E63;
+                --white: #FFFFFF;
+                --shadow: 0 4px 12px rgba(255, 107, 157, 0.15);
+            }
+
+            * { box-sizing: border-box; }
+
+            body {
+                font-family: 'Outfit', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+                color: var(--text);
+                background-color: #FFFFFF;
+                margin: 0;
+                padding: 0;
+                line-height: 1.6;
+            }
+
+            /* Header Section with Gradient */
+            .header-banner {
+                background: linear-gradient(135deg, #FF6B9D 0%, #C2185B 100%);
+                color: white;
+                padding: 40px 40px 60px;
+                border-bottom-left-radius: 40px;
+                border-bottom-right-radius: 40px;
+                text-align: center;
+                margin-bottom: -30px; /* Overlap effect */
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+
+            .app-brand {
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                opacity: 0.8;
+                margin-bottom: 10px;
+            }
+
+            h1 {
+                font-size: 32px;
+                margin: 0;
+                font-weight: 700;
+            }
+
+            .subtitle {
+                font-size: 16px;
+                opacity: 0.95;
+                margin-top: 8px;
+            }
+
+            /* Main Content Container */
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 0 20px 40px;
+            }
+
+            /* Generic Card Style */
+            .card {
+                background: white;
+                border-radius: 16px;
+                padding: 24px;
+                margin-bottom: 24px;
+                box-shadow: var(--shadow);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
+
+            /* Section Headers within Content */
+            h2 {
+                color: var(--primary-dark);
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                border-bottom: 2px solid var(--bg);
+                padding-bottom: 8px;
+            }
+
+            h2 .icon { font-size: 24px; }
+
+            /* Profile Info Grid */
+            .profile-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .profile-item {
+                background: var(--bg);
+                padding: 12px 16px;
+                border-radius: 12px;
+            }
+            .profile-label {
+                font-size: 11px;
+                text-transform: uppercase;
+                color: var(--text-light);
+                font-weight: 600;
+                letter-spacing: 0.5px;
+            }
+            .profile-value {
+                font-size: 16px;
+                font-weight: 500;
+                color: var(--primary-dark);
+                margin-top: 4px;
+            }
+
+            /* Tables */
+            table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-top: 10px;
+                font-size: 14px;
+            }
+            th {
+                background: var(--bg);
+                color: var(--primary-dark);
+                font-weight: 600;
+                text-align: left;
+                padding: 12px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+            }
+            td {
+                padding: 12px;
+                border-bottom: 1px solid #F0F0F0;
+                color: var(--text);
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            tr:nth-child(even) td {
+                background: #FFFCFD;
+            }
+            
+            /* Notes Section */
+            .note-item {
+                margin-bottom: 16px;
+                padding-bottom: 16px;
+                border-bottom: 1px dashed var(--primary-light);
+            }
+            .note-date {
+                font-size: 12px;
+                color: var(--primary);
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            .note-content {
+                font-size: 14px;
+                color: var(--text);
+                background: #FFFEF0; /* Post-it feel */
+                padding: 10px;
+                border-radius: 8px;
+                border-left: 3px solid #FFD54F;
+            }
+
+            /* Footer */
+            .footer {
+                text-align: center;
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid #F0F0F0;
+                color: var(--text-light);
+                font-size: 12px;
+            }
+            .heart { color: var(--primary); }
+
+            /* Empty States */
+            .empty-state {
+                font-style: italic;
+                color: var(--text-light);
+                text-align: center;
+                padding: 20px;
+                background: #F9F9F9;
+                border-radius: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header-banner">
+            <div class="app-brand">Mama & Bébé</div>
+            <h1>${t('pdf.title')}</h1>
+            <div class="subtitle">${t('pdf.generated', { date: today })} • ${displayName}</div>
+        </div>
+
+        <div class="container">
+            <!-- Profile Card -->
+            <div class="card" style="margin-top: 0; position: relative; z-index: 10;">
+                <h2><span class="icon">🤰</span> ${t('pdf.profile')}</h2>
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <div class="profile-label">${t('pdf.name')}</div>
+                        <div class="profile-value">${profile.firstName || '-'} ${profile.lastName || ''}</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">${t('pdf.country')}</div>
+                        <div class="profile-value">${profile.country === 'tunisia' ? t('common.countries.tunisia') : profile.country || '-'}</div>
+                    </div>
+                    ${profile.lmp ? `
+                    <div class="profile-item">
+                        <div class="profile-label">${t('pdf.lmp')}</div>
+                        <div class="profile-value">${format(new Date(profile.lmp), 'dd MMM yyyy', { locale })}</div>
+                    </div>` : ''}
+                    ${profile.dpa ? `
+                    <div class="profile-item">
+                        <div class="profile-label">${t('pdf.dpa')}</div>
+                        <div class="profile-value">${format(new Date(profile.dpa), 'dd MMM yyyy', { locale })}</div>
+                    </div>` : ''}
+                </div>
+            </div>
+
+            <!-- Weight Section -->
+            <div class="card">
+                <h2><span class="icon">⚖️</span> ${t('pdf.weightHistory')}</h2>
+                ${sortedWeight.length > 0 ? `
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="40%">${t('pdf.date')}</th>
+                            <th width="60%">${t('pdf.weight')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedWeight.map(w => `
+                        <tr>
+                            <td>${format(new Date(w.date), 'dd MMMM yyyy', { locale })}</td>
+                            <td><strong>${w.weight} kg</strong></td>
+                        </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ` : `<div class="empty-state">${t('pdf.emptyWeight')}</div>`}
+            </div>
+
+            <!-- Appointments Section -->
+            <div class="card">
+                <h2><span class="icon">📅</span> ${t('pdf.appointments')}</h2>
+                ${sortedApps.length > 0 ? `
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="30%">${t('pdf.date')}</th>
+                            <th width="30%">${t('pdf.apptTitle')}</th>
+                            <th width="40%">${t('pdf.notes')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedApps.map(a => `
+                        <tr>
+                            <td>${format(new Date(a.date), 'dd/MM/yyyy HH:mm')}</td>
+                            <td><span style="color: var(--primary-dark); font-weight: 500;">${a.title}</span></td>
+                            <td style="font-size: 13px; color: #666;">${a.notes || '-'}</td>
+                        </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ` : `<div class="empty-state">${t('pdf.emptyAppts')}</div>`}
+            </div>
+
+            <!-- Notes Section (Optional) -->
+            ${sortedNotes.length > 0 ? `
+            <div class="card">
+                <h2><span class="icon">📝</span> ${t('pdf.personalNotes')}</h2>
+                ${sortedNotes.map(n => `
+                <div class="note-item">
+                    <div class="note-date">${format(new Date(n.date), 'dd MMMM yyyy HH:mm', { locale })}</div>
+                    <div class="note-content">${n.content}</div>
+                </div>
+                `).join('')}
+            </div>
+            ` : ''}
+
+            <div class="footer">
+                ${t('pdf.footer')}<br>
+                ${t('pdf.care')} <span class="heart">❤️</span>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+};
+
+export const generateAndSharePDF = async (data: JournalData, t: TFunction, locale: Locale, fileName: string = 'Journal_Grossesse.pdf', langCode: string = 'fr') => {
+    try {
+        log.info('Generating PDF with premium design...');
+        const html = generateHTML(data, t, locale, langCode);
+        const { uri } = await Print.printToFileAsync({
+            html,
+            base64: false
+        });
+
+        log.info('PDF generated at:', uri);
+
+        if (await shareAsync) {
+            await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf', dialogTitle: fileName });
+        } else {
+            log.warn('Sharing is not available on this platform');
+        }
+
+    } catch (error) {
+        log.error('Error generating PDF:', error);
+        throw error;
+    }
+};

@@ -1,0 +1,257 @@
+{
+    "corrections": [
+        {
+            "week": 1,
+            "emoji": "🌱",
+            "label_fr": "Microscopique",
+            "note": "OK - pas de comparaison"
+        },
+        {
+            "week": 2,
+            "emoji": "🌱",
+            "label_fr": "Microscopique",
+            "note": "OK"
+        },
+        {
+            "week": 3,
+            "emoji": "🌱",
+            "label_fr": "Microscopique",
+            "note": "OK"
+        },
+        {
+            "week": 4,
+            "emoji": "🌰",
+            "label_fr": "Graine de pavot (1 mm)",
+            "note": "🌱→🌰"
+        },
+        {
+            "week": 5,
+            "emoji": "🌾",
+            "label_fr": "Graine de sésame (2 mm)",
+            "note": "🫘→🌾"
+        },
+        {
+            "week": 6,
+            "emoji": "🟤",
+            "label_fr": "Lentille (4 mm)",
+            "note": "🫘→🟤 (cercle marron pour lentille)"
+        },
+        {
+            "week": 7,
+            "emoji": "🫐",
+            "label_fr": "Myrtille (8 mm)",
+            "note": "🫘→🫐"
+        },
+        {
+            "week": 8,
+            "emoji": "🍇",
+            "label_fr": "Framboise (1,6 cm)",
+            "note": "🫘→🍇"
+        },
+        {
+            "week": 9,
+            "emoji": "🫒",
+            "label_fr": "Olive (2,3 cm)",
+            "note": "🍋→🫒"
+        },
+        {
+            "week": 10,
+            "emoji": "🍑",
+            "label_fr": "Prune (3,1 cm)",
+            "note": "🍋→🍑"
+        },
+        {
+            "week": 11,
+            "emoji": "🍇",
+            "label_fr": "Figue (4,1 cm)",
+            "note": "🍋→🍇 (pas d'emoji figue parfait)"
+        },
+        {
+            "week": 12,
+            "emoji": "🍋",
+            "label_fr": "Citron vert (5,4 cm)",
+            "note": "OK"
+        },
+        {
+            "week": 13,
+            "emoji": "🍑",
+            "label_fr": "Pêche (7,4 cm)",
+            "note": "🥑→🍑"
+        },
+        {
+            "week": 14,
+            "emoji": "🍋",
+            "label_fr": "Citron (8,7 cm)",
+            "note": "🥑→🍋"
+        },
+        {
+            "week": 15,
+            "emoji": "🍎",
+            "label_fr": "Pomme (10,1 cm)",
+            "note": "🥑→🍎"
+        },
+        {
+            "week": 16,
+            "emoji": "🥑",
+            "label_fr": "Avocat (16 cm)",
+            "note": "OK"
+        },
+        {
+            "week": 17,
+            "emoji": "🍐",
+            "label_fr": "Poire (13 cm)",
+            "note": "OK"
+        },
+        {
+            "week": 18,
+            "emoji": "🫑",
+            "label_fr": "Poivron (14,2 cm)",
+            "note": "🍐→🫑"
+        },
+        {
+            "week": 19,
+            "emoji": "🥭",
+            "label_fr": "Mangue (15,3 cm)",
+            "note": "🍐→🥭"
+        },
+        {
+            "week": 20,
+            "emoji": "🍌",
+            "label_fr": "Banane (16,4 cm)",
+            "note": "🍐→🍌"
+        },
+        {
+            "week": 21,
+            "emoji": "🥕",
+            "label_fr": "Carotte (26,7 cm)",
+            "note": "🥭→🥕"
+        },
+        {
+            "week": 22,
+            "emoji": "🍈",
+            "label_fr": "Papaye (27,8 cm)",
+            "note": "🥭→🍈"
+        },
+        {
+            "week": 23,
+            "emoji": "🍆",
+            "label_fr": "Aubergine (28,9 cm)",
+            "note": "🥭→🍆"
+        },
+        {
+            "week": 24,
+            "emoji": "🌽",
+            "label_fr": "Maïs (30 cm)",
+            "note": "🥭→🌽"
+        },
+        {
+            "week": 25,
+            "emoji": "🥦",
+            "label_fr": "Chou-fleur (34,6 cm)",
+            "note": "🥥→🥦"
+        },
+        {
+            "week": 26,
+            "emoji": "🥬",
+            "label_fr": "Chou (35,6 cm)",
+            "note": "🥥→🥬"
+        },
+        {
+            "week": 27,
+            "emoji": "🥬",
+            "label_fr": "Chou-rave (36,6 cm)",
+            "note": "🥥→🥬"
+        },
+        {
+            "week": 28,
+            "emoji": "🍆",
+            "label_fr": "Aubergine (37,6 cm)",
+            "note": "🥥→🍆"
+        },
+        {
+            "week": 29,
+            "emoji": "🎃",
+            "label_fr": "Butternut (38,6 cm)",
+            "note": "🍉→🎃"
+        },
+        {
+            "week": 30,
+            "emoji": "🥬",
+            "label_fr": "Chou (39,9 cm)",
+            "note": "🍉→🥬"
+        },
+        {
+            "week": 31,
+            "emoji": "🥥",
+            "label_fr": "Noix de coco (41,1 cm)",
+            "note": "🍉→🥥"
+        },
+        {
+            "week": 32,
+            "emoji": "🥬",
+            "label_fr": "Chou frisé (42,4 cm)",
+            "note": "🍉→🥬"
+        },
+        {
+            "week": 33,
+            "emoji": "🍍",
+            "label_fr": "Ananas (43,7 cm)",
+            "note": "🎃→🍍"
+        },
+        {
+            "week": 34,
+            "emoji": "🍈",
+            "label_fr": "Melon (45 cm)",
+            "note": "🎃→🍈"
+        },
+        {
+            "week": 35,
+            "emoji": "🍈",
+            "label_fr": "Melon miel (46,2 cm)",
+            "note": "🎃→🍈"
+        },
+        {
+            "week": 36,
+            "emoji": "🥬",
+            "label_fr": "Chou romaine (47,4 cm)",
+            "note": "🎃→🥬"
+        },
+        {
+            "week": 37,
+            "emoji": "🥬",
+            "label_fr": "Céleri (48,6 cm)",
+            "note": "👶→🥬"
+        },
+        {
+            "week": 38,
+            "emoji": "🎃",
+            "label_fr": "Citrouille (49,8 cm)",
+            "note": "👶→🎃"
+        },
+        {
+            "week": 39,
+            "emoji": "🍉",
+            "label_fr": "Pastèque (50,7 cm)",
+            "note": "👶→🍉"
+        },
+        {
+            "week": 40,
+            "emoji": "🍉",
+            "label_fr": "Pastèque (51,2 cm)",
+            "note": "OK"
+        }
+    ],
+    "summary": {
+        "total_corrections": 32,
+        "weeks_ok": [
+            1,
+            2,
+            3,
+            12,
+            16,
+            17,
+            40
+        ],
+        "description": "La plupart des semaines avaient un emoji groupé par 'phase' qui ne correspondait pas au fruit/légume de comparaison. Cette liste corrige chaque emoji pour correspondre exactement au texte."
+    }
+}

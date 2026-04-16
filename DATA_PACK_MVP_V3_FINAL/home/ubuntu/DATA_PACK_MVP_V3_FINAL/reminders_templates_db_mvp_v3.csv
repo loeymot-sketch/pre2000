@@ -1,0 +1,21 @@
+reminder_id,title_fr,description_fr,category,week_min,week_max,sources,title_ar,title_en,description_ar,description_en,default_times_per_day,suggested_hours,can_user_customize,priority
+r01_hydratation,Hydratation,Buvez au moins 1.5L d'eau par jour. L'eau est essentielle pour le volume sanguin et la prévention des infections urinaires.,nutrition,1,40,OMS,,,,,3,"[""09:00"", ""13:00"", ""17:00""]",true,medium
+r02_marche,Marche quotidienne,Faites une marche de 30 minutes chaque jour. Cela améliore la circulation et l'humeur.,activity,1,40,ACOG,,,,,1,"[""10:00"", ""16:00""]",true,medium
+r03_sommeil,Qualité du sommeil,Visez 8 à 9 heures de sommeil par nuit. Le repos est crucial pour la croissance du bébé.,self_care,1,40,NHS,,,,,1,"[""10:00""]",true,low
+r04_acide_folique,Acide Folique,N'oubliez pas votre supplément d'acide folique (Vitamine B9) pour prévenir les anomalies du tube neural.,medication,1,13,HAS,,,,,1,"[""09:00""]",true,high
+r05_vitamine_d,Vitamine D,"Prenez votre supplément de Vitamine D, surtout si vous avez peu d'exposition au soleil.",medication,1,40,HAS,,,,,1,"[""09:00""]",true,low
+r06_calcium,Apport en Calcium,"Assurez-vous d'un apport suffisant en calcium (produits laitiers, légumes verts) pour les os du bébé.",nutrition,1,40,OMS,,,,,2,"[""10:00""]",true,medium
+r07_fer,Aliments riches en Fer,"Consommez des aliments riches en fer (viande rouge, lentilles, épinards) pour prévenir l'anémie.",nutrition,14,40,HAS,,,,,2,"[""09:00""]",true,medium
+r08_perinee_kegel,Exercices de Kegel,Pratiquez 3 séries d'exercices de Kegel par jour pour renforcer votre périnée.,activity,1,40,ACOG,,,,,3,"[""10:00"", ""14:00"", ""18:00""]",true,low
+r09_posture,Posture,Évitez de cambrer le dos. Tenez-vous droite pour soulager les douleurs lombaires.,self_care,14,40,NHS,,,,,5,"[""10:00""]",true,low
+r10_etirements,Étirements doux,Faites des étirements doux pour les jambes et le dos avant de vous coucher.,activity,14,40,NHS,,,,,1,"[""10:00""]",true,low
+r11_repas_legers,Repas légers,Mangez de petits repas fréquents pour éviter les nausées et les brûlures d'estomac.,self_care,1,40,OMS,,,,,5,"[""10:00""]",true,low
+r12_rdv_mensuel,Rendez-vous mensuel,Vérifiez la date de votre prochaine consultation prénatale mensuelle.,self_care,1,40,HAS,,,,,1,"[""10:00""]",false,low
+r13_tension,Surveillance de la tension,"Si vous avez un tensiomètre, vérifiez votre tension 2 fois par semaine.",self_care,20,40,ACOG,,,,,2,"[""10:00""]",false,low
+r14_mouvements_bebe,Compter les mouvements,"À partir de 24 semaines, soyez attentive aux mouvements de votre bébé.",self_care,24,40,ACOG,,,,,1,"[""10:00""]",false,low
+r15_valise_maternite,Valise de maternité,Vérifiez que votre valise de maternité est prête.,self_care,34,40,NHS,,,,,1,"[""10:00""]",true,low
+r16_repos_cote,Dormir sur le côté gauche,Dormez sur le côté gauche pour optimiser la circulation sanguine vers le bébé.,self_care,28,40,ACOG,,,,,1,"[""10:00""]",true,low
+r17_respiration,Exercices de respiration,Pratiquez la respiration profonde pour la relaxation et la préparation à l'accouchement.,self_care,20,40,NHS,,,,,3,"[""10:00""]",true,low
+r18_toxoplasmose,Précautions Toxoplasmose,Lavez soigneusement les fruits et légumes et évitez la viande crue.,self_care,1,40,HAS,,,,,3,"[""10:00""]",true,low
+r19_partenaire,Temps avec le partenaire,Prenez un moment pour discuter avec votre partenaire de l'arrivée du bébé.,self_care,1,40,self_care,,,,,1,"[""10:00""]",true,low
+r20_lecture,Lecture éducative,Lisez un chapitre de votre livre sur la grossesse ou un article de l'application.,self_care,1,40,self_care,,,,,1,"[""10:00""]",true,low

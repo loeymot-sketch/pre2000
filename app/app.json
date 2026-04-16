@@ -1,0 +1,87 @@
+{
+    "expo": {
+        "name": "Mama & Bébé",
+        "slug": "mama-bebe",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "newArchEnabled": true,
+        "description": "Votre compagne de grossesse intelligente — suivi semaine par semaine, rappels, calendrier médical, recettes et conseils personnalisés.",
+        "splash": {
+            "image": "./assets/splash-icon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#FF6B9D"
+        },
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.mamabebe.app",
+            "buildNumber": "4",
+            "entitlements": {
+                "aps-environment": "production"
+            },
+            "infoPlist": {
+                "ITSAppUsesNonExemptEncryption": false,
+                "NSUserNotificationsUsageDescription": "Mama & Bébé vous envoie des rappels bienveillants pour votre bien-être et celui de votre bébé.",
+                "NSMotionUsageDescription": "Utilisé pour détecter l'activité physique."
+            },
+            "privacyManifests": {
+                "NSPrivacyCollectedDataTypes": [
+                    {
+                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeEmailAddress",
+                        "NSPrivacyCollectedDataTypeLinked": true,
+                        "NSPrivacyCollectedDataTypeTracking": false,
+                        "NSPrivacyCollectedDataTypePurposes": [
+                            "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+                        ]
+                    }
+                ],
+                "NSPrivacyAccessedAPITypes": []
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#FF6B9D"
+            },
+            "package": "com.mamabebe.app",
+            "googleServicesFile": "./google-services.json",
+            "versionCode": 8,
+            "permissions": [
+                "RECEIVE_BOOT_COMPLETED",
+                "SCHEDULE_EXACT_ALARM",
+                "VIBRATE",
+                "POST_NOTIFICATIONS"
+            ]
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            [
+                "expo-notifications",
+                {
+                    "icon": "./assets/icon.png",
+                    "color": "#FF6B9D",
+                    "defaultChannel": "default",
+                    "sounds": []
+                }
+            ],
+            "expo-sqlite"
+        ],
+        "extra": {
+            "privacyPolicyUrl": "https://www.mama-et-bebe.com/privacy.html",
+            "marketingUrl": "https://www.mama-et-bebe.com",
+            "eas": {
+                "projectId": "75911d23-9cdf-4b98-833a-ee7807efe4e6"
+            }
+        },
+        "runtimeVersion": {
+            "policy": "appVersion"
+        },
+        "updates": {
+            "url": "https://u.expo.dev/75911d23-9cdf-4b98-833a-ee7807efe4e6"
+        },
+        "owner": "kossko"
+    }
+}

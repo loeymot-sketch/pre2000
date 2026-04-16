@@ -1,0 +1,227 @@
+[
+    {
+        "suggestion_id": "cs01",
+        "label_fr": "J'ai des nausées matinales",
+        "label_ar": "لدي غثيان صباحي",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "a04_nausées_matinales",
+        "linked_red_flag_ids": "ne garde rien"
+    },
+    {
+        "suggestion_id": "cs02",
+        "label_fr": "Je me sens très fatiguée",
+        "label_ar": "أشعر بتعب شديد",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs03",
+        "label_fr": "J'ai des crampes dans les jambes",
+        "label_ar": "لدي تشنجات في الساقين",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "a05_exercice_physique_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs04",
+        "label_fr": "Je n'arrive pas à dormir",
+        "label_ar": "لا أستطيع النوم",
+        "label_en": "",
+        "topic": "sommeil",
+        "linked_article_ids": "a06_sommeil_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs05",
+        "label_fr": "Quels aliments éviter ?",
+        "label_ar": "ما هي الأطعمة التي يجب تجنبها؟",
+        "label_en": "",
+        "topic": "nutrition",
+        "linked_article_ids": "a02_alimentation_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs06",
+        "label_fr": "Je saigne un peu",
+        "label_ar": "لدي نزيف خفيف",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "hémorragie"
+    },
+    {
+        "suggestion_id": "cs07",
+        "label_fr": "Je ne sens plus mon bébé bouger",
+        "label_ar": "لم أعد أشعر بحركة طفلي",
+        "label_en": "",
+        "topic": "mouvements_bebe",
+        "linked_article_ids": "a20_mouvements_du_bébé",
+        "linked_red_flag_ids": "ne sens plus le bébé"
+    },
+    {
+        "suggestion_id": "cs08",
+        "label_fr": "J'ai de fortes douleurs au ventre",
+        "label_ar": "لدي آلام قوية في البطن",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "",
+        "linked_red_flag_ids": "crampes sévères"
+    },
+    {
+        "suggestion_id": "cs09",
+        "label_fr": "J'ai de violents maux de tête",
+        "label_ar": "لدي صداع عنيف",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "",
+        "linked_red_flag_ids": "céphalée"
+    },
+    {
+        "suggestion_id": "cs10",
+        "label_fr": "Quand faire la première échographie ?",
+        "label_ar": "متى يجب إجراء أول فحص بالموجات فوق الصوتية؟",
+        "label_en": "",
+        "topic": "examens",
+        "linked_article_ids": "a03_examens_médicaux_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs11",
+        "label_fr": "Puis-je faire du sport ?",
+        "label_ar": "هل يمكنني ممارسة الرياضة؟",
+        "label_en": "",
+        "topic": "sport",
+        "linked_article_ids": "a05_exercice_physique_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs12",
+        "label_fr": "Quels sont les signes du travail ?",
+        "label_ar": "ما هي علامات المخاض؟",
+        "label_en": "",
+        "topic": "accouchement",
+        "linked_article_ids": "a12_signes_du_travail",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs13",
+        "label_fr": "J'ai de la fièvre",
+        "label_ar": "لدي حمى",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "",
+        "linked_red_flag_ids": "température élevée"
+    },
+    {
+        "suggestion_id": "cs14",
+        "label_fr": "J'ai des troubles de la vision",
+        "label_ar": "لدي اضطرابات في الرؤية",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "",
+        "linked_red_flag_ids": "éclairs lumineux"
+    },
+    {
+        "suggestion_id": "cs15",
+        "label_fr": "Comment gérer le post-partum ?",
+        "label_ar": "كيف أتعامل مع فترة ما بعد الولادة؟",
+        "label_en": "",
+        "topic": "post_partum",
+        "linked_article_ids": "a14_post-partum",
+        "linked_red_flag_ids": "pensées suicidaires"
+    },
+    {
+        "suggestion_id": "cs16",
+        "label_fr": "J'ai des pensées négatives",
+        "label_ar": "لدي أفكار سلبية",
+        "label_en": "",
+        "topic": "emotions",
+        "linked_article_ids": "a07_changements_émotionnels_pendant",
+        "linked_red_flag_ids": "pensées suicidaires"
+    },
+    {
+        "suggestion_id": "cs17",
+        "label_fr": "Quels suppléments prendre ?",
+        "label_ar": "ما هي المكملات الغذائية التي يجب تناولها؟",
+        "label_en": "",
+        "topic": "nutrition",
+        "linked_article_ids": "a02_alimentation_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs18",
+        "label_fr": "J'ai des brûlures en urinant",
+        "label_ar": "لدي حرقان عند التبول",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "",
+        "linked_red_flag_ids": "cystite"
+    },
+    {
+        "suggestion_id": "cs19",
+        "label_fr": "Je me sens gonflée",
+        "label_ar": "أشعر بالانتفاخ",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "gonflement visage"
+    },
+    {
+        "suggestion_id": "cs20",
+        "label_fr": "Puis-je avoir des relations sexuelles ?",
+        "label_ar": "هل يمكنني ممارسة الجنس؟",
+        "label_en": "",
+        "topic": "sexualite",
+        "linked_article_ids": "a18_grossesse_et_sexualité",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs21",
+        "label_fr": "Je suis enceinte de jumeaux",
+        "label_ar": "أنا حامل بتوأم",
+        "label_en": "",
+        "topic": "multiples",
+        "linked_article_ids": "a19_grossesses_multiples",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs22",
+        "label_fr": "J'ai des contractions",
+        "label_ar": "لدي تقلصات",
+        "label_en": "",
+        "topic": "accouchement",
+        "linked_article_ids": "a12_signes_du_travail",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs23",
+        "label_fr": "Comment préparer la valise de maternité ?",
+        "label_ar": "كيف أجهز حقيبة الولادة؟",
+        "label_en": "",
+        "topic": "preparation",
+        "linked_article_ids": "a08_liste_dachats_pour",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs24",
+        "label_fr": "J'ai mal au dos",
+        "label_ar": "لدي ألم في الظهر",
+        "label_en": "",
+        "topic": "symptomes",
+        "linked_article_ids": "a05_exercice_physique_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs25",
+        "label_fr": "Je veux allaiter",
+        "label_ar": "أريد أن أرضع طفلي",
+        "label_en": "",
+        "topic": "allaitement",
+        "linked_article_ids": "a13_allaitement",
+        "linked_red_flag_ids": ""
+    }
+]

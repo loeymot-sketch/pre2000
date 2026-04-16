@@ -1,0 +1,139 @@
+[
+    {
+        "message_id": "bm_w01_d01",
+        "week": 1,
+        "day": 1,
+        "message_fr": "Maman, je viens de commencer mon voyage avec toi 💕 Repose-toi bien aujourd'hui",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "beginning"
+        ],
+        "emoji": "💕",
+        "sources": [
+            "WHO"
+        ]
+    },
+    {
+        "message_id": "bm_w01_d02",
+        "week": 1,
+        "day": 2,
+        "message_fr": "Maman, aujourd'hui je grandis en douceur… bois un peu d'eau pour nous 💧",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "development",
+            "hydration_soft"
+        ],
+        "emoji": "💧",
+        "sources": [
+            "WHO",
+            "ACOG"
+        ]
+    },
+    {
+        "message_id": "bm_w12_d01",
+        "week": 12,
+        "day": 1,
+        "message_fr": "Maman, je bouge mes petits doigts aujourd'hui 👶 Prends soin de toi pour moi",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "development",
+            "movement"
+        ],
+        "emoji": "👶",
+        "sources": [
+            "NHS"
+        ]
+    },
+    {
+        "message_id": "bm_w12_d03",
+        "week": 12,
+        "day": 3,
+        "message_fr": "Maman, ton corps fait un travail incroyable 🌟 N'oublie pas de te reposer",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "encouragement",
+            "rest_soft"
+        ],
+        "emoji": "🌟",
+        "sources": [
+            "WHO"
+        ]
+    },
+    {
+        "message_id": "bm_w20_d01",
+        "week": 20,
+        "day": 1,
+        "message_fr": "Maman, je sens quand tu marches 🚶‍♀️ Une petite promenade me fait du bien aussi",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "activity_soft",
+            "bonding"
+        ],
+        "emoji": "🚶‍♀️",
+        "sources": [
+            "ACOG"
+        ]
+    },
+    {
+        "message_id": "bm_w20_d05",
+        "week": 20,
+        "day": 5,
+        "message_fr": "Maman, je grandis bien grâce à toi 💚 Continue comme ça, tu es formidable",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "encouragement",
+            "bonding"
+        ],
+        "emoji": "💚",
+        "sources": [
+            "WHO"
+        ]
+    },
+    {
+        "message_id": "bm_w30_d02",
+        "week": 30,
+        "day": 2,
+        "message_fr": "Maman, je reconnais déjà ta voix 🎵 Parle-moi, j'adore t'écouter",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "bonding",
+            "development"
+        ],
+        "emoji": "🎵",
+        "sources": [
+            "NHS"
+        ]
+    },
+    {
+        "message_id": "bm_w40_d05",
+        "week": 40,
+        "day": 5,
+        "message_fr": "Maman, je suis prêt à te rencontrer bientôt 🥰 Tu es incroyablement forte",
+        "message_ar": null,
+        "message_en": null,
+        "tags": [
+            "cute",
+            "birth_preparation",
+            "encouragement"
+        ],
+        "emoji": "🥰",
+        "sources": [
+            "WHO",
+            "ACOG"
+        ]
+    }
+]

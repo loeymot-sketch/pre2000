@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================
+    // 🛠️ HELPER FUNCTIONS
+    // =========================================================
+    
+    // Vérifie si l'utilisateur est connecté
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Vérifie si l'utilisateur est le propriétaire du document (basé sur l'ID du doc)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Vérifie si l'utilisateur est propriétaire de la donnée (champ user_id)
+    // Pour la LECTURE et SUPPRESSION (resource existante)
+    function isOwnerOfResource() {
+      return isAuthenticated() && resource.data.user_id == request.auth.uid;
+    }
+
+    // Vérifie si l'utilisateur assigne bien la donnée à lui-même
+    // Pour la CRÉATION et MISE À JOUR (nouvelle resource)
+    function isOwnerOfData() {
+      return isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+    }
+
+    // =========================================================
+    // 👤 USER PROFILES
+    // =========================================================
+    
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // User Profiles (used by AuthContext, PregnancyContext, OnboardingScreen)
+    match /userProfiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // =========================================================
+    // 🔒 USER PRIVATE DATA (Top-level collections)
+    // =========================================================
+
+    // Calendar Events
+    match /userEvents/{eventId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Custom Tasks
+    match /userTasks/{taskId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Health Metrics (Weight, BP)
+    match /healthMetrics/{metricId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Weight Entries (weightService.ts uses 'weight_entries' collection)
+    match /weight_entries/{entryId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Reminder Settings
+    match /userReminderSettings/{settingId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Task Statuses (Completed reminders)
+    match /userTaskStatuses/{statusId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Reminder Settings V2 (remindersV2Service)
+    match /reminder_settings_v2/{settingId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // =========================================================
+    // 📚 STATIC CONTENT (Read-only for users)
+    // =========================================================
+
+    match /calendarTemplates/{docId} { allow read: if true; allow write: if false; }
+    match /reminderTemplates/{docId} { allow read: if true; allow write: if false; }
+    match /weeklyTasks/{docId} { allow read: if true; allow write: if false; }
+    match /babyMessages/{docId} { allow read: if true; allow write: if false; }
+    match /tips/{docId} { allow read: if true; allow write: if false; }
+    match /articles/{docId} { allow read: if true; allow write: if false; }
+    match /articlesAntigravity/{docId} { allow read: if true; allow write: if false; }
+    match /supplements/{docId} { allow read: if true; allow write: if false; }
+    match /redFlags/{docId} { allow read: if true; allow write: if false; }
+    match /chatbotSuggestionsAG/{docId} { allow read: if true; allow write: if false; }
+    match /weeks/{docId} { allow read: if true; allow write: if false; }
+
+  }
+}

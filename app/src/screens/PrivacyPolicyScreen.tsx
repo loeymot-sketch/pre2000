@@ -1,0 +1,303 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { theme } from '../theme';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+/**
+ * PrivacyPolicyScreen - Legal compliance for App Store
+ * Required for: Apple App Store, Google Play Store, RGPD
+ * Tabs: Privacy | Terms (CGU) | Cookies
+ */
+export const PrivacyPolicyScreen = () => {
+    useScreenAnalytics('PrivacyPolicyScreen');
+    const { t } = useTranslation();
+    const [activeTab, setActiveTab] = useState<'privacy' | 'terms' | 'cookies'>('privacy');
+
+    const handleContactPress = () => {
+        Linking.openURL('mailto:contact@mamabebe.app');
+    };
+
+    return (
+        <View style={styles.container}>
+            {/* Header Title */}
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>{t('legalTerms.title')}</Text>
+                <Text style={styles.headerSubtitle}>{t('privacy.lastUpdated')}</Text>
+            </View>
+
+            {/* Tabs */}
+            <View style={styles.tabContainer}>
+                {(['privacy', 'terms', 'cookies'] as const).map((tab) => (
+                    <TouchableOpacity
+                        key={tab}
+                        style={[styles.tabButton, activeTab === tab && styles.tabButtonActive]}
+                        onPress={() => setActiveTab(tab)}
+                    >
+                        <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
+                            {t(`legalTerms.tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`)}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+            <ScrollView style={styles.contentScroll}>
+                <View style={styles.content}>
+                    {activeTab === 'privacy' && (
+                        <>
+                            {/* Introduction */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.intro.title')}</Text>
+                                <Text style={styles.paragraph}>{t('privacy.intro.text')}</Text>
+                            </View>
+
+                            {/* Data Collection */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.collection.title')}</Text>
+                                <Text style={styles.paragraph}>{t('privacy.collection.text')}</Text>
+                                <View style={styles.bulletList}>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.collection.account')}</Text> {t('privacy.collection.accountDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.collection.pregnancy')}</Text> {t('privacy.collection.pregnancyDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.collection.health')}</Text> {t('privacy.collection.healthDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.collection.appointments')}</Text> {t('privacy.collection.appointmentsDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.collection.preferences')}</Text> {t('privacy.collection.preferencesDesc')}</Text>
+                                </View>
+                            </View>
+
+                            {/* Data Usage */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.usage.title')}</Text>
+                                <Text style={styles.paragraph}>{t('privacy.usage.text')}</Text>
+                                <View style={styles.bulletList}>
+                                    <Text style={styles.bulletItem}>• {t('privacy.usage.item1')}</Text>
+                                    <Text style={styles.bulletItem}>• {t('privacy.usage.item2')}</Text>
+                                    <Text style={styles.bulletItem}>• {t('privacy.usage.item3')}</Text>
+                                </View>
+                                <Text style={[styles.paragraph, styles.highlightText]}>
+                                    {t('privacy.usage.disclaimer')}
+                                </Text>
+                            </View>
+
+                            {/* Data Storage */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.storage.title')}</Text>
+                                <Text style={styles.paragraph}>
+                                    {t('privacy.storage.text')}
+                                </Text>
+                            </View>
+
+                            {/* User Rights */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.rights.title')}</Text>
+                                <Text style={styles.paragraph}>{t('privacy.rights.text')}</Text>
+                                <View style={styles.bulletList}>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.rights.access')}</Text> {t('privacy.rights.accessDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.rights.rectification')}</Text> {t('privacy.rights.rectificationDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.rights.deletion')}</Text> {t('privacy.rights.deletionDesc')}</Text>
+                                    <Text style={styles.bulletItem}>• <Text style={styles.bold}>{t('privacy.rights.portability')}</Text> {t('privacy.rights.portabilityDesc')}</Text>
+                                </View>
+                            </View>
+
+                            {/* Contact */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.contact.title')}</Text>
+                                <Text style={styles.paragraph}>
+                                    {t('privacy.contact.text')}
+                                </Text>
+                                <TouchableOpacity style={styles.contactButton} onPress={handleContactPress}>
+                                    <Text style={styles.contactButtonText}>📧 contact@mamabebe.app</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            {/* Mode Invité */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('privacy.guestMode.title')}</Text>
+                                <Text style={styles.paragraph}>
+                                    {t('privacy.guestMode.text')}
+                                </Text>
+                            </View>
+                        </>
+                    )}
+
+                    {activeTab === 'terms' && (
+                        <>
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('legalTerms.terms.title')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.terms.intro')}</Text>
+
+                                <View style={[styles.alertBox, { borderColor: theme.colors.warning }]}>
+                                    <Text style={[styles.alertText, { color: theme.colors.warning }]}>
+                                        {t('legalTerms.terms.medical')}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('legalTerms.terms.liabilityTitle')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.terms.liability')}</Text>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('legalTerms.terms.ipTitle')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.terms.content')}</Text>
+                            </View>
+                        </>
+                    )}
+
+                    {activeTab === 'cookies' && (
+                        <>
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>{t('legalTerms.cookies.title')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.cookies.intro')}</Text>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>1. {t('legalTerms.cookies.techTitle')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.cookies.tech')}</Text>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>2. {t('legalTerms.cookies.analytics_title')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.cookies.analytics_desc')}</Text>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>3. {t('legalTerms.cookies.firebase_title')}</Text>
+                                <Text style={styles.paragraph}>{t('legalTerms.cookies.firebase_desc')}</Text>
+                            </View>
+                        </>
+                    )}
+                </View>
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>{t('privacy.footer')}</Text>
+                </View>
+            </ScrollView>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+    },
+    header: {
+        padding: 20,
+        backgroundColor: theme.colors.white,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.disabled,
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 4,
+    },
+    headerSubtitle: {
+        fontSize: 14,
+        color: theme.colors.textSecondary,
+    },
+    tabContainer: {
+        flexDirection: 'row',
+        backgroundColor: theme.colors.white,
+        paddingHorizontal: 16,
+        paddingBottom: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.disabled,
+        gap: 8,
+    },
+    tabButton: {
+        flex: 1,
+        paddingVertical: 8,
+        alignItems: 'center',
+        borderRadius: 20,
+        backgroundColor: theme.colors.borderLight,
+    },
+    tabButtonActive: {
+        backgroundColor: theme.colors.primary,
+    },
+    tabText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
+    },
+    tabTextActive: {
+        color: theme.colors.white,
+    },
+    contentScroll: {
+        flex: 1,
+    },
+    content: {
+        padding: 16,
+    },
+    section: {
+        backgroundColor: theme.colors.white,
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 16,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: theme.colors.primary,
+        marginBottom: 12,
+    },
+    paragraph: {
+        fontSize: 15,
+        color: '#444',
+        lineHeight: 24,
+        marginBottom: 8,
+    },
+    bulletList: {
+        marginStart: 8,
+        marginTop: 8,
+    },
+    bulletItem: {
+        fontSize: 14,
+        color: '#444',
+        lineHeight: 24,
+        marginBottom: 4,
+    },
+    bold: {
+        fontWeight: '600',
+    },
+    highlightText: {
+        backgroundColor: '#FFF3E0',
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 12,
+        color: '#E65100',
+        fontWeight: '500',
+    },
+    alertBox: {
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 12,
+        marginTop: 8,
+        backgroundColor: theme.colors.white,
+    },
+    alertText: {
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    contactButton: {
+        backgroundColor: theme.colors.primary,
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    contactButtonText: {
+        color: theme.colors.white,
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    footer: {
+        alignItems: 'center',
+        padding: 24,
+    },
+    footerText: {
+        fontSize: 12,
+        color: '#999',
+    },
+});

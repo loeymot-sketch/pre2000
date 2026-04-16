@@ -1,0 +1,450 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, Linking, Alert, Keyboard } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { analyzeMessage, fetchSuggestions } from '../services/chatbotService';
+import { ChatbotSuggestion, Article, ChatResponse } from '../types';
+import { theme } from '../theme';
+import { Card } from '../components/common/Card';
+import { Button } from '../components/common/Button';
+import { useNavigation } from '@react-navigation/native';
+import { chatbotLimiter } from '../utils/rateLimiter';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedContent } from '../utils/i18nHelpers';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+interface Message {
+    id: string;
+    text: string;
+    sender: 'user' | 'bot';
+    data?: ChatResponse;
+}
+
+export const ChatbotScreen = () => {
+    useScreenAnalytics('ChatbotScreen');
+    const { t, i18n } = useTranslation();
+    // BUG-05+06 FIX: RTL detection for Arabic and Tunisian
+    const isRTL = ['ar', 'tn'].includes(i18n.language);
+    const [messages, setMessages] = useState<Message[]>([
+        { id: '1', text: t('common.chatWelcome'), sender: 'bot' }
+    ]);
+    const [inputText, setInputText] = useState('');
+    const [suggestions, setSuggestions] = useState<ChatbotSuggestion[]>([]);
+    const [loading, setLoading] = useState(false);
+    const flatListRef = useRef<FlatList>(null);
+    const navigation = useNavigation();
+    // const [showDisclaimer, setShowDisclaimer] = useState(true); // Removed as disclaimer is now permanent and minimal
+
+    useEffect(() => {
+        const loadSuggestions = async () => {
+            const data = await fetchSuggestions();
+            setSuggestions(data);
+        };
+        loadSuggestions();
+    }, []);
+
+    const MAX_INPUT_LENGTH = 500; // ── FIX: prevent arbitrarily long messages
+
+    const handleSend = async (text: string = inputText, isRetry = false) => {
+        const messageText = text.trim();
+        if (!messageText) return;
+        if (messageText.length > MAX_INPUT_LENGTH) return; // silently ignore oversized input
+        Keyboard.dismiss(); // ── FIX: close keyboard on send
+
+        // Rate limit check
+        if (!chatbotLimiter.tryRequest()) {
+            const waitMsg: Message = {
+                id: Date.now().toString(),
+                text: t('common.chatRateLimit'),
+                sender: 'bot'
+            };
+            setMessages(prev => [...prev, waitMsg]);
+            return;
+        }
+
+        if (!isRetry) {
+            const userMsg: Message = { id: Date.now().toString(), text: messageText, sender: 'user' };
+            setMessages(prev => [...prev, userMsg]);
+            setInputText('');
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await analyzeMessage(messageText);
+            const botMsg: Message = {
+                id: (Date.now() + 1).toString(),
+                text: response.message,
+                sender: 'bot',
+                data: response
+            };
+            // Remove error message if retrying
+            if (isRetry) {
+                setMessages(prev => prev.filter(m => m.text !== t('common.chatError')));
+            }
+            setMessages(prev => [...prev, botMsg]);
+        } catch (error) {
+            const errorMsg: Message = {
+                id: (Date.now() + 1).toString(),
+                text: t('common.chatError'),
+                sender: 'bot',
+                data: {
+                    message: t('common.chatError'),
+                    type: 'error',
+                    // Store original text to allow retry
+                    originalText: messageText
+                } as any
+            };
+            setMessages(prev => [...prev, errorMsg]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getSuggestionLabel = (item: ChatbotSuggestion): string => {
+        return getLocalizedContent(item, 'label', i18n.language) || item.label_fr || '';
+    };
+
+    const renderMessage = ({ item }: { item: Message }) => {
+        const isUser = item.sender === 'user';
+        // FIX-C: RTL bubble alignment
+        const bubbleAlign = isRTL
+            ? (isUser ? { alignSelf: 'flex-start' as const } : { alignSelf: 'flex-end' as const })
+            : {};
+        return (
+            <View style={[styles.messageContainer, isUser ? styles.userMessage : styles.botMessage, bubbleAlign]}>
+                <Text style={[styles.messageText, isUser ? styles.userMessageText : styles.botMessageText, isRTL && { textAlign: 'right' as const }]}>
+                    {item.text}
+                </Text>
+
+                {item.data?.type === 'error' && (
+                    <TouchableOpacity
+                        style={styles.retryButton}
+                        onPress={() => handleSend((item.data as any).originalText, true)}
+                    >
+                        <Text style={styles.retryText}>{t('common.retry')}</Text>
+                    </TouchableOpacity>
+                )}
+
+                {item.data?.type === 'red_flag' &&
+                    (item.data?.redFlag?.severity === 'emergency' ||
+                     item.data?.redFlag?.severity === 'urgent_consult') && (
+                    <View style={[
+                        styles.alertContainer,
+                        item.data?.redFlag?.severity === 'emergency' && styles.alertContainerCritical,
+                    ]}>
+                        <Text style={styles.alertTitle}>
+                            {item.data?.redFlag?.severity === 'emergency'
+                                ? t('common.chatEmergency')
+                                : `⚠️ ${t('common.chatResponse.redFlagHigh')}`}
+                        </Text>
+                        {item.data?.redFlag?.severity === 'emergency' && (
+                            <TouchableOpacity
+                                style={styles.callButton}
+                                onPress={() => {
+                                    const number = i18n.language === 'tn' || i18n.language === 'ar'
+                                        ? 'tel:197' // SAMU Tunisie
+                                        : 'tel:15';  // SAMU France
+                                    Linking.openURL(number).catch(() =>
+                                        Alert.alert(t('common.chatEmergency'), t('common.chatEmergencyAction'))
+                                    );
+                                }}
+                            >
+                                <Text style={styles.callButtonText}>📞 {t('common.chatEmergencyAction')}</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
+
+                {item.data?.articles && item.data.articles.length > 0 && (
+                    <View style={styles.articlesContainer}>
+                        <Text style={styles.sectionTitle}>{t('common.chatRecommendedArticles')}</Text>
+                        {item.data.articles.map((article: Article) => (
+                            <TouchableOpacity
+                                key={article.article_id}
+                                style={styles.articleLink}
+                                onPress={() => navigation.navigate('Ressources', {
+                                    screen: 'ArticleDetail',
+                                    params: {
+                                        articleId: article.article_id,
+                                        anchor: item.data?.anchor
+                                    }
+                                })}
+                            >
+                                <Text style={styles.articleLinkText}>📄 {getLocalizedContent(article, 'title', i18n.language) || article.title_fr || ''}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
+
+                {/* Render Tips */}
+                {item.data?.suggestions?.[0]?.linked_tip_ids && (
+                    <View style={styles.articlesContainer}>
+                        <Text style={styles.sectionTitle}>{t('common.chatDailyTip')}</Text>
+                        <TouchableOpacity
+                            style={styles.articleLink}
+                            onPress={() => navigation.navigate('Home', {
+                                screen: 'HomeMain',
+                            })}
+                        >
+                            <Text style={styles.articleLinkText}>{t('common.chatSeeTipHome')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {/* Render Tasks */}
+                {item.data?.suggestions?.[0]?.linked_task_ids && (
+                    <View style={styles.articlesContainer}>
+                        <Text style={styles.sectionTitle}>{t('common.chatSuggestedTask')}</Text>
+                        <TouchableOpacity
+                            style={styles.articleLink}
+                            onPress={() => navigation.navigate('Rappels')}
+                        >
+                            <Text style={styles.articleLinkText}>{t('common.chatSeeReminders')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </View>
+        );
+    };
+
+    return (
+        <SafeAreaView style={styles.container} edges={['top']}>
+            <View style={styles.headerContainer}>
+                <Text style={styles.disclaimerText}>
+                    ⚠️ {t('common.chatDisclaimer')}
+                </Text>
+            </View>
+
+            <FlatList
+                ref={flatListRef}
+                data={messages}
+                renderItem={renderMessage}
+                keyExtractor={item => item.id}
+                contentContainerStyle={styles.listContent}
+                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+            />
+
+            {loading && (
+                <View style={[styles.messageContainer, styles.botMessage, { paddingHorizontal: 16, paddingVertical: 12 }]}>
+                    <ActivityIndicator size="small" color={theme.colors.primary} />
+                </View>
+            )}
+
+            <View style={styles.suggestionsContainer}>
+                <FlatList
+                    horizontal
+                    data={suggestions}
+                    keyExtractor={item => item.suggestion_id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.suggestionButton}
+                            onPress={() => handleSend(getSuggestionLabel(item))}
+                        >
+                            <Text style={styles.suggestionText}>{getSuggestionLabel(item)}</Text>
+                        </TouchableOpacity>
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>
+
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}
+                style={styles.inputContainer}
+            >
+                <TextInput
+                    style={[styles.input, isRTL && { textAlign: 'right' }]}
+                    value={inputText}
+                    onChangeText={setInputText}
+                    maxLength={MAX_INPUT_LENGTH}
+                    placeholder={t('common.chatAskQuestion')}
+                    placeholderTextColor={theme.colors.textLight}
+                    textAlign={isRTL ? 'right' : 'left'}
+                />
+                <TouchableOpacity
+                    onPress={() => handleSend()}
+                    disabled={!inputText.trim() || loading}
+                    style={[styles.sendButton, (!inputText.trim() || loading) && styles.sendButtonDisabled]}
+                    accessibilityLabel={t('common.send')}
+                >
+                    <Text style={[styles.sendButtonText, (!inputText.trim() || loading) && styles.sendButtonTextDisabled]}>
+                        {loading ? '⏳' : '➤'}
+                    </Text>
+                </TouchableOpacity>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+    },
+
+    listContent: {
+        padding: theme.spacing.m,
+    },
+    messageContainer: {
+        maxWidth: '80%',
+        padding: theme.spacing.m,
+        borderRadius: theme.borderRadius.m,
+        marginBottom: theme.spacing.m,
+    },
+    userMessage: {
+        alignSelf: 'flex-end',
+        backgroundColor: theme.colors.primary,
+    },
+    botMessage: {
+        alignSelf: 'flex-start',
+        backgroundColor: theme.colors.white,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+    },
+    messageText: {
+        ...theme.typography.body,
+    },
+    userMessageText: {
+        color: theme.colors.white,
+    },
+    botMessageText: {
+        color: theme.colors.text,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        padding: theme.spacing.m,
+        backgroundColor: theme.colors.white,
+        borderTopWidth: 1,
+        borderTopColor: theme.colors.border,
+    },
+    input: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        borderRadius: theme.borderRadius.round,
+        paddingHorizontal: theme.spacing.m,
+        marginEnd: theme.spacing.s,
+        height: 48,
+    },
+    // sendButton — see smart button styles below
+    suggestionsContainer: {
+        paddingVertical: theme.spacing.s,
+        backgroundColor: theme.colors.background,
+    },
+    suggestionButton: {
+        backgroundColor: theme.colors.white,
+        paddingHorizontal: theme.spacing.m,
+        paddingVertical: theme.spacing.s,
+        borderRadius: theme.borderRadius.round,
+        marginHorizontal: theme.spacing.xs,
+        borderWidth: 1,
+        borderColor: theme.colors.secondary,
+    },
+    sectionTitle: {
+        ...theme.typography.h3,
+        marginBottom: theme.spacing.s,
+        marginTop: theme.spacing.s,
+        color: theme.colors.text,
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    suggestionText: {
+        ...theme.typography.caption,
+        color: theme.colors.text,
+    },
+    alertContainer: {
+        marginTop: theme.spacing.s,
+        padding: theme.spacing.s,
+        backgroundColor: '#FFF3E0',
+        borderRadius: theme.borderRadius.s,
+        borderWidth: 1,
+        borderColor: '#FFB74D',
+    },
+    alertContainerCritical: {
+        backgroundColor: '#FFEBEE',
+        borderColor: theme.colors.error,
+    },
+    alertTitle: {
+        fontWeight: 'bold',
+        color: theme.colors.error,
+        fontSize: 13,
+        marginBottom: 6,
+    },
+    alertText: {
+        color: theme.colors.error,
+        fontSize: 12,
+    },
+    callButton: {
+        marginTop: 8,
+        backgroundColor: theme.colors.error,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: theme.borderRadius.m,
+        alignSelf: 'flex-start',
+    },
+    callButtonText: {
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    articlesContainer: {
+        marginTop: theme.spacing.s,
+    },
+    articleLink: {
+        marginTop: 4,
+    },
+    articleLinkText: {
+        color: theme.colors.primary,
+        textDecorationLine: 'underline' as const,
+    },
+    loadingContainer: {
+        padding: theme.spacing.s,
+    },
+    retryButton: {
+        marginTop: 8,
+        backgroundColor: theme.colors.background,
+        padding: 8,
+        borderRadius: 8,
+        alignSelf: 'flex-start',
+        borderWidth: 1,
+        borderColor: theme.colors.primary,
+    },
+    retryText: {
+        color: theme.colors.primary,
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+    headerContainer: {
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        backgroundColor: 'transparent',
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.borderLight,
+    },
+    disclaimerText: {
+        fontSize: 11,
+        color: '#9E9E9E',
+        textAlign: 'center',
+        fontStyle: 'italic',
+    },
+    // ── Smart send button styles
+    sendButton: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: theme.colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginStart: 8,
+    },
+    sendButtonDisabled: {
+        backgroundColor: '#E0E0E0',
+    },
+    sendButtonText: {
+        fontSize: 18,
+        color: '#FFFFFF',
+    },
+    sendButtonTextDisabled: {
+        color: '#BDBDBD',
+    },
+});

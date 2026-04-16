@@ -1,0 +1,239 @@
+{
+    "channelName": "Rappels de grossesse",
+    "hydration": [
+        {
+            "title": "💧 Coucou !",
+            "body": "Un petit verre d'eau pour toi ? 🥰"
+        },
+        {
+            "title": "💧 Pause douceur",
+            "body": "Quelques gorgées quand tu veux 💕"
+        },
+        {
+            "title": "💧 Pour toi",
+            "body": "Prends soin de toi, hydrate-toi 🌸"
+        },
+        {
+            "title": "💧 Petit rappel",
+            "body": "Un verre d'eau, ça fait du bien 💙"
+        },
+        {
+            "title": "💧 Moment pour toi",
+            "body": "Écoute ton corps, il te guidera ✨"
+        },
+        {
+            "title": "💧 Self-care",
+            "body": "Quelques gorgées, à ton rythme 💦"
+        },
+        {
+            "title": "💧 Douceur",
+            "body": "Un petit geste pour toi aujourd'hui 💗"
+        },
+        {
+            "title": "💧 On pense à toi",
+            "body": "Pense à t'hydrater si tu peux 🌸"
+        }
+    ],
+    "rdv": {
+        "j1": [
+            {
+                "title": "🤰 RDV demain",
+                "body": "{{eventTitle}} - On est avec toi 💕"
+            },
+            {
+                "title": "📅 Demain",
+                "body": "{{eventTitle}} - Tout ira bien 🌸"
+            },
+            {
+                "title": "💕 Petit rappel",
+                "body": "{{eventTitle}} demain. On pense à toi !"
+            },
+            {
+                "title": "🌸 Pense à",
+                "body": "{{eventTitle}} est prévu demain. En douceur 💕"
+            }
+        ],
+        "j": [
+            {
+                "title": "🤰 C'est aujourd'hui",
+                "body": "{{eventTitle}} - On est avec toi, en douceur 💕"
+            },
+            {
+                "title": "💕 Jour J",
+                "body": "{{eventTitle}} - Respire, tu es prête 🌸"
+            },
+            {
+                "title": "✨ RDV du jour",
+                "body": "{{eventTitle}} - Profite de ce moment ✨"
+            }
+        ],
+        "h2": [
+            {
+                "title": "⏰ Bientôt",
+                "body": "{{eventTitle}} - Prépare-toi en douceur 💕"
+            },
+            {
+                "title": "🕐 Dans 2h",
+                "body": "{{eventTitle}} arrive. Respire 🌸"
+            },
+            {
+                "title": "💕 On y est",
+                "body": "{{eventTitle}} bientôt. Tu es accompagnée ✨"
+            }
+        ]
+    },
+    "tasks": [
+        {
+            "title": "✨ Quand tu veux",
+            "body": "{{taskTitle}} - À ton rythme 💕"
+        },
+        {
+            "title": "📝 Petit rappel",
+            "body": "{{taskTitle}} - Un pas à la fois 🌸"
+        },
+        {
+            "title": "💕 Pour toi",
+            "body": "{{taskTitle}} - Fais-le quand tu te sens prête"
+        },
+        {
+            "title": "🌟 Douceur",
+            "body": "{{taskTitle}} - Pas de pression ✨"
+        }
+    ],
+    "vitamins": [
+        {
+            "title": "💊 Petit rappel",
+            "body": "Tes vitamines t'attendent 🌸"
+        },
+        {
+            "title": "💊 Pour toi",
+            "body": "Un petit geste santé, à ton rythme 💕"
+        },
+        {
+            "title": "💊 Douceur",
+            "body": "Prends soin de toi aujourd'hui ✨"
+        },
+        {
+            "title": "💊 On pense à toi",
+            "body": "Pense à tes vitamines si tu peux 💙"
+        }
+    ],
+    "rest": [
+        {
+            "title": "😴 Pause douceur",
+            "body": "Accorde-toi un moment de repos 💕"
+        },
+        {
+            "title": "🛋️ Pour toi",
+            "body": "Prends 5 minutes si tu en as besoin ✨"
+        },
+        {
+            "title": "💤 Écoute-toi",
+            "body": "Ton corps sait ce qu'il lui faut 😊"
+        },
+        {
+            "title": "🌙 Respire",
+            "body": "Une petite pause fait du bien 💙"
+        }
+    ],
+    "exercise": [
+        {
+            "title": "🚶‍♀️ Si tu en as envie",
+            "body": "Un peu d'air frais, ça fait du bien 🌸"
+        },
+        {
+            "title": "💪 À ton rythme",
+            "body": "Même 5 minutes comptent 😊"
+        },
+        {
+            "title": "🌿 Douceur",
+            "body": "Une marche douce si tu te sens 💕"
+        }
+    ],
+    "meal": [
+        {
+            "title": "🍽️ Si tu as faim",
+            "body": "Prends quelque chose de doux 🌸"
+        },
+        {
+            "title": "🥗 Pour toi",
+            "body": "Écoute ton corps, mange à ton rythme 💕"
+        },
+        {
+            "title": "🍎 Petit encas ?",
+            "body": "Si tu en ressens le besoin ✨"
+        },
+        {
+            "title": "🥐 Douceur",
+            "body": "Un petit plaisir quand tu veux 😊"
+        }
+    ],
+    "babyDaily": [
+        {
+            "title": "👶 Message du jour",
+            "body": "Un jour après l'autre, en douceur 💕"
+        },
+        {
+            "title": "💕 Pour toi",
+            "body": "Tu fais de ton mieux, c'est parfait 🌸"
+        },
+        {
+            "title": "✨ Pensée douce",
+            "body": "Prends soin de toi aujourd'hui 💙"
+        },
+        {
+            "title": "🌸 Moment présent",
+            "body": "Chaque jour est un pas de plus ✨"
+        },
+        {
+            "title": "💗 On pense à toi",
+            "body": "Tu es accompagnée sur ce chemin 💕"
+        }
+    ],
+    "wellness": [
+        {
+            "title": "🧘 Moment pour toi",
+            "body": "Prends un instant de calme 💕"
+        },
+        {
+            "title": "📔 Journal",
+            "body": "Quelques mots si tu en as envie 🌸"
+        },
+        {
+            "title": "✨ Respire",
+            "body": "Un moment de douceur pour toi ✨"
+        },
+        {
+            "title": "💆 Détente",
+            "body": "Tu mérites ce moment de paix 💙"
+        }
+    ],
+    "medical": [
+        {
+            "title": "📊 Petit rappel",
+            "body": "Pense à ton suivi quand tu peux 💕"
+        },
+        {
+            "title": "🩺 Pour toi",
+            "body": "Un petit geste santé, à ton rythme 🌸"
+        },
+        {
+            "title": "💙 Suivi",
+            "body": "Pense à ton suivi du jour si tu peux ✨"
+        }
+    ],
+    "test": {
+        "rdv": "Visite prénatale",
+        "task": "Préparer le sac de maternité"
+    },
+    "grouped": {
+        "single": "{{name}}, tu as un rappel 💕",
+        "multiple": "{{name}}, tu as {{count}} rappels 💕"
+    },
+    "encouragements": [
+        "💪 Tu gères !",
+        "✨ Continue comme ça !",
+        "💕 Tu es formidable !",
+        "🌟 Bravo maman !"
+    ]
+}

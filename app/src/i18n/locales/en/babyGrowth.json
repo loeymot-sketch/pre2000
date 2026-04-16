@@ -1,0 +1,110 @@
+{
+    "month1": {
+        "comparison": "Poppy seed",
+        "facts": {
+            "0": "Heart starts beating from the 4th week",
+            "1": "Embryo measures about 2mm",
+            "2": "Major organs begin to form"
+        },
+        "highlights": {
+            "0": "Formation of the neural tube",
+            "1": "Beginning of the circulatory system"
+        }
+    },
+    "month2": {
+        "comparison": "Blueberry",
+        "facts": {
+            "0": "Facial features begin to appear",
+            "1": "Fingers and toes emerge",
+            "2": "Brain develops rapidly"
+        },
+        "highlights": {
+            "0": "Limb development",
+            "1": "Formation of eyes and ears"
+        }
+    },
+    "month3": {
+        "comparison": "Plum",
+        "facts": {
+            "0": "All organs are formed",
+            "1": "Baby can move limbs",
+            "2": "Fingerprints are forming"
+        },
+        "highlights": {
+            "0": "End of embryonic period",
+            "1": "Beginning of fetal period"
+        }
+    },
+    "month4": {
+        "comparison": "Avocado",
+        "facts": {
+            "0": "Baby can suck thumb",
+            "1": "Hair starts to grow",
+            "2": "Can perceive light"
+        },
+        "highlights": {
+            "0": "Hearing development",
+            "1": "More coordinated movements"
+        }
+    },
+    "month5": {
+        "comparison": "Mango",
+        "facts": {
+            "0": "You can feel the first kicks",
+            "1": "Baby recognizes your voice",
+            "2": "Vernix protects skin"
+        },
+        "highlights": {
+            "0": "First noticeable movements",
+            "1": "Sensory development"
+        }
+    },
+    "month6": {
+        "comparison": "Corn cob",
+        "facts": {
+            "0": "Lungs are developing",
+            "1": "Baby has sleep cycles",
+            "2": "Can open and close eyes"
+        },
+        "highlights": {
+            "0": "Lung maturation",
+            "1": "Response to external stimuli"
+        }
+    },
+    "month7": {
+        "comparison": "Cauliflower",
+        "facts": {
+            "0": "Brain develops very rapidly",
+            "1": "Baby is gaining weight",
+            "2": "Can dream during sleep"
+        },
+        "highlights": {
+            "0": "Intense brain development",
+            "1": "Rapid weight gain"
+        }
+    },
+    "month8": {
+        "comparison": "Pineapple",
+        "facts": {
+            "0": "Lungs are nearly mature",
+            "1": "Baby turns upside down",
+            "2": "Skin becomes smoother"
+        },
+        "highlights": {
+            "0": "Birth position",
+            "1": "Organ maturation"
+        }
+    },
+    "month9": {
+        "comparison": "Watermelon",
+        "facts": {
+            "0": "Baby is ready to be born",
+            "1": "Weighs about 3-4 kg",
+            "2": "All organs are functional"
+        },
+        "highlights": {
+            "0": "Ready for the outside world",
+            "1": "Final stage of development"
+        }
+    }
+}

@@ -1,0 +1,57 @@
+    // === DEBUG & TESTING UTILITIES ===
+    
+    // Triple-tap to toggle debug mode
+    const handleTitlePress = () => {
+        const newCount = tapCount + 1;
+        setTapCount(newCount);
+        
+        if (newCount === 3) {
+            setShowDebugMode(!showDebugMode);
+            Alert.alert(
+                showDebugMode ? '🔒 Debug désactivé' : '🔓 Debug activé',
+                showDebugMode ? 'Mode normal' : 'Mode debug activé - vous pouvez modifier vos données'
+            );
+            setTapCount(0);
+        }
+        
+        // Reset count after 2 seconds
+        setTimeout(() => setTapCount(0), 2000);
+    };
+    
+    // Reset all weight data
+    const handleResetData = () => {
+        Alert.alert(
+            '⚠️ Réinitialiser les données',
+            'Supprimer TOUTES vos entrées de poids ? Cette action est irréversible.',
+            [
+                { text: 'Annuler', style: 'cancel' },
+                {
+                    text: 'Tout supprimer',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            const userId = user?.uid || 'guest';
+                            const history = await getWeightHistory(userId);
+                            
+                            for (const entry of history) {
+                                await deleteWeightEntry(userId, entry.id!);
+                            }
+                            
+                            await loadData();
+                            Alert.alert('✅ Données réinitialisées', 'Toutes vos entrées ont été supprimées.');
+                        } catch (error) {
+                            log.error('Error resetting data:', error);
+                            Alert.alert('Erreur', 'Impossible de réinitialiser les données.');
+                        }
+                    }
+                }
+            ]
+        );
+    };
+    
+    // Edit profile info (re-open setup)
+    const handleEditProfile = () => {
+        setSetupWeight(prePregnancyWeight > 0 ? prePregnancyWeight.toString() : '');
+        setSetupHeight(height > 0 ? height.toString() : '');
+        setShowSetup(true);
+    };

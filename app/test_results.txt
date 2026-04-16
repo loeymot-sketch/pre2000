@@ -1,0 +1,339 @@
+
+> mama-bebe@1.0.0 test
+> jest
+
+PASS src/utils/rateLimiter.test.ts (14.079 s)
+PASS src/services/__tests__/remindersV2Service.test.ts (14.35 s)
+PASS src/utils/retry.test.ts (14.352 s)
+  ● Console
+
+    console.log
+      🔍 [14:13:07] [retry] [Retry] Attempt 1 failed with auth/network-request-failed. Retrying in 1ms...
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:07] [retry] [Retry] Attempt 1 failed with auth/network-request-failed. Retrying in 1ms...
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:07] [retry] [Retry] Attempt 2 failed with auth/network-request-failed. Retrying in 1ms...
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+FAIL src/utils/validation.test.ts (14.482 s)
+  ● Validation Utils › validateEmail › should return correct error message
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "L'adresse email est invalide"
+    Received: "auth.invalidEmail"
+
+      18 |
+      19 |         it('should return correct error message', () => {
+    > 20 |             expect(validateEmail('invalid').error).toBe("L'adresse email est invalide");
+         |                                                    ^
+      21 |         });
+      22 |     });
+      23 |
+
+      at Object.<anonymous> (src/utils/validation.test.ts:20:52)
+
+  ● Validation Utils › validatePassword › should return correct error message
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Le mot de passe doit contenir au moins 6 caractères"
+    Received: "auth.errors.passwordLength"
+
+      34 |
+      35 |         it('should return correct error message', () => {
+    > 36 |             expect(validatePassword('123').error).toBe("Le mot de passe doit contenir au moins 6 caractères");
+         |                                                   ^
+      37 |         });
+      38 |     });
+      39 |
+
+      at Object.<anonymous> (src/utils/validation.test.ts:36:51)
+
+  ● Validation Utils › validatePasswordMatch › should return correct error message
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Les mots de passe ne correspondent pas"
+    Received: "auth.errors.passwordMismatch"
+
+      48 |
+      49 |         it('should return correct error message', () => {
+    > 50 |             expect(validatePasswordMatch('a', 'b').error).toBe("Les mots de passe ne correspondent pas");
+         |                                                           ^
+      51 |         });
+      52 |     });
+      53 |
+
+      at Object.<anonymous> (src/utils/validation.test.ts:50:59)
+
+  ● Validation Utils › validateRequired › should return correct error message
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Nom est requis"
+    Received: "Nom"
+
+      63 |
+      64 |         it('should return correct error message', () => {
+    > 65 |             expect(validateRequired('', 'Nom').error).toBe("Nom est requis");
+         |                                                       ^
+      66 |         });
+      67 |     });
+      68 | });
+
+      at Object.<anonymous> (src/utils/validation.test.ts:65:55)
+
+PASS src/utils/__tests__/pregnancyCalculator.test.ts (14.559 s)
+  ● Console
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] ✅ Calculated: Week 1, Day 1 (0 days since LMP)
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] ✅ Calculated: Week 1, Day 7 (6 days since LMP)
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] ✅ Calculated: Week 2, Day 1 (7 days since LMP)
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] ✅ Calculated: Week 10, Day 1 (63 days since LMP)
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] ✅ Calculated: Week 2, Day 1 (7 days since LMP)
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.warn
+      ⚠️ [12:00:00] [pregnancyCalculator] ⚠️ LMP is in the future, defaulting to week 1, day 1
+
+      119 |     warn: (context: string, message: string, ...data: any[]) => {
+      120 |         if (isDev) {
+    > 121 |             console.warn(formatMessage('warn', context, message), ...data);
+          |                     ^
+      122 |         }
+      123 |     },
+      124 |
+
+      at Object.warn (src/utils/logger.ts:121:21)
+      at Object.warn (src/utils/logger.ts:149:55)
+      at calculatePregnancyWeek (src/utils/pregnancyCalculator.ts:20:13)
+      at Object.<anonymous> (src/utils/__tests__/pregnancyCalculator.test.ts:67:50)
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] 📅 Week > 40, capping at week 40 day 7
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [12:00:00] [pregnancyCalculator] [PregnancyCalculator] ✅ Calculated: Week 1, Day 3 (2 days since LMP)
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+PASS src/utils/__tests__/contextMatcher.test.ts (14.589 s)
+PASS src/context/__tests__/AuthContext.test.ts (14.613 s)
+PASS src/services/__tests__/dailyChecklistService.test.ts (16.259 s)
+  ● Console
+
+    console.log
+      🔍 [14:13:09] [i18n] [i18n] ✅ i18n initialized
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 0 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 2 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 0 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 2 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 1 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 3 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 0 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 2 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 1 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 3 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 0 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 2 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generating daily checklist { pregnancyWeek: 20, userId: 'guest' }
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Found 0 appointments for today
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Processing 1 available reminders for checklist
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      🔍 [14:13:09] [DailyChecklistService] Added 2 items for reminder: test-essential
+
+      at Object.debug (src/utils/logger.ts:132:21)
+
+    console.log
+      ℹ️ [14:13:09] [DailyChecklistService] Generated 2 daily checklist items
+
+      at Object.info (src/utils/logger.ts:109:21)
+
+PASS src/services/__tests__/notificationService.test.ts (16.265 s)
+
+Test Suites: 1 failed, 8 passed, 9 total
+Tests:       4 failed, 77 passed, 81 total
+Snapshots:   0 total
+Time:        17.248 s, estimated 22 s
+Ran all test suites.

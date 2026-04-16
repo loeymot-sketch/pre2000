@@ -1,0 +1,22 @@
+{
+    "categories": {
+        "drinks": "Drinks",
+        "fish": "Fish & Seafood",
+        "dairy": "Dairy Products",
+        "eggs": "Eggs",
+        "meat": "Meat",
+        "vegetables": "Vegetables",
+        "herbs": "Herbs & Supplements"
+    },
+    "severity": {
+        "critical": "⛔ Forbidden",
+        "high": "🚫 Avoid",
+        "medium": "⚠️ Limit",
+        "low": "💡 Moderate"
+    },
+    "all": "All",
+    "riskLabel": "⚠️ Risk:",
+    "detailsLabel": "📝 Details:",
+    "alternativeLabel": "✅ Alternative:",
+    "disclaimer": "⚠️ This list is based on WHO and ANSES recommendations.\nIf in doubt, consult your doctor or midwife."
+}

@@ -1,0 +1,22 @@
+{
+    "categories": {
+        "drinks": "Boissons",
+        "fish": "Poissons et fruits de mer",
+        "dairy": "Produits laitiers",
+        "eggs": "Œufs",
+        "meat": "Viandes",
+        "vegetables": "Légumes",
+        "herbs": "Herbes et compléments"
+    },
+    "severity": {
+        "critical": "⛔ Interdit",
+        "high": "🚫 À éviter",
+        "medium": "⚠️ Limiter",
+        "low": "💡 Modérer"
+    },
+    "all": "Tous",
+    "riskLabel": "⚠️ Risque :",
+    "detailsLabel": "📝 Détails :",
+    "alternativeLabel": "✅ Alternative :",
+    "disclaimer": "⚠️ Cette liste est basée sur les recommandations de l'OMS et de l'ANSES.\nEn cas de doute, consultez votre médecin ou sage-femme."
+}

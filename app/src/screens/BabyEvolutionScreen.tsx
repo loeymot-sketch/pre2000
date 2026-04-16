@@ -1,0 +1,378 @@
+/**
+ * BabyEvolutionScreen
+ * 
+ * Affiche l'évolution du bébé sur 9 mois avec images 3D
+ * et comparaisons fruits/légumes
+ */
+
+import React, { useState, useRef } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    Image,
+    Dimensions,
+    TouchableOpacity,
+    Animated,
+    ActivityIndicator,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useIsFocused } from '@react-navigation/native';
+import { getAllBabyGrowthData, BabyGrowthMonth } from '../config/babyGrowthData';
+import { usePregnancy } from '../context/PregnancyContext';
+import { theme } from '../theme';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = width - 48;
+
+export const BabyEvolutionScreen = () => {
+    useScreenAnalytics('BabyEvolutionScreen');
+    const navigation = useNavigation();
+    const { t, i18n } = useTranslation();
+    const { pregnancyInfo } = usePregnancy();
+    const currentWeek = pregnancyInfo?.week || 1;
+    const isRTL = ['ar', 'tn'].includes(i18n.language);
+
+
+    // Calculate current month from week
+    const currentMonth = Math.min(9, Math.ceil(currentWeek / 4.4));
+
+    const allMonths = getAllBabyGrowthData();
+    const scrollViewRef = useRef<ScrollView>(null);
+    const [activeMonth, setActiveMonth] = useState(currentMonth);
+
+    // Sync active month and scroll when current month changes — with cleanup
+    React.useEffect(() => {
+        setActiveMonth(currentMonth);
+        const timer = setTimeout(() => {
+            scrollViewRef.current?.scrollTo({
+                x: (currentMonth - 1) * (CARD_WIDTH + 16),
+                animated: true,
+            });
+        }, 300);
+        return () => clearTimeout(timer); // cleanup: prevents setState after unmount
+    }, [currentMonth]);
+
+    const handleScroll = (event: any) => {
+        const offsetX = event.nativeEvent.contentOffset.x;
+        const index = Math.round(offsetX / (CARD_WIDTH + 16));
+        setActiveMonth(index + 1);
+    };
+
+    const renderMonthCard = (monthData: BabyGrowthMonth, index: number) => {
+        const isCurrentMonth = monthData.month === currentMonth;
+
+        return (
+            <View key={monthData.month} style={styles.cardWrapper}>
+                <LinearGradient
+                    colors={isCurrentMonth ? ['#FFE5EC', '#FFF0F5'] : ['#F8F9FA', '#FFFFFF']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.card, isCurrentMonth && styles.currentCard]}
+                >
+                    {/* Month Header */}
+                    <View style={styles.monthHeader}>
+                        <Text style={styles.monthNumber}>{t('common.monthLabel', { number: monthData.month })}</Text>
+                        <Text style={styles.weekRange}>
+                            {t('home.weeks', { start: monthData.weekStart, end: monthData.weekEnd })}
+                        </Text>
+                        {isCurrentMonth && (
+                            <View style={styles.currentBadge}>
+                                <Text style={styles.currentBadgeText}>{t('home.youAreHere')}</Text>
+                            </View>
+                        )}
+                    </View>
+
+                    {/* 3D Baby Image */}
+                    <View style={styles.imageContainer}>
+                        <Image
+                            source={monthData.image}
+                            style={styles.babyImage}
+                            resizeMode="contain"
+                            accessibilityLabel={t('babyEvolution.developmentOfMonth', { month: monthData.month })}
+                        />
+                    </View>
+
+                    {/* Size Comparison */}
+                    <View style={styles.comparisonContainer}>
+                        <Text style={styles.comparisonEmoji}>{monthData.comparison.emoji}</Text>
+                        <View style={styles.comparisonInfo}>
+                            <Text style={styles.comparisonItem}>{t(monthData.comparison.item)}</Text>
+                            <Text style={styles.comparisonSize}>{monthData.comparison.size}</Text>
+                        </View>
+                    </View>
+
+                    {/* Development Facts */}
+                    <View style={styles.factsContainer}>
+                        <Text style={styles.factsTitle}>🌟 {t('babyEvolution.development')}</Text>
+                        {monthData.facts.slice(0, 2).map((fact, i) => (
+                            <View key={i} style={styles.factRow}>
+                                <Text style={styles.factBullet}>•</Text>
+                                <Text style={styles.factText}>{t(fact)}</Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    {/* Highlights */}
+                    <View style={styles.highlightsContainer}>
+                        {monthData.developmentHighlights.slice(0, 2).map((highlight, i) => (
+                            <View key={i} style={styles.highlightChip}>
+                                <Text style={styles.highlightText}>{t(highlight)}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </LinearGradient>
+            </View>
+        );
+    };
+
+    return (
+        <SafeAreaView style={styles.container} edges={['top']}>
+            {/* Header */}
+            <View style={styles.header}>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={styles.backButton}
+                >
+                    <Text style={styles.backText}>
+                        {isRTL ? `${t('common.back')} →` : `← ${t('common.back')}`}
+                    </Text>
+                </TouchableOpacity>
+                <Text style={styles.title}>{t('home.babyEvolution')}</Text>
+                <View style={styles.placeholder} />
+            </View>
+
+            {/* Progress Indicator */}
+            <View style={styles.progressContainer}>
+                {allMonths.map((_, index) => (
+                    <View
+                        key={index}
+                        style={[
+                            styles.progressDot,
+                            activeMonth === index + 1 && styles.progressDotActive,
+                            index + 1 <= currentMonth && styles.progressDotPassed,
+                        ]}
+                    />
+                ))}
+            </View>
+
+            {/* Month Label */}
+            <Text style={styles.monthLabel}>
+                {allMonths[activeMonth - 1]?.comparison.emoji} {t('common.monthLabel', { number: activeMonth })} / 9
+            </Text>
+
+            {/* Horizontal Scroll Cards — RTL: scroll start auto-adjusts on iOS */}
+            <ScrollView
+                ref={scrollViewRef}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={[styles.scrollContent, isRTL && { flexDirection: 'row-reverse' }]}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                decelerationRate="fast"
+                snapToInterval={CARD_WIDTH + 16}
+            >
+                {allMonths.map((month, index) => renderMonthCard(month, index))}
+            </ScrollView>
+
+            {/* Bottom Info */}
+            <View style={styles.bottomInfo}>
+                <Text style={styles.bottomText}>
+                    {t('home.swipeToSee')}
+                </Text>
+            </View>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFF5F7',
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+    },
+    backButton: {
+        padding: 8,
+    },
+    backText: {
+        fontSize: 16,
+        color: theme.colors.accent,
+        fontWeight: '600',
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#333',
+    },
+    placeholder: {
+        width: 60,
+    },
+    progressContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 12,
+    },
+    progressDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: theme.colors.disabled,
+    },
+    progressDotActive: {
+        backgroundColor: theme.colors.accent,
+        transform: [{ scale: 1.3 }],
+    },
+    progressDotPassed: {
+        backgroundColor: '#F48FB1',
+    },
+    monthLabel: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
+        marginBottom: 12,
+    },
+    scrollContent: {
+        paddingHorizontal: 24,
+        paddingBottom: 20,
+    },
+    cardWrapper: {
+        width: CARD_WIDTH,
+        marginEnd: 16,
+    },
+    card: {
+        borderRadius: 24,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 5,
+    },
+    currentCard: {
+        borderWidth: 2,
+        borderColor: theme.colors.accent,
+    },
+    monthHeader: {
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    monthNumber: {
+        fontSize: 24,
+        fontWeight: '800',
+        color: '#333',
+    },
+    weekRange: {
+        fontSize: 14,
+        color: theme.colors.textLight,
+        marginTop: 4,
+    },
+    currentBadge: {
+        backgroundColor: theme.colors.accent,
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+        borderRadius: 12,
+        marginTop: 8,
+    },
+    currentBadgeText: {
+        color: theme.colors.white,
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    imageContainer: {
+        alignItems: 'center',
+        marginVertical: 16,
+    },
+    babyImage: {
+        width: CARD_WIDTH - 60,
+        height: 200,
+        borderRadius: 16,
+    },
+    comparisonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme.colors.white,
+        padding: 12,
+        borderRadius: 16,
+        marginBottom: 16,
+    },
+    comparisonEmoji: {
+        fontSize: 40,
+        marginEnd: 12,
+    },
+    comparisonInfo: {
+        alignItems: 'flex-start',
+    },
+    comparisonItem: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+    },
+    comparisonSize: {
+        fontSize: 14,
+        color: theme.colors.textLight,
+    },
+    factsContainer: {
+        marginBottom: 12,
+    },
+    factsTitle: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#333',
+        marginBottom: 8,
+    },
+    factRow: {
+        flexDirection: 'row',
+        marginBottom: 4,
+    },
+    factBullet: {
+        fontSize: 14,
+        color: theme.colors.accent,
+        marginEnd: 8,
+    },
+    factText: {
+        fontSize: 13,
+        color: theme.colors.textSecondary,
+        flex: 1,
+    },
+    highlightsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    highlightChip: {
+        backgroundColor: '#F3E5F5',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 12,
+    },
+    highlightText: {
+        fontSize: 12,
+        color: '#7B1FA2',
+    },
+    bottomInfo: {
+        padding: 16,
+        alignItems: 'center',
+    },
+    bottomText: {
+        fontSize: 13,
+        color: '#999',
+        fontStyle: 'italic',
+    },
+});
+
+export default BabyEvolutionScreen;

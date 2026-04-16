@@ -1,0 +1,452 @@
+[
+    {
+        "suggestion_id": "cs001",
+        "label_fr": "J'ai des nausées matinales",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 1,
+        "linked_article_ids": "a04_nausées_matinales",
+        "linked_red_flag_ids": "ne garde rien"
+    },
+    {
+        "suggestion_id": "cs002",
+        "label_fr": "Je me sens très fatiguée",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 1,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs003",
+        "label_fr": "J'ai des envies fréquentes d'uriner",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 1,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "cystite"
+    },
+    {
+        "suggestion_id": "cs004",
+        "label_fr": "J'ai des saignements légers",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 1,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "hémorragie"
+    },
+    {
+        "suggestion_id": "cs005",
+        "label_fr": "Quels aliments éviter au premier trimestre ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "nutrition",
+        "trimestre": 1,
+        "linked_article_ids": "a02_alimentation_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs006",
+        "label_fr": "Dois-je prendre de l'acide folique ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "nutrition",
+        "trimestre": 1,
+        "linked_article_ids": "a02_alimentation_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs007",
+        "label_fr": "J'ai des brûlures d'estomac",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 1,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs008",
+        "label_fr": "Quand faire la première échographie ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "examens",
+        "trimestre": 1,
+        "linked_article_ids": "a03_examens_médicaux_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs009",
+        "label_fr": "Qu'est-ce que le dépistage de la trisomie 21 ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "examens",
+        "trimestre": 1,
+        "linked_article_ids": "a03_examens_médicaux_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs010",
+        "label_fr": "Quels sont mes droits et aides ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "administratif",
+        "trimestre": 1,
+        "linked_article_ids": "a17_droits_et_aides",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs011",
+        "label_fr": "Puis-je continuer à faire du sport ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "sport",
+        "trimestre": 1,
+        "linked_article_ids": "a05_exercice_physique_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs012",
+        "label_fr": "Grossesse et relations sexuelles",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "sexualite",
+        "trimestre": 1,
+        "linked_article_ids": "a18_grossesse_et_sexualité",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs013",
+        "label_fr": "Comment gérer mon stress ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "emotions",
+        "trimestre": 1,
+        "linked_article_ids": "a07_changements_émotionnels_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs014",
+        "label_fr": "J'ai des crampes dans les jambes",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 1,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs015",
+        "label_fr": "Je suis enceinte de jumeaux",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "multiples",
+        "trimestre": 1,
+        "linked_article_ids": "a19_grossesses_multiples",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs016",
+        "label_fr": "Je sens mon bébé bouger, est-ce normal ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "mouvements_bebe",
+        "trimestre": 2,
+        "linked_article_ids": "a20_mouvements_du_bébé",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs017",
+        "label_fr": "J'ai mal au dos",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 2,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs018",
+        "label_fr": "J'ai des contractions de Braxton Hicks",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 2,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs019",
+        "label_fr": "J'ai des problèmes de sommeil",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "sommeil",
+        "trimestre": 2,
+        "linked_article_ids": "a06_sommeil_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs020",
+        "label_fr": "Dois-je prendre du fer ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "nutrition",
+        "trimestre": 2,
+        "linked_article_ids": "a02_alimentation_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs021",
+        "label_fr": "Qu'est-ce que le diabète gestationnel ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "examens",
+        "trimestre": 2,
+        "linked_article_ids": "a03_examens_médicaux_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs022",
+        "label_fr": "J'ai des envies de sucre",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "nutrition",
+        "trimestre": 2,
+        "linked_article_ids": "a02_alimentation_pendant_la",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs023",
+        "label_fr": "Quand faire l'échographie du 2ème trimestre ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "examens",
+        "trimestre": 2,
+        "linked_article_ids": "a03_examens_médicaux_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs024",
+        "label_fr": "Qu'est-ce que le test de glucose (HGPO) ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "examens",
+        "trimestre": 2,
+        "linked_article_ids": "a03_examens_médicaux_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs025",
+        "label_fr": "Puis-je voyager en avion ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "voyage",
+        "trimestre": 2,
+        "linked_article_ids": "a16_grossesse_et_travail",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs026",
+        "label_fr": "Quand commencer les achats pour bébé ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "achats",
+        "trimestre": 2,
+        "linked_article_ids": "a08_liste_dachats_pour",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs027",
+        "label_fr": "Comment choisir le prénom ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "emotions",
+        "trimestre": 2,
+        "linked_article_ids": "a07_changements_émotionnels_pendant",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs028",
+        "label_fr": "J'ai des varices",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 2,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs029",
+        "label_fr": "Comment prévenir les vergetures ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 2,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs030",
+        "label_fr": "J'ai des problèmes de gencives",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 2,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs031",
+        "label_fr": "Je ne sens plus mon bébé bouger",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "mouvements_bebe",
+        "trimestre": 3,
+        "linked_article_ids": "a20_mouvements_du_bébé",
+        "linked_red_flag_ids": "ne sens plus le bébé"
+    },
+    {
+        "suggestion_id": "cs032",
+        "label_fr": "J'ai des douleurs intenses au ventre",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 3,
+        "linked_article_ids": "a12_signes_du_travail",
+        "linked_red_flag_ids": "crampes sévères"
+    },
+    {
+        "suggestion_id": "cs033",
+        "label_fr": "J'ai perdu les eaux",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "accouchement",
+        "trimestre": 3,
+        "linked_article_ids": "a12_signes_du_travail",
+        "linked_red_flag_ids": "liquide chaud"
+    },
+    {
+        "suggestion_id": "cs034",
+        "label_fr": "J'ai des maux de tête violents",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 3,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "céphalée"
+    },
+    {
+        "suggestion_id": "cs035",
+        "label_fr": "Comment se préparer à l'accouchement ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "preparation",
+        "trimestre": 3,
+        "linked_article_ids": "a09_préparation_à_laccouchement",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs036",
+        "label_fr": "Quels sont les signes du travail ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "accouchement",
+        "trimestre": 3,
+        "linked_article_ids": "a12_signes_du_travail",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs037",
+        "label_fr": "Comment faire ma valise de maternité ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "preparation",
+        "trimestre": 3,
+        "linked_article_ids": "a08_liste_dachats_pour",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs038",
+        "label_fr": "Quel est le rôle du partenaire pendant l'accouchement ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "preparation",
+        "trimestre": 3,
+        "linked_article_ids": "a11_péridurale",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs039",
+        "label_fr": "Comment choisir ma maternité ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "preparation",
+        "trimestre": 3,
+        "linked_article_ids": "a10_différentes_méthodes_daccouchement",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs040",
+        "label_fr": "Comment se passe le post-partum ?",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "post-partum",
+        "trimestre": 3,
+        "linked_article_ids": "a14_post-partum",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs041",
+        "label_fr": "J'ai des pensées négatives après l'accouchement",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "post-partum",
+        "trimestre": 3,
+        "linked_article_ids": "a15_dépression_post-partum",
+        "linked_red_flag_ids": "pensées suicidaires"
+    },
+    {
+        "suggestion_id": "cs042",
+        "label_fr": "Je veux allaiter",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "post-partum",
+        "trimestre": 3,
+        "linked_article_ids": "a13_allaitement",
+        "linked_red_flag_ids": ""
+    },
+    {
+        "suggestion_id": "cs043",
+        "label_fr": "J'ai de la fièvre",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 3,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "température élevée"
+    },
+    {
+        "suggestion_id": "cs044",
+        "label_fr": "J'ai des difficultés à respirer",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 3,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "essoufflement"
+    },
+    {
+        "suggestion_id": "cs045",
+        "label_fr": "J'ai des douleurs au foie",
+        "label_ar": "",
+        "label_en": "",
+        "topic": "symptomes",
+        "trimestre": 3,
+        "linked_article_ids": "a01_symptômes_de_grossesse",
+        "linked_red_flag_ids": "douleur foie"
+    }
+]

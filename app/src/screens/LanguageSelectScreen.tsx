@@ -1,0 +1,284 @@
+import { createLogger } from '../utils/logger';
+const log = createLogger('LanguageSelectScreen');
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '../i18n';
+import { theme } from '../theme';
+import { useTranslation } from 'react-i18next';
+import { changeLanguage } from '../i18n/rtl';
+import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+
+const LANGUAGES = [
+    { code: 'fr', name: 'Français', flag: '🇫🇷', nativeName: 'Français' },
+    { code: 'ar', name: 'Arabic', flag: '🇩🇿', nativeName: 'العربية' },
+    { code: 'tn', name: 'Arabe + Darija', flag: '🇹🇳', nativeName: 'العربية + الدارجة (Beta)' },
+    { code: 'en', name: 'English', flag: '🇬🇧', nativeName: 'English' },
+];
+
+export const LanguageSelectScreen = () => {
+    useScreenAnalytics('LanguageSelectScreen');
+    const navigation = useNavigation();
+    const { t } = useTranslation();
+    const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'fr');
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // Load saved language
+        const loadLanguage = async () => {
+            try {
+                const savedLang = await AsyncStorage.getItem('app_locale');
+                if (savedLang) {
+                    setSelectedLanguage(savedLang);
+                }
+            } catch (error) {
+                log.error('Error loading language:', error);
+            }
+        };
+        loadLanguage();
+    }, []);
+
+    const handleLanguageSelect = async (languageCode: string) => {
+        setLoading(true);
+        try {
+            await changeLanguage(languageCode);
+
+            // Save language preference (redundant if changeLanguage does it, but safe)
+            await AsyncStorage.setItem('app_locale', languageCode);
+            setSelectedLanguage(languageCode);
+
+            // Show success message
+            Alert.alert(
+                t('common.languageUpdated'),
+                t('common.languageUpdatedMsg'),
+                [
+                    {
+                        text: t('common.ok'),
+                        onPress: () => navigation.navigate('AuthChoice'),
+                    },
+                ]
+            );
+        } catch (error) {
+            log.error('Error saving language:', error);
+            Alert.alert(t('common.error'), t('common.languageChangeError'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <ScrollView style={styles.container}>
+            {/* Header with Gradient */}
+            <LinearGradient
+                colors={['#FF6B9D', '#C2185B']}
+                style={styles.header}
+            >
+                <Text style={styles.headerEmoji}>🌐</Text>
+                <Text style={styles.headerTitle}>{t('common.chooseLanguage')}</Text>
+                <Text style={styles.headerSubtitle}>
+                    {t('common.chooseLanguageSubtitle')}
+                </Text>
+            </LinearGradient>
+
+            <View style={styles.content}>
+                <Text style={styles.infoText}>
+                    {t('common.selectLanguageHint')}
+                </Text>
+
+                {LANGUAGES.map((language) => (
+                    <TouchableOpacity
+                        key={language.code}
+                        style={[
+                            styles.languageCard,
+                            selectedLanguage === language.code && styles.languageCardSelected,
+                        ]}
+                        onPress={() => handleLanguageSelect(language.code)}
+                        disabled={loading}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.languageContent}>
+                            <Text style={styles.languageFlag}>{language.flag}</Text>
+                            <View style={styles.languageInfo}>
+                                <Text style={[
+                                    styles.languageName,
+                                    selectedLanguage === language.code && styles.languageNameSelected,
+                                ]}>
+                                    {language.name}
+                                </Text>
+                                <Text style={[
+                                    styles.languageNative,
+                                    selectedLanguage === language.code && styles.languageNativeSelected,
+                                ]}>
+                                    {language.nativeName}
+                                </Text>
+                            </View>
+                        </View>
+                        {selectedLanguage === language.code && (
+                            <View style={styles.checkmark}>
+                                <Text style={styles.checkmarkText}>✓</Text>
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                ))}
+
+                {/* Info Box */}
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoBoxTitle}>{t('common.infoTitle')}</Text>
+                    <Text style={styles.infoBoxText}>
+                        • {t('common.infoLanguageApplied')}
+                    </Text>
+                    <Text style={styles.infoBoxText}>
+                        • {t('common.infoTranslationsWIP')}
+                    </Text>
+                    <Text style={styles.infoBoxText}>
+                        • {t('common.infoFrenchComplete')}
+                    </Text>
+                </View>
+
+                {/* Continue Button */}
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => navigation.dispatch(
+                        CommonActions.reset({ index: 0, routes: [{ name: 'AuthChoice' }] })
+                    )}
+                >
+                    <Text style={styles.backButtonText}>{t('common.continue')} →</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: theme.colors.surface,
+    },
+    header: {
+        paddingTop: 60,
+        paddingBottom: 32,
+        alignItems: 'center',
+    },
+    headerEmoji: {
+        fontSize: 64,
+        marginBottom: 16,
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: theme.colors.white,
+        marginBottom: 8,
+    },
+    headerSubtitle: {
+        fontSize: 14,
+        color: 'rgba(255, 255, 255, 0.9)',
+        textAlign: 'center',
+    },
+    content: {
+        padding: 16,
+        paddingBottom: 32,
+    },
+    infoText: {
+        fontSize: 15,
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
+        marginBottom: 24,
+        lineHeight: 22,
+    },
+    languageCard: {
+        backgroundColor: theme.colors.white,
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 12,
+        borderWidth: 2,
+        borderColor: theme.colors.disabled,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    languageCardSelected: {
+        borderColor: theme.colors.primary,
+        backgroundColor: '#FFF0F7',
+    },
+    languageContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    languageFlag: {
+        fontSize: 40,
+        marginEnd: 16,
+    },
+    languageInfo: {
+        flex: 1,
+    },
+    languageName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#1A1A1A',
+        marginBottom: 4,
+    },
+    languageNameSelected: {
+        color: theme.colors.accent,
+    },
+    languageNative: {
+        fontSize: 14,
+        color: theme.colors.textSecondary,
+    },
+    languageNativeSelected: {
+        color: theme.colors.primary,
+    },
+    checkmark: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: theme.colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    checkmarkText: {
+        color: theme.colors.white,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    infoBox: {
+        backgroundColor: '#E3F2FD',
+        borderRadius: 12,
+        padding: 16,
+        marginTop: 24,
+        marginBottom: 24,
+        borderWidth: 1,
+        borderColor: '#BBDEFB',
+    },
+    infoBoxTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#1976D2',
+        marginBottom: 12,
+    },
+    infoBoxText: {
+        fontSize: 14,
+        color: '#1565C0',
+        marginBottom: 8,
+        lineHeight: 20,
+    },
+    backButton: {
+        backgroundColor: theme.colors.white,
+        paddingVertical: 14,
+        borderRadius: 12,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: theme.colors.disabled,
+    },
+    backButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
+    },
+});

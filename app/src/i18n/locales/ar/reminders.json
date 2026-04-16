@@ -1,0 +1,79 @@
+{
+    "card": {
+        "days": "أيام",
+        "daysLabel": "الأيام:",
+        "advancedOptions": "🔧 خيارات متقدمة",
+        "undefined": "غير محدد",
+        "customize": "تخصيص",
+        "intensity": "الشدة:",
+        "timesPerDay": "{{count}}×/يوم",
+        "scheduledHours": "📅 الأوقات المبرمجة:",
+        "weekTitle": "تذكيرات الأسبوع",
+        "viewAll": "عرض الكل →",
+        "priorityHigh": "عالية",
+        "priorityMedium": "متوسطة",
+        "priorityLow": "منخفضة",
+        "priorityLabel": "الأولوية: {{level}}",
+        "notifBody": "ماما، {{description}} 💕"
+    },
+    "hydration": {
+        "title": "شرب الماء",
+        "subtitle": "الهدف اليومي",
+        "addWater": "أضف كوب (250 مل)",
+        "settingsTitle": "🎯 الأهداف",
+        "dailyGoalInput": "الهدف اليومي (مل)",
+        "remindersPerDay": "تذكيرات في اليوم",
+        "remindersTimeRange": "بين 8 صباحاً و 10 مساءً",
+        "enableReminders": "تفعيل التذكيرات",
+        "concept": "في تاريخ الحمل",
+        "save": "حفظ"
+    },
+    "frequenciesShort": {
+        "per_day": "يوم",
+        "per_week": "أسبوع",
+        "per_month": "شهر"
+    },
+    "types": {
+        "title": "يومي",
+        "loading": "جاري التحميل...",
+        "emptyTitle": "لا توجد مهام اليوم.",
+        "emptyMsg": "قم بتفعيل التذكيرات في تبويب التذكيرات! 💡",
+        "allDone": "تم الانتهاء من كل شيء! استرح جيداً 💖",
+        "remainingTasks": "{{count}} مهام متبقية",
+        "hideTodayTitle": "إخفاء لليوم؟",
+        "hideTodayMsg": "سيتم إخفاء هذا التذكير اليوم، وسيعود غداً.",
+        "hide": "إخفاء",
+        "cancel": "إلغاء"
+    },
+    "frequency": {
+        "per_day": "يوم",
+        "per_week": "أسبوع",
+        "per_month": "شهر",
+        "one_off": "مرة"
+    },
+    "reminderEdit": {
+        "invalidTime": "\"{{time}}\" غير صالح. استخدم التنسيق HH:MM 💕",
+        "saveError": "عفوا، حدث خطأ ما. حاول مرة أخرى 💕",
+        "nameOptional": "الاسم (اختياري)",
+        "addTime": "+ إضافة موعد",
+        "duplicate": "يوجد أوقات مكررة. يرجى تغييرها 💕",
+        "minLimit": "مطلوب وقت واحد على الأقل 💕",
+        "maxLimit": "الحد الأقصى {{count}} أوقات 💕",
+        "yourSchedule": "⏰ جدولك ({{count}}×/{{freq}})",
+        "hint": "💡 تنسيق 24 ساعة • الاسم اختياري (مثل \"فيتامين سي\"، \"حديد\")",
+        "recommendedPace": "↩ الوتيرة الموصى بها",
+        "resetToDefault": "إعادة الضبط"
+    },
+    "myDay": {
+        "title": "يومي",
+        "loading": "جاري التحميل...",
+        "emptyTitle": "كل شيء تم!",
+        "emptyMsg": "لا توجد مهام لليوم",
+        "allDone": "تم إنجاز كل المهام!",
+        "remainingTasks": "{{count}} مهام متبقية",
+        "hideTodayTitle": "إخفاء لليوم؟",
+        "hideTodayMsg": "ستظهر المهمة غداً",
+        "hide": "إخفاء",
+        "cancel": "إلغاء"
+    }
+}

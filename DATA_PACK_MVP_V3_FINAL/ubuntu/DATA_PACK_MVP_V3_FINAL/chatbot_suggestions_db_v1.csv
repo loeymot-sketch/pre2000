@@ -1,0 +1,46 @@
+suggestion_id,label_fr,label_ar,label_en,topic,trimestre,linked_article_ids,linked_red_flag_ids
+cs001,J'ai des nausées matinales,,,symptomes,1,a04_nausées_matinales,ne garde rien
+cs002,Je me sens très fatiguée,,,symptomes,1,a01_symptômes_de_grossesse,
+cs003,J'ai des envies fréquentes d'uriner,,,symptomes,1,a01_symptômes_de_grossesse,cystite
+cs004,J'ai des saignements légers,,,symptomes,1,a01_symptômes_de_grossesse,hémorragie
+cs005,Quels aliments éviter au premier trimestre ?,,,nutrition,1,a02_alimentation_pendant_la,
+cs006,Dois-je prendre de l'acide folique ?,,,nutrition,1,a02_alimentation_pendant_la,
+cs007,J'ai des brûlures d'estomac,,,symptomes,1,a01_symptômes_de_grossesse,
+cs008,Quand faire la première échographie ?,,,examens,1,a03_examens_médicaux_pendant,
+cs009,Qu'est-ce que le dépistage de la trisomie 21 ?,,,examens,1,a03_examens_médicaux_pendant,
+cs010,Quels sont mes droits et aides ?,,,administratif,1,a17_droits_et_aides,
+cs011,Puis-je continuer à faire du sport ?,,,sport,1,a05_exercice_physique_pendant,
+cs012,Grossesse et relations sexuelles,,,sexualite,1,a18_grossesse_et_sexualité,
+cs013,Comment gérer mon stress ?,,,emotions,1,a07_changements_émotionnels_pendant,
+cs014,J'ai des crampes dans les jambes,,,symptomes,1,a01_symptômes_de_grossesse,
+cs015,Je suis enceinte de jumeaux,,,multiples,1,a19_grossesses_multiples,
+cs016,"Je sens mon bébé bouger, est-ce normal ?",,,mouvements_bebe,2,a20_mouvements_du_bébé,
+cs017,J'ai mal au dos,,,symptomes,2,a01_symptômes_de_grossesse,
+cs018,J'ai des contractions de Braxton Hicks,,,symptomes,2,a01_symptômes_de_grossesse,
+cs019,J'ai des problèmes de sommeil,,,sommeil,2,a06_sommeil_pendant_la,
+cs020,Dois-je prendre du fer ?,,,nutrition,2,a02_alimentation_pendant_la,
+cs021,Qu'est-ce que le diabète gestationnel ?,,,examens,2,a03_examens_médicaux_pendant,
+cs022,J'ai des envies de sucre,,,nutrition,2,a02_alimentation_pendant_la,
+cs023,Quand faire l'échographie du 2ème trimestre ?,,,examens,2,a03_examens_médicaux_pendant,
+cs024,Qu'est-ce que le test de glucose (HGPO) ?,,,examens,2,a03_examens_médicaux_pendant,
+cs025,Puis-je voyager en avion ?,,,voyage,2,a16_grossesse_et_travail,
+cs026,Quand commencer les achats pour bébé ?,,,achats,2,a08_liste_dachats_pour,
+cs027,Comment choisir le prénom ?,,,emotions,2,a07_changements_émotionnels_pendant,
+cs028,J'ai des varices,,,symptomes,2,a01_symptômes_de_grossesse,
+cs029,Comment prévenir les vergetures ?,,,symptomes,2,a01_symptômes_de_grossesse,
+cs030,J'ai des problèmes de gencives,,,symptomes,2,a01_symptômes_de_grossesse,
+cs031,Je ne sens plus mon bébé bouger,,,mouvements_bebe,3,a20_mouvements_du_bébé,ne sens plus le bébé
+cs032,J'ai des douleurs intenses au ventre,,,symptomes,3,a12_signes_du_travail,crampes sévères
+cs033,J'ai perdu les eaux,,,accouchement,3,a12_signes_du_travail,liquide chaud
+cs034,J'ai des maux de tête violents,,,symptomes,3,a01_symptômes_de_grossesse,céphalée
+cs035,Comment se préparer à l'accouchement ?,,,preparation,3,a09_préparation_à_laccouchement,
+cs036,Quels sont les signes du travail ?,,,accouchement,3,a12_signes_du_travail,
+cs037,Comment faire ma valise de maternité ?,,,preparation,3,a08_liste_dachats_pour,
+cs038,Quel est le rôle du partenaire pendant l'accouchement ?,,,preparation,3,a11_péridurale,
+cs039,Comment choisir ma maternité ?,,,preparation,3,a10_différentes_méthodes_daccouchement,
+cs040,Comment se passe le post-partum ?,,,post-partum,3,a14_post-partum,
+cs041,J'ai des pensées négatives après l'accouchement,,,post-partum,3,a15_dépression_post-partum,pensées suicidaires
+cs042,Je veux allaiter,,,post-partum,3,a13_allaitement,
+cs043,J'ai de la fièvre,,,symptomes,3,a01_symptômes_de_grossesse,température élevée
+cs044,J'ai des difficultés à respirer,,,symptomes,3,a01_symptômes_de_grossesse,essoufflement
+cs045,J'ai des douleurs au foie,,,symptomes,3,a01_symptômes_de_grossesse,douleur foie

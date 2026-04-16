@@ -1,0 +1,3436 @@
+[
+  {
+    "message_id": "bm_w01_d01",
+    "week": 1,
+    "day": 1,
+    "message_fr": "Maman, pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w01_d02",
+    "week": 1,
+    "day": 2,
+    "message_fr": "Maman, je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا كنزك الصغير المخبأ.",
+    "message_tn": "ماما، أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w01_d03",
+    "week": 1,
+    "day": 3,
+    "message_fr": "Maman, je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "ماما، أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w01_d04",
+    "week": 1,
+    "day": 4,
+    "message_fr": "Tu es mon univers tout entier.",
+    "emoji": "🌍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ عالمي بأكمله.",
+    "message_tn": "أنتِ عالمي بأكمله."
+  },
+  {
+    "message_id": "bm_w01_d05",
+    "week": 1,
+    "day": 5,
+    "message_fr": "Je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w01_d06",
+    "week": 1,
+    "day": 6,
+    "message_fr": "Maman, tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "ماما، أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w01_d07",
+    "week": 1,
+    "day": 7,
+    "message_fr": "J'aime entendre ta voix quand tu parles ou chantes.",
+    "emoji": "🎶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "message_tn": "أحب سماع صوتك عندما تتحدثين أو تغنين."
+  },
+  {
+    "message_id": "bm_w02_d01",
+    "week": 2,
+    "day": 1,
+    "message_fr": "Maman, repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، ارتاحي جيدا، نحن نكبر معا.",
+    "message_tn": "ماما، ارتاحي جيدا، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w02_d02",
+    "week": 2,
+    "day": 2,
+    "message_fr": "On est une super équipe toi et moi !",
+    "emoji": "🤝",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نحن فريق رائع أنا وأنتِ!",
+    "message_tn": "نحن فريق رائع أنا وأنتِ!"
+  },
+  {
+    "message_id": "bm_w02_d03",
+    "week": 2,
+    "day": 3,
+    "message_fr": "Si tu es stressée, je le sens. Détends-toi...",
+    "emoji": "🧘‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "إذا كنتِ متوترة، أشعر بذلك. استرخي...",
+    "message_tn": "إذا كنتِ متوترة، أشعر بذلك. استرخي..."
+  },
+  {
+    "message_id": "bm_w02_d04",
+    "week": 2,
+    "day": 4,
+    "message_fr": "On est une super équipe toi et moi !",
+    "emoji": "🤝",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نحن فريق رائع أنا وأنتِ!",
+    "message_tn": "نحن فريق رائع أنا وأنتِ!"
+  },
+  {
+    "message_id": "bm_w02_d05",
+    "week": 2,
+    "day": 5,
+    "message_fr": "Maman, j'aime entendre ta voix quand tu parles ou chantes.",
+    "emoji": "🎶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "message_tn": "ماما، أحب سماع صوتك عندما تتحدثين أو تغنين."
+  },
+  {
+    "message_id": "bm_w02_d06",
+    "week": 2,
+    "day": 6,
+    "message_fr": "Maman, repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، ارتاحي جيدا، نحن نكبر معا.",
+    "message_tn": "ماما، ارتاحي جيدا، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w02_d07",
+    "week": 2,
+    "day": 7,
+    "message_fr": "Écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w03_d01",
+    "week": 3,
+    "day": 1,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w03_d02",
+    "week": 3,
+    "day": 2,
+    "message_fr": "Maman, courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "ماما، تشجعي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w03_d03",
+    "week": 3,
+    "day": 3,
+    "message_fr": "Dors bien maman, j'ai besoin que tu sois en forme.",
+    "emoji": "🌙",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة.",
+    "message_tn": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة."
+  },
+  {
+    "message_id": "bm_w03_d04",
+    "week": 3,
+    "day": 4,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w03_d05",
+    "week": 3,
+    "day": 5,
+    "message_fr": "Maman, dors bien maman, j'ai besoin que tu sois en forme.",
+    "emoji": "🌙",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، نمي جيدا، أحتاجك أن تكوني بصحة جيدة.",
+    "message_tn": "ماما، نمي جيدا، أحتاجك أن تكوني بصحة جيدة."
+  },
+  {
+    "message_id": "bm_w03_d06",
+    "week": 3,
+    "day": 6,
+    "message_fr": "Maman, pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w03_d07",
+    "week": 3,
+    "day": 7,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w04_d01",
+    "week": 4,
+    "day": 1,
+    "message_fr": "Sais-tu que... Je suis grand comme une graine de pavot ! Je m'installe confortablement.",
+    "emoji": "🌱",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أنا بحجم حبة الخشخاش! أستقر براحة.",
+    "message_tn": "هل تعلمين... أنا بحجم حبة الخشخاش! أستقر براحة."
+  },
+  {
+    "message_id": "bm_w04_d02",
+    "week": 4,
+    "day": 2,
+    "message_fr": "Repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "message_tn": "ارتاحي جيدا يا أمي، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w04_d03",
+    "week": 4,
+    "day": 3,
+    "message_fr": "Maman, on est une super équipe toi et moi !",
+    "emoji": "🤝",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، نحن فريق رائع أنا وأنتِ!",
+    "message_tn": "ماما، نحن فريق رائع أنا وأنتِ!"
+  },
+  {
+    "message_id": "bm_w04_d04",
+    "week": 4,
+    "day": 4,
+    "message_fr": "Maman, Je suis grand comme une graine de pavot ! Je m'installe confortablement.",
+    "emoji": "🌱",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا بحجم حبة الخشخاش! أستقر براحة.",
+    "message_tn": "ماما، أنا بحجم حبة الخشخاش! أستقر براحة."
+  },
+  {
+    "message_id": "bm_w04_d05",
+    "week": 4,
+    "day": 5,
+    "message_fr": "Repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "message_tn": "ارتاحي جيدا يا أمي، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w04_d06",
+    "week": 4,
+    "day": 6,
+    "message_fr": "Je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w04_d07",
+    "week": 4,
+    "day": 7,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w05_d01",
+    "week": 5,
+    "day": 1,
+    "message_fr": "Sais-tu que... Mon cœur commence à battre, c'est le tout début de la vie !",
+    "emoji": "💓",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... قلبي بدأ ينبض، إنها بداية الحياة!",
+    "message_tn": "هل تعلمين... قلبي بدأ ينبض، إنها بداية الحياة!"
+  },
+  {
+    "message_id": "bm_w05_d02",
+    "week": 5,
+    "day": 2,
+    "message_fr": "Maman, j'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "ماما، لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w05_d03",
+    "week": 5,
+    "day": 3,
+    "message_fr": "Fais-toi chouchouter, tu le mérites.",
+    "emoji": "💆‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "دللي نفسك، أنتِ تستحقين ذلك.",
+    "message_tn": "دللي نفسك، أنتِ تستحقين ذلك."
+  },
+  {
+    "message_id": "bm_w05_d04",
+    "week": 5,
+    "day": 4,
+    "message_fr": "Incroyable : Mon cœur commence à battre, c'est le tout début de la vie !",
+    "emoji": "💓",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: قلبي بدأ ينبض، إنها بداية الحياة!",
+    "message_tn": "مذهل: قلبي بدأ ينبض، إنها بداية الحياة!"
+  },
+  {
+    "message_id": "bm_w05_d05",
+    "week": 5,
+    "day": 5,
+    "message_fr": "Maman, je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "ماما، أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w05_d06",
+    "week": 5,
+    "day": 6,
+    "message_fr": "Maman, courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "ماما، تشجعي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w05_d07",
+    "week": 5,
+    "day": 7,
+    "message_fr": "Si tu es stressée, je le sens. Détends-toi...",
+    "emoji": "🧘‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "إذا كنتِ متوترة، أشعر بذلك. استرخي...",
+    "message_tn": "إذا كنتِ متوترة، أشعر بذلك. استرخي..."
+  },
+  {
+    "message_id": "bm_w06_d01",
+    "week": 6,
+    "day": 1,
+    "message_fr": "Sais-tu que... Je ressemble à un petit têtard, mes bras et jambes commencent à pousser.",
+    "emoji": "🐸",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أبدو كشرغوف صغير، ذراعي وساقي تبدآن في النمو.",
+    "message_tn": "هل تعلمين... أبدو كشرغوف صغير، ذراعي وساقي تبدآن في النمو."
+  },
+  {
+    "message_id": "bm_w06_d02",
+    "week": 6,
+    "day": 2,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w06_d03",
+    "week": 6,
+    "day": 3,
+    "message_fr": "Maman, si tu es stressée, je le sens. Détends-toi...",
+    "emoji": "🧘‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، إذا كنت متوترة أشعر بذلك. استرخي...",
+    "message_tn": "ماما، إذا كنت متوترة أشعر بذلك. استرخي..."
+  },
+  {
+    "message_id": "bm_w06_d04",
+    "week": 6,
+    "day": 4,
+    "message_fr": "Maman, Je ressemble à un petit têtard, mes bras et jambes commencent à pousser.",
+    "emoji": "🐸",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أبدو كشرغوف صغير، ذراعي وساقي تبدآن في النمو.",
+    "message_tn": "ماما، أبدو كشرغوف صغير، ذراعي وساقي تبدآن في النمو."
+  },
+  {
+    "message_id": "bm_w06_d05",
+    "week": 6,
+    "day": 5,
+    "message_fr": "Prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w06_d06",
+    "week": 6,
+    "day": 6,
+    "message_fr": "Respire profondément, ça m'oxygène aussi.",
+    "emoji": "🌬️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تنفّسي بعمق، هذا يمدني بالأكسجين أيضا.",
+    "message_tn": "تنفّسي بعمق، هذا يمدني بالأكسجين أيضا."
+  },
+  {
+    "message_id": "bm_w06_d07",
+    "week": 6,
+    "day": 7,
+    "message_fr": "Fais-toi chouchouter, tu le mérites.",
+    "emoji": "💆‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "دللي نفسك، أنتِ تستحقين ذلك.",
+    "message_tn": "دللي نفسك، أنتِ تستحقين ذلك."
+  },
+  {
+    "message_id": "bm_w07_d01",
+    "week": 7,
+    "day": 1,
+    "message_fr": "Incroyable : Mon cerveau grandit à toute vitesse, 100 000 neurones par minute !",
+    "emoji": "🧠",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: دماغي ينمو بسرعة فائقة، 100،000 خلية عصبية في الدقيقة!",
+    "message_tn": "مذهل: دماغي ينمو بسرعة فائقة، 100،000 خلية عصبية في الدقيقة!"
+  },
+  {
+    "message_id": "bm_w07_d02",
+    "week": 7,
+    "day": 2,
+    "message_fr": "Je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w07_d03",
+    "week": 7,
+    "day": 3,
+    "message_fr": "Prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w07_d04",
+    "week": 7,
+    "day": 4,
+    "message_fr": "Maman, Mon cerveau grandit à toute vitesse, 100 000 neurones par minute !",
+    "emoji": "🧠",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، دماغي ينمو بسرعة فائقة، 100،000 خلية عصبية في الدقيقة!",
+    "message_tn": "ماما، دماغي ينمو بسرعة فائقة، 100،000 خلية عصبية في الدقيقة!"
+  },
+  {
+    "message_id": "bm_w07_d05",
+    "week": 7,
+    "day": 5,
+    "message_fr": "Tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w07_d06",
+    "week": 7,
+    "day": 6,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w07_d07",
+    "week": 7,
+    "day": 7,
+    "message_fr": "Merci de prendre soin de moi.",
+    "emoji": "🙏",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "شكرا لاهتمامك بي.",
+    "message_tn": "شكرا لاهتمامك بي."
+  },
+  {
+    "message_id": "bm_w08_d01",
+    "week": 8,
+    "day": 1,
+    "message_fr": "Devine quoi ? Je bouge déjà un peu, mais tu ne peux pas encore me sentir.",
+    "emoji": "💃",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ أنا أتحرك قليلا بالفعل، لكنك لا تستطيعين الشعور بي بعد.",
+    "message_tn": "احزري ماذا؟ أنا أتحرك قليلا بالفعل، لكنك لا تستطيعين الشعور بي بعد."
+  },
+  {
+    "message_id": "bm_w08_d02",
+    "week": 8,
+    "day": 2,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w08_d03",
+    "week": 8,
+    "day": 3,
+    "message_fr": "Repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "message_tn": "ارتاحي جيدا يا أمي، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w08_d04",
+    "week": 8,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je bouge déjà un peu, mais tu ne peux pas encore me sentir.",
+    "emoji": "💃",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أنا أتحرك قليلا بالفعل، لكنك لا تستطيعين الشعور بي بعد.",
+    "message_tn": "هل تعلمين... أنا أتحرك قليلا بالفعل، لكنك لا تستطيعين الشعور بي بعد."
+  },
+  {
+    "message_id": "bm_w08_d05",
+    "week": 8,
+    "day": 5,
+    "message_fr": "Maman, fais-toi chouchouter, tu le mérites.",
+    "emoji": "💆‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، دللي نفسك، أنتِ تستحقين ذلك.",
+    "message_tn": "ماما، دللي نفسك، أنتِ تستحقين ذلك."
+  },
+  {
+    "message_id": "bm_w08_d06",
+    "week": 8,
+    "day": 6,
+    "message_fr": "Maman, merci de prendre soin de moi.",
+    "emoji": "🙏",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، شكرا لاهتمامك بي.",
+    "message_tn": "ماما، شكرا لاهتمامك بي."
+  },
+  {
+    "message_id": "bm_w08_d07",
+    "week": 8,
+    "day": 7,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w09_d01",
+    "week": 9,
+    "day": 1,
+    "message_fr": "Maman, Mes petits doigts de pieds se forment, bientôt je pourrai les compter.",
+    "emoji": "🦶",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أصابع قدمي الصغيرة تتشكل، قريبا سأتمكن من عدها.",
+    "message_tn": "ماما، أصابع قدمي الصغيرة تتشكل، قريبا سأتمكن من عدها."
+  },
+  {
+    "message_id": "bm_w09_d02",
+    "week": 9,
+    "day": 2,
+    "message_fr": "Tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w09_d03",
+    "week": 9,
+    "day": 3,
+    "message_fr": "Écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w09_d04",
+    "week": 9,
+    "day": 4,
+    "message_fr": "Maman, Mes petits doigts de pieds se forment, bientôt je pourrai les compter.",
+    "emoji": "🦶",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أصابع قدمي الصغيرة تتشكل، قريبا سأتمكن من عدها.",
+    "message_tn": "ماما، أصابع قدمي الصغيرة تتشكل، قريبا سأتمكن من عدها."
+  },
+  {
+    "message_id": "bm_w09_d05",
+    "week": 9,
+    "day": 5,
+    "message_fr": "Respire profondément, ça m'oxygène aussi.",
+    "emoji": "🌬️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تنفّسي بعمق، هذا يمدني بالأكسجين أيضا.",
+    "message_tn": "تنفّسي بعمق، هذا يمدني بالأكسجين أيضا."
+  },
+  {
+    "message_id": "bm_w09_d06",
+    "week": 9,
+    "day": 6,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w09_d07",
+    "week": 9,
+    "day": 7,
+    "message_fr": "Je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w10_d01",
+    "week": 10,
+    "day": 1,
+    "message_fr": "Maman, Je suis officiellement un fœtus ! Je ne suis plus un embryon.",
+    "emoji": "👶",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا رسميا جنين! لم أعد مضغة.",
+    "message_tn": "ماما، أنا رسميا جنين! لم أعد مضغة."
+  },
+  {
+    "message_id": "bm_w10_d02",
+    "week": 10,
+    "day": 2,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w10_d03",
+    "week": 10,
+    "day": 3,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w10_d04",
+    "week": 10,
+    "day": 4,
+    "message_fr": "Devine quoi ? Je suis officiellement un fœtus ! Je ne suis plus un embryon.",
+    "emoji": "👶",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ أنا رسميا جنين! لم أعد مضغة.",
+    "message_tn": "احزري ماذا؟ أنا رسميا جنين! لم أعد مضغة."
+  },
+  {
+    "message_id": "bm_w10_d05",
+    "week": 10,
+    "day": 5,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w10_d06",
+    "week": 10,
+    "day": 6,
+    "message_fr": "Maman, j'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "ماما، لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w10_d07",
+    "week": 10,
+    "day": 7,
+    "message_fr": "Dors bien maman, j'ai besoin que tu sois en forme.",
+    "emoji": "🌙",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة.",
+    "message_tn": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة."
+  },
+  {
+    "message_id": "bm_w11_d01",
+    "week": 11,
+    "day": 1,
+    "message_fr": "Maman, Je commence à avoir des ongles, c'est fou non ?",
+    "emoji": "💅",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، بدأت أظافري تنمو، أليس هذا جنونيا؟",
+    "message_tn": "ماما، بدأت أظافري تنمو، أليس هذا جنونيا؟"
+  },
+  {
+    "message_id": "bm_w11_d02",
+    "week": 11,
+    "day": 2,
+    "message_fr": "Maman, je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "ماما، أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w11_d03",
+    "week": 11,
+    "day": 3,
+    "message_fr": "Maman, n'oublie pas de boire de l'eau, j'ai besoin de ma piscine !",
+    "emoji": "💧",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!",
+    "message_tn": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!"
+  },
+  {
+    "message_id": "bm_w11_d04",
+    "week": 11,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je commence à avoir des ongles, c'est fou non ?",
+    "emoji": "💅",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... بدأت أظافري تنمو، أليس هذا جنونيا؟",
+    "message_tn": "هل تعلمين... بدأت أظافري تنمو، أليس هذا جنونيا؟"
+  },
+  {
+    "message_id": "bm_w11_d05",
+    "week": 11,
+    "day": 5,
+    "message_fr": "Maman, écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w11_d06",
+    "week": 11,
+    "day": 6,
+    "message_fr": "Un petit fruit pour le goûter ? J'adore le sucre naturel.",
+    "emoji": "🍇",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي.",
+    "message_tn": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي."
+  },
+  {
+    "message_id": "bm_w11_d07",
+    "week": 11,
+    "day": 7,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w12_d01",
+    "week": 12,
+    "day": 1,
+    "message_fr": "Devine quoi ? Je peux ouvrir et fermer mes mains, je m'entraîne à attraper.",
+    "emoji": "✊",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ أستطيع فتح وإغلاق يدي، أنا أتدرب على الإمساك بالأشياء.",
+    "message_tn": "احزري ماذا؟ أستطيع فتح وإغلاق يدي، أنا أتدرب على الإمساك بالأشياء."
+  },
+  {
+    "message_id": "bm_w12_d02",
+    "week": 12,
+    "day": 2,
+    "message_fr": "Maman, tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "ماما، أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w12_d03",
+    "week": 12,
+    "day": 3,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w12_d04",
+    "week": 12,
+    "day": 4,
+    "message_fr": "Maman, Je peux ouvrir et fermer mes mains, je m'entraîne à attraper.",
+    "emoji": "✊",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أستطيع فتح وإغلاق يدي، أنا أتدرب على الإمساك.",
+    "message_tn": "ماما، أستطيع فتح وإغلاق يدي، أنا أتدرب على الإمساك."
+  },
+  {
+    "message_id": "bm_w12_d05",
+    "week": 12,
+    "day": 5,
+    "message_fr": "Maman, je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بالأمان معكِ.",
+    "message_tn": "ماما، أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w12_d06",
+    "week": 12,
+    "day": 6,
+    "message_fr": "Maman, j'aime entendre ta voix quand tu parles ou chantes.",
+    "emoji": "🎶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "message_tn": "ماما، أحب سماع صوتك عندما تتحدثين أو تغنين."
+  },
+  {
+    "message_id": "bm_w12_d07",
+    "week": 12,
+    "day": 7,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w13_d01",
+    "week": 13,
+    "day": 1,
+    "message_fr": "Maman, J'ai mes propres empreintes digitales maintenant, je suis unique !",
+    "emoji": "🆔",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، لدي بصمات أصابعي الخاصة الآن، أنا فريد من نوعي!",
+    "message_tn": "ماما، لدي بصمات أصابعي الخاصة الآن، أنا فريد من نوعي!"
+  },
+  {
+    "message_id": "bm_w13_d02",
+    "week": 13,
+    "day": 2,
+    "message_fr": "Maman, chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، كل يوم يقربنا من لقائنا.",
+    "message_tn": "ماما، كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w13_d03",
+    "week": 13,
+    "day": 3,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w13_d04",
+    "week": 13,
+    "day": 4,
+    "message_fr": "Maman, J'ai mes propres empreintes digitales maintenant, je suis unique !",
+    "emoji": "🆔",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، لدي بصمات أصابعي الخاصة الآن، أنا فريد من نوعي!",
+    "message_tn": "ماما، لدي بصمات أصابعي الخاصة الآن، أنا فريد من نوعي!"
+  },
+  {
+    "message_id": "bm_w13_d05",
+    "week": 13,
+    "day": 5,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w13_d06",
+    "week": 13,
+    "day": 6,
+    "message_fr": "Une petite marche nous ferait du bien aujourd'hui.",
+    "emoji": "🚶‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "مشي قليل سيفيدنا اليوم.",
+    "message_tn": "مشي قليل سيفيدنا اليوم."
+  },
+  {
+    "message_id": "bm_w13_d07",
+    "week": 13,
+    "day": 7,
+    "message_fr": "Maman, un petit fruit pour le goûter ? J'adore le sucre naturel.",
+    "emoji": "🍇",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، فاكهة صغيرة للوجبة الخفيفة؟ أحب السكر الطبيعي.",
+    "message_tn": "ماما، فاكهة صغيرة للوجبة الخفيفة؟ أحب السكر الطبيعي."
+  },
+  {
+    "message_id": "bm_w14_d01",
+    "week": 14,
+    "day": 1,
+    "message_fr": "Sais-tu que... Je peux faire des grimaces, je m'entraîne à sourire.",
+    "emoji": "😜",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أستطيع أن أقوم بتعابير الوجه، أنا أتدرب على الابتسام.",
+    "message_tn": "هل تعلمين... أستطيع أن أقوم بتعابير الوجه، أنا أتدرب على الابتسام."
+  },
+  {
+    "message_id": "bm_w14_d02",
+    "week": 14,
+    "day": 2,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w14_d03",
+    "week": 14,
+    "day": 3,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w14_d04",
+    "week": 14,
+    "day": 4,
+    "message_fr": "Maman, Je peux faire des grimaces, je m'entraîne à sourire.",
+    "emoji": "😜",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أستطيع القيام بتعابير الوجه، أنا أتدرب على الابتسام.",
+    "message_tn": "ماما، أستطيع القيام بتعابير الوجه، أنا أتدرب على الابتسام."
+  },
+  {
+    "message_id": "bm_w14_d05",
+    "week": 14,
+    "day": 5,
+    "message_fr": "Je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا كنزك الصغير المخبأ.",
+    "message_tn": "أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w14_d06",
+    "week": 14,
+    "day": 6,
+    "message_fr": "Maman, je suis ton petit passager clandestin.",
+    "emoji": "🚀",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا مسافرك السري الصغير.",
+    "message_tn": "ماما، أنا مسافرك السري الصغير."
+  },
+  {
+    "message_id": "bm_w14_d07",
+    "week": 14,
+    "day": 7,
+    "message_fr": "Parfois j'ai le hoquet, hips !",
+    "emoji": "🤭",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحيانا أصاب بالفواق، هيبس!",
+    "message_tn": "أحيانا أصاب بالفواق، هيبس!"
+  },
+  {
+    "message_id": "bm_w15_d01",
+    "week": 15,
+    "day": 1,
+    "message_fr": "Incroyable : Je peux percevoir la lumière à travers ta peau, même si mes yeux sont fermés.",
+    "emoji": "💡",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: أستطيع رؤية الضوء من خلال بشرتك، حتى وعيناي مغلقتان.",
+    "message_tn": "مذهل: أستطيع رؤية الضوء من خلال بشرتك، حتى وعيناي مغلقتان."
+  },
+  {
+    "message_id": "bm_w15_d02",
+    "week": 15,
+    "day": 2,
+    "message_fr": "Parfois j'ai le hoquet, hips !",
+    "emoji": "🤭",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحيانا أصاب بالفواق، هيبس!",
+    "message_tn": "أحيانا أصاب بالفواق، هيبس!"
+  },
+  {
+    "message_id": "bm_w15_d03",
+    "week": 15,
+    "day": 3,
+    "message_fr": "Si tu es stressée, je le sens. Détends-toi...",
+    "emoji": "🧘‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "إذا كنتِ متوترة، أشعر بذلك. استرخي...",
+    "message_tn": "إذا كنتِ متوترة، أشعر بذلك. استرخي..."
+  },
+  {
+    "message_id": "bm_w15_d04",
+    "week": 15,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je peux percevoir la lumière à travers ta peau, même si mes yeux sont fermés.",
+    "emoji": "💡",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أستطيع رؤية الضوء من خلال بشرتك، حتى لو كانت عيناي مغلقتين.",
+    "message_tn": "هل تعلمين... أستطيع رؤية الضوء من خلال بشرتك، حتى لو كانت عيناي مغلقتين."
+  },
+  {
+    "message_id": "bm_w15_d05",
+    "week": 15,
+    "day": 5,
+    "message_fr": "Un petit fruit pour le goûter ? J'adore le sucre naturel.",
+    "emoji": "🍇",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي.",
+    "message_tn": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي."
+  },
+  {
+    "message_id": "bm_w15_d06",
+    "week": 15,
+    "day": 6,
+    "message_fr": "Merci de prendre soin de moi.",
+    "emoji": "🙏",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "شكرا لاهتمامك بي.",
+    "message_tn": "شكرا لاهتمامك بي."
+  },
+  {
+    "message_id": "bm_w15_d07",
+    "week": 15,
+    "day": 7,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w16_d01",
+    "week": 16,
+    "day": 1,
+    "message_fr": "Devine quoi ? Mes jambes sont plus longues que mes bras maintenant.",
+    "emoji": "🦵",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ ساقاي أطول من ذراعي الآن.",
+    "message_tn": "احزري ماذا؟ ساقاي أطول من ذراعي الآن."
+  },
+  {
+    "message_id": "bm_w16_d02",
+    "week": 16,
+    "day": 2,
+    "message_fr": "Maman, si tu es stressée, je le sens. Détends-toi...",
+    "emoji": "🧘‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، إذا كنت متوترة أشعر بذلك. استرخي...",
+    "message_tn": "ماما، إذا كنت متوترة أشعر بذلك. استرخي..."
+  },
+  {
+    "message_id": "bm_w16_d03",
+    "week": 16,
+    "day": 3,
+    "message_fr": "Maman, une petite marche nous ferait du bien aujourd'hui.",
+    "emoji": "🚶‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، مشي قليل سيفيدنا اليوم.",
+    "message_tn": "ماما، مشي قليل سيفيدنا اليوم."
+  },
+  {
+    "message_id": "bm_w16_d04",
+    "week": 16,
+    "day": 4,
+    "message_fr": "Sais-tu que... Mes jambes sont plus longues que mes bras maintenant.",
+    "emoji": "🦵",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... ساقاي أطول من ذراعي الآن.",
+    "message_tn": "هل تعلمين... ساقاي أطول من ذراعي الآن."
+  },
+  {
+    "message_id": "bm_w16_d05",
+    "week": 16,
+    "day": 5,
+    "message_fr": "Maman, écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w16_d06",
+    "week": 16,
+    "day": 6,
+    "message_fr": "Devine ce que je fais ? Je suce mon pouce.",
+    "emoji": "👍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "احزري ماذا أفعل؟ أنا أمص إبهامي.",
+    "message_tn": "احزري ماذا أفعل؟ أنا أمص إبهامي."
+  },
+  {
+    "message_id": "bm_w16_d07",
+    "week": 16,
+    "day": 7,
+    "message_fr": "Maman, je fais des galipettes là-dedans !",
+    "emoji": "🤸",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أتشقلب هنا بالداخل!",
+    "message_tn": "ماما، أنا أتشقلب هنا بالداخل!"
+  },
+  {
+    "message_id": "bm_w17_d01",
+    "week": 17,
+    "day": 1,
+    "message_fr": "Incroyable : Mon squelette change, le cartilage devient de l'os.",
+    "emoji": "🦴",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: هيكلي العظمي يتغير، الغضروف يتحول إلى عظم.",
+    "message_tn": "مذهل: هيكلي العظمي يتغير، الغضروف يتحول إلى عظم."
+  },
+  {
+    "message_id": "bm_w17_d02",
+    "week": 17,
+    "day": 2,
+    "message_fr": "Parfois j'ai le hoquet, hips !",
+    "emoji": "🤭",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحيانا أصاب بالفواق، هيبس!",
+    "message_tn": "أحيانا أصاب بالفواق، هيبس!"
+  },
+  {
+    "message_id": "bm_w17_d03",
+    "week": 17,
+    "day": 3,
+    "message_fr": "Une petite marche nous ferait du bien aujourd'hui.",
+    "emoji": "🚶‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "مشي قليل سيفيدنا اليوم.",
+    "message_tn": "مشي قليل سيفيدنا اليوم."
+  },
+  {
+    "message_id": "bm_w17_d04",
+    "week": 17,
+    "day": 4,
+    "message_fr": "Incroyable : Mon squelette change, le cartilage devient de l'os.",
+    "emoji": "🦴",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: هيكلي العظمي يتغير، الغضروف يتحول إلى عظم.",
+    "message_tn": "مذهل: هيكلي العظمي يتغير، الغضروف يتحول إلى عظم."
+  },
+  {
+    "message_id": "bm_w17_d05",
+    "week": 17,
+    "day": 5,
+    "message_fr": "Je suis ton petit passager clandestin.",
+    "emoji": "🚀",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا مسافرك السري الصغير.",
+    "message_tn": "أنا مسافرك السري الصغير."
+  },
+  {
+    "message_id": "bm_w17_d06",
+    "week": 17,
+    "day": 6,
+    "message_fr": "Je joue à cache-cache avec le cordon.",
+    "emoji": "🙈",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا ألعب الغميضة مع الحبل السري.",
+    "message_tn": "أنا ألعب الغميضة مع الحبل السري."
+  },
+  {
+    "message_id": "bm_w17_d07",
+    "week": 17,
+    "day": 7,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w18_d01",
+    "week": 18,
+    "day": 1,
+    "message_fr": "Sais-tu que... Je peux entendre les battements de ton cœur, c'est ma berceuse.",
+    "emoji": "🎵",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أستطيع سماع دقات قلبك، إنها تهويدتي.",
+    "message_tn": "هل تعلمين... أستطيع سماع دقات قلبك، إنها تهويدتي."
+  },
+  {
+    "message_id": "bm_w18_d02",
+    "week": 18,
+    "day": 2,
+    "message_fr": "Maman, coucou ! C'est moi !",
+    "emoji": "👋",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، مرحبا! هذا أنا!",
+    "message_tn": "ماما، مرحبا! هذا أنا!"
+  },
+  {
+    "message_id": "bm_w18_d03",
+    "week": 18,
+    "day": 3,
+    "message_fr": "Maman, merci de prendre soin de moi.",
+    "emoji": "🙏",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، شكرا لاهتمامك بي.",
+    "message_tn": "ماما، شكرا لاهتمامك بي."
+  },
+  {
+    "message_id": "bm_w18_d04",
+    "week": 18,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je peux entendre les battements de ton cœur, c'est ma berceuse.",
+    "emoji": "🎵",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أستطيع سماع دقات قلبك، إنها تهويدتي.",
+    "message_tn": "هل تعلمين... أستطيع سماع دقات قلبك، إنها تهويدتي."
+  },
+  {
+    "message_id": "bm_w18_d05",
+    "week": 18,
+    "day": 5,
+    "message_fr": "Merci de prendre soin de moi.",
+    "emoji": "🙏",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "شكرا لاهتمامك بي.",
+    "message_tn": "شكرا لاهتمامك بي."
+  },
+  {
+    "message_id": "bm_w18_d06",
+    "week": 18,
+    "day": 6,
+    "message_fr": "C'est un peu serré ici, non ?",
+    "emoji": "🏠",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "المكان ضيق قليلا هنا، أليس كذلك؟",
+    "message_tn": "المكان ضيق قليلا هنا، أليس كذلك؟"
+  },
+  {
+    "message_id": "bm_w18_d07",
+    "week": 18,
+    "day": 7,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w19_d01",
+    "week": 19,
+    "day": 1,
+    "message_fr": "Incroyable : Mes sens se développent : l'ouïe, l'odorat, le goût, le toucher et la vue.",
+    "emoji": "👂",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: حواسي تتطور: السمع، الشم، التذوق، اللمس والبصر.",
+    "message_tn": "مذهل: حواسي تتطور: السمع، الشم، التذوق، اللمس والبصر."
+  },
+  {
+    "message_id": "bm_w19_d02",
+    "week": 19,
+    "day": 2,
+    "message_fr": "Maman, j'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "ماما، لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w19_d03",
+    "week": 19,
+    "day": 3,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w19_d04",
+    "week": 19,
+    "day": 4,
+    "message_fr": "Sais-tu que... Mes sens se développent : l'ouïe, l'odorat, le goût, le toucher et la vue.",
+    "emoji": "👂",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... حواسي تتطور: السمع، الشم، التذوق، اللمس والبصر.",
+    "message_tn": "هل تعلمين... حواسي تتطور: السمع، الشم، التذوق، اللمس والبصر."
+  },
+  {
+    "message_id": "bm_w19_d05",
+    "week": 19,
+    "day": 5,
+    "message_fr": "Je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w19_d06",
+    "week": 19,
+    "day": 6,
+    "message_fr": "Un petit fruit pour le goûter ? J'adore le sucre naturel.",
+    "emoji": "🍇",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي.",
+    "message_tn": "فاكهة صغيرة لوجبة خفيفة؟ أنا أحب السكر الطبيعي."
+  },
+  {
+    "message_id": "bm_w19_d07",
+    "week": 19,
+    "day": 7,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w20_d01",
+    "week": 20,
+    "day": 1,
+    "message_fr": "Maman, On est à la moitié ! Je suis grand comme une banane.",
+    "emoji": "🍌",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، وصلنا إلى النصف! أنا بحجم موزة.",
+    "message_tn": "ماما، وصلنا إلى النصف! أنا بحجم موزة."
+  },
+  {
+    "message_id": "bm_w20_d02",
+    "week": 20,
+    "day": 2,
+    "message_fr": "Je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w20_d03",
+    "week": 20,
+    "day": 3,
+    "message_fr": "C'est un peu serré ici, non ?",
+    "emoji": "🏠",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "المكان ضيق قليلا هنا، أليس كذلك؟",
+    "message_tn": "المكان ضيق قليلا هنا، أليس كذلك؟"
+  },
+  {
+    "message_id": "bm_w20_d04",
+    "week": 20,
+    "day": 4,
+    "message_fr": "Maman, On est à la moitié ! Je suis grand comme une banane.",
+    "emoji": "🍌",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، وصلنا إلى النصف! أنا بحجم موزة.",
+    "message_tn": "ماما، وصلنا إلى النصف! أنا بحجم موزة."
+  },
+  {
+    "message_id": "bm_w20_d05",
+    "week": 20,
+    "day": 5,
+    "message_fr": "Je suis ton petit passager clandestin.",
+    "emoji": "🚀",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا مسافرك السري الصغير.",
+    "message_tn": "أنا مسافرك السري الصغير."
+  },
+  {
+    "message_id": "bm_w20_d06",
+    "week": 20,
+    "day": 6,
+    "message_fr": "Maman, c'est un peu serré ici, non ?",
+    "emoji": "🏠",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، المكان ضيق قليلا هنا، أليس كذلك؟",
+    "message_tn": "ماما، المكان ضيق قليلا هنا، أليس كذلك؟"
+  },
+  {
+    "message_id": "bm_w20_d07",
+    "week": 20,
+    "day": 7,
+    "message_fr": "Maman, je joue à cache-cache avec le cordon.",
+    "emoji": "🙈",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا ألعب الغميضة مع الحبل السري.",
+    "message_tn": "ماما، أنا ألعب الغميضة مع الحبل السري."
+  },
+  {
+    "message_id": "bm_w21_d01",
+    "week": 21,
+    "day": 1,
+    "message_fr": "Maman, Je dors et je me réveille, j'ai mon petit rythme.",
+    "emoji": "💤",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا أنام وأستيقظ، لدي إيقاعي الخاص.",
+    "message_tn": "ماما، أنا أنام وأستيقظ، لدي إيقاعي الخاص."
+  },
+  {
+    "message_id": "bm_w21_d02",
+    "week": 21,
+    "day": 2,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w21_d03",
+    "week": 21,
+    "day": 3,
+    "message_fr": "Je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا كنزك الصغير المخبأ.",
+    "message_tn": "أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w21_d04",
+    "week": 21,
+    "day": 4,
+    "message_fr": "Maman, Je dors et je me réveille, j'ai mon petit rythme.",
+    "emoji": "💤",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا أنام وأستيقظ، لدي إيقاعي الخاص.",
+    "message_tn": "ماما، أنا أنام وأستيقظ، لدي إيقاعي الخاص."
+  },
+  {
+    "message_id": "bm_w21_d05",
+    "week": 21,
+    "day": 5,
+    "message_fr": "Prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w21_d06",
+    "week": 21,
+    "day": 6,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w21_d07",
+    "week": 21,
+    "day": 7,
+    "message_fr": "Maman, miam, c'était bon ce que tu as mangé !",
+    "emoji": "🍎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، يمي، كان ما أكلتيه لذيذا!",
+    "message_tn": "ماما، يمي، كان ما أكلتيه لذيذا!"
+  },
+  {
+    "message_id": "bm_w22_d01",
+    "week": 22,
+    "day": 1,
+    "message_fr": "Devine quoi ? Mes sourcils et mes cils sont là, je me fais beau/belle.",
+    "emoji": "👁️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ حاجبي ورموشي ظهرا، أنا أتزين.",
+    "message_tn": "احزري ماذا؟ حاجبي ورموشي ظهرا، أنا أتزين."
+  },
+  {
+    "message_id": "bm_w22_d02",
+    "week": 22,
+    "day": 2,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w22_d03",
+    "week": 22,
+    "day": 3,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w22_d04",
+    "week": 22,
+    "day": 4,
+    "message_fr": "Incroyable : Mes sourcils et mes cils sont là, je me fais beau/belle.",
+    "emoji": "👁️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: حاجبي ورموشي ظهرا، أنا أتزين.",
+    "message_tn": "مذهل: حاجبي ورموشي ظهرا، أنا أتزين."
+  },
+  {
+    "message_id": "bm_w22_d05",
+    "week": 22,
+    "day": 5,
+    "message_fr": "Dors bien maman, j'ai besoin que tu sois en forme.",
+    "emoji": "🌙",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة.",
+    "message_tn": "نمي جيدا يا أمي، أحتاجك أن تكوني بصحة جيدة."
+  },
+  {
+    "message_id": "bm_w22_d06",
+    "week": 22,
+    "day": 6,
+    "message_fr": "Maman, je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بالأمان معكِ.",
+    "message_tn": "ماما، أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w22_d07",
+    "week": 22,
+    "day": 7,
+    "message_fr": "Maman, écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "ماما، استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w23_d01",
+    "week": 23,
+    "day": 1,
+    "message_fr": "Maman, Je commence à entendre les bruits de l'extérieur, parle-moi !",
+    "emoji": "🗣️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، بدأت أسمع الأصوات من الخارج، تحدثي إلي!",
+    "message_tn": "ماما، بدأت أسمع الأصوات من الخارج، تحدثي إلي!"
+  },
+  {
+    "message_id": "bm_w23_d02",
+    "week": 23,
+    "day": 2,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w23_d03",
+    "week": 23,
+    "day": 3,
+    "message_fr": "On est une super équipe toi et moi !",
+    "emoji": "🤝",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نحن فريق رائع أنا وأنتِ!",
+    "message_tn": "نحن فريق رائع أنا وأنتِ!"
+  },
+  {
+    "message_id": "bm_w23_d04",
+    "week": 23,
+    "day": 4,
+    "message_fr": "Devine quoi ? Je commence à entendre les bruits de l'extérieur, parle-moi !",
+    "emoji": "🗣️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ بدأت أسمع الأصوات من الخارج، تحدثي إلي!",
+    "message_tn": "احزري ماذا؟ بدأت أسمع الأصوات من الخارج، تحدثي إلي!"
+  },
+  {
+    "message_id": "bm_w23_d05",
+    "week": 23,
+    "day": 5,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w23_d06",
+    "week": 23,
+    "day": 6,
+    "message_fr": "J'essaie d'attraper mes pieds.",
+    "emoji": "🦶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحاول الإمساك بقدمي.",
+    "message_tn": "أحاول الإمساك بقدمي."
+  },
+  {
+    "message_id": "bm_w23_d07",
+    "week": 23,
+    "day": 7,
+    "message_fr": "Je donne des coups de pied de ninja !",
+    "emoji": "🥋",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا أركل كركلات النينجا!",
+    "message_tn": "أنا أركل كركلات النينجا!"
+  },
+  {
+    "message_id": "bm_w24_d01",
+    "week": 24,
+    "day": 1,
+    "message_fr": "Sais-tu que... Mes poumons se préparent à respirer, je fais des mouvements respiratoires.",
+    "emoji": "🌬️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... رئتاي تستعدان للتنفس، أقوم بحركات تنفسية.",
+    "message_tn": "هل تعلمين... رئتاي تستعدان للتنفس، أقوم بحركات تنفسية."
+  },
+  {
+    "message_id": "bm_w24_d02",
+    "week": 24,
+    "day": 2,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w24_d03",
+    "week": 24,
+    "day": 3,
+    "message_fr": "Miam, c'était bon ce que tu as mangé !",
+    "emoji": "🍎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "يمي، كان ما أكلتيه لذيذا!",
+    "message_tn": "يمي، كان ما أكلتيه لذيذا!"
+  },
+  {
+    "message_id": "bm_w24_d04",
+    "week": 24,
+    "day": 4,
+    "message_fr": "Incroyable : Mes poumons se préparent à respirer, je fais des mouvements respiratoires.",
+    "emoji": "🌬️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: رئتاي تستعدان للتنفس، أقوم بحركات تنفسية.",
+    "message_tn": "مذهل: رئتاي تستعدان للتنفس، أقوم بحركات تنفسية."
+  },
+  {
+    "message_id": "bm_w24_d05",
+    "week": 24,
+    "day": 5,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w24_d06",
+    "week": 24,
+    "day": 6,
+    "message_fr": "Maman, n'oublie pas de boire de l'eau, j'ai besoin de ma piscine !",
+    "emoji": "💧",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!",
+    "message_tn": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!"
+  },
+  {
+    "message_id": "bm_w24_d07",
+    "week": 24,
+    "day": 7,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w25_d01",
+    "week": 25,
+    "day": 1,
+    "message_fr": "Maman, Je joue avec mon cordon ombilical, c'est mon premier jouet.",
+    "emoji": "🧶",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا ألعب بحبلي السري، إنه لعبتي الأولى.",
+    "message_tn": "ماما، أنا ألعب بحبلي السري، إنه لعبتي الأولى."
+  },
+  {
+    "message_id": "bm_w25_d02",
+    "week": 25,
+    "day": 2,
+    "message_fr": "Fais-toi chouchouter, tu le mérites.",
+    "emoji": "💆‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "دللي نفسك، أنتِ تستحقين ذلك.",
+    "message_tn": "دللي نفسك، أنتِ تستحقين ذلك."
+  },
+  {
+    "message_id": "bm_w25_d03",
+    "week": 25,
+    "day": 3,
+    "message_fr": "Maman, coucou ! C'est moi !",
+    "emoji": "👋",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، مرحبا! هذا أنا!",
+    "message_tn": "ماما، مرحبا! هذا أنا!"
+  },
+  {
+    "message_id": "bm_w25_d04",
+    "week": 25,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je joue avec mon cordon ombilical, c'est mon premier jouet.",
+    "emoji": "🧶",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أنا ألعب بحبلي السري، إنه لعبتي الأولى.",
+    "message_tn": "هل تعلمين... أنا ألعب بحبلي السري، إنه لعبتي الأولى."
+  },
+  {
+    "message_id": "bm_w25_d05",
+    "week": 25,
+    "day": 5,
+    "message_fr": "Maman, une petite marche nous ferait du bien aujourd'hui.",
+    "emoji": "🚶‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، مشي قليل سيفيدنا اليوم.",
+    "message_tn": "ماما، مشي قليل سيفيدنا اليوم."
+  },
+  {
+    "message_id": "bm_w25_d06",
+    "week": 25,
+    "day": 6,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w25_d07",
+    "week": 25,
+    "day": 7,
+    "message_fr": "Maman, je suis ton petit passager clandestin.",
+    "emoji": "🚀",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا مسافرك السري الصغير.",
+    "message_tn": "ماما، أنا مسافرك السري الصغير."
+  },
+  {
+    "message_id": "bm_w26_d01",
+    "week": 26,
+    "day": 1,
+    "message_fr": "Maman, J'ouvre mes yeux ! Je peux voir un peu ce qui se passe.",
+    "emoji": "👀",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا أفتح عيني! أستطيع رؤية القليل مما يحدث.",
+    "message_tn": "ماما، أنا أفتح عيني! أستطيع رؤية القليل مما يحدث."
+  },
+  {
+    "message_id": "bm_w26_d02",
+    "week": 26,
+    "day": 2,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w26_d03",
+    "week": 26,
+    "day": 3,
+    "message_fr": "Maman, courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "ماما، تشجعي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w26_d04",
+    "week": 26,
+    "day": 4,
+    "message_fr": "Maman, J'ouvre mes yeux ! Je peux voir un peu ce qui se passe.",
+    "emoji": "👀",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا أفتح عيني! أستطيع رؤية القليل مما يحدث.",
+    "message_tn": "ماما، أنا أفتح عيني! أستطيع رؤية القليل مما يحدث."
+  },
+  {
+    "message_id": "bm_w26_d05",
+    "week": 26,
+    "day": 5,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w26_d06",
+    "week": 26,
+    "day": 6,
+    "message_fr": "Maman, n'oublie pas de boire de l'eau, j'ai besoin de ma piscine !",
+    "emoji": "💧",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!",
+    "message_tn": "ماما، لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!"
+  },
+  {
+    "message_id": "bm_w26_d07",
+    "week": 26,
+    "day": 7,
+    "message_fr": "Maman, pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "ماما، تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w27_d01",
+    "week": 27,
+    "day": 1,
+    "message_fr": "Incroyable : Je reconnais ta voix et celle de papa, ça me rassure.",
+    "emoji": "👪",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: أنا أتعرف على صوتك وصوت أبي، هذا يطمئنني.",
+    "message_tn": "مذهل: أنا أتعرف على صوتك وصوت أبي، هذا يطمئنني."
+  },
+  {
+    "message_id": "bm_w27_d02",
+    "week": 27,
+    "day": 2,
+    "message_fr": "Si tu es stressée, je le sens. Détends-toi...",
+    "emoji": "🧘‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "إذا كنتِ متوترة، أشعر بذلك. استرخي...",
+    "message_tn": "إذا كنتِ متوترة، أشعر بذلك. استرخي..."
+  },
+  {
+    "message_id": "bm_w27_d03",
+    "week": 27,
+    "day": 3,
+    "message_fr": "Maman, courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "ماما، تشجعي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w27_d04",
+    "week": 27,
+    "day": 4,
+    "message_fr": "Maman, Je reconnais ta voix et celle de papa, ça me rassure.",
+    "emoji": "👪",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا أتعرف على صوتك وصوت أبي، هذا يطمئنني.",
+    "message_tn": "ماما، أنا أتعرف على صوتك وصوت أبي، هذا يطمئنني."
+  },
+  {
+    "message_id": "bm_w27_d05",
+    "week": 27,
+    "day": 5,
+    "message_fr": "Maman, une petite marche nous ferait du bien aujourd'hui.",
+    "emoji": "🚶‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، مشي قليل سيفيدنا اليوم.",
+    "message_tn": "ماما، مشي قليل سيفيدنا اليوم."
+  },
+  {
+    "message_id": "bm_w27_d06",
+    "week": 27,
+    "day": 6,
+    "message_fr": "Je donne des coups de pied de ninja !",
+    "emoji": "🥋",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا أركل كركلات النينجا!",
+    "message_tn": "أنا أركل كركلات النينجا!"
+  },
+  {
+    "message_id": "bm_w27_d07",
+    "week": 27,
+    "day": 7,
+    "message_fr": "J'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w28_d01",
+    "week": 28,
+    "day": 1,
+    "message_fr": "Devine quoi ? Je rêve peut-être déjà... de toi ?",
+    "emoji": "💭",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ ربما أحلم بالفعل... بكِ؟",
+    "message_tn": "احزري ماذا؟ ربما أحلم بالفعل... بكِ؟"
+  },
+  {
+    "message_id": "bm_w28_d02",
+    "week": 28,
+    "day": 2,
+    "message_fr": "Maman, je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا كنزك الصغير المخبأ.",
+    "message_tn": "ماما، أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w28_d03",
+    "week": 28,
+    "day": 3,
+    "message_fr": "N'oublie pas de boire de l'eau, j'ai besoin de ma piscine !",
+    "emoji": "💧",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!",
+    "message_tn": "لا تنسي شرب الماء، أنا بحاجة إلى مسبحي!"
+  },
+  {
+    "message_id": "bm_w28_d04",
+    "week": 28,
+    "day": 4,
+    "message_fr": "Devine quoi ? Je rêve peut-être déjà... de toi ?",
+    "emoji": "💭",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ ربما أحلم بالفعل... بكِ؟",
+    "message_tn": "احزري ماذا؟ ربما أحلم بالفعل... بكِ؟"
+  },
+  {
+    "message_id": "bm_w28_d05",
+    "week": 28,
+    "day": 5,
+    "message_fr": "Une petite marche nous ferait du bien aujourd'hui.",
+    "emoji": "🚶‍♀️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "مشي قليل سيفيدنا اليوم.",
+    "message_tn": "مشي قليل سيفيدنا اليوم."
+  },
+  {
+    "message_id": "bm_w28_d06",
+    "week": 28,
+    "day": 6,
+    "message_fr": "Écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w28_d07",
+    "week": 28,
+    "day": 7,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w29_d01",
+    "week": 29,
+    "day": 1,
+    "message_fr": "Sais-tu que... Je prends du poids, je deviens tout potelé.",
+    "emoji": "🧸",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أنا أكتسب الوزن، وأصبح ممتلئا.",
+    "message_tn": "هل تعلمين... أنا أكتسب الوزن، وأصبح ممتلئا."
+  },
+  {
+    "message_id": "bm_w29_d02",
+    "week": 29,
+    "day": 2,
+    "message_fr": "Écoute ton corps, c'est moi qui te parle.",
+    "emoji": "👂",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "استمعي لجسمك، أنا من يتحدث إليكِ.",
+    "message_tn": "استمعي لجسمك، أنا من يتحدث إليكِ."
+  },
+  {
+    "message_id": "bm_w29_d03",
+    "week": 29,
+    "day": 3,
+    "message_fr": "J'aime entendre ta voix quand tu parles ou chantes.",
+    "emoji": "🎶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "message_tn": "أحب سماع صوتك عندما تتحدثين أو تغنين."
+  },
+  {
+    "message_id": "bm_w29_d04",
+    "week": 29,
+    "day": 4,
+    "message_fr": "Devine quoi ? Je prends du poids, je deviens tout potelé.",
+    "emoji": "🧸",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ أنا أكتسب الوزن، وأصبح ممتلئا.",
+    "message_tn": "احزري ماذا؟ أنا أكتسب الوزن، وأصبح ممتلئا."
+  },
+  {
+    "message_id": "bm_w29_d05",
+    "week": 29,
+    "day": 5,
+    "message_fr": "Miam, c'était bon ce que tu as mangé !",
+    "emoji": "🍎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "يمي، كان ما أكلتيه لذيذا!",
+    "message_tn": "يمي، كان ما أكلتيه لذيذا!"
+  },
+  {
+    "message_id": "bm_w29_d06",
+    "week": 29,
+    "day": 6,
+    "message_fr": "Je suis ton petit passager clandestin.",
+    "emoji": "🚀",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا مسافرك السري الصغير.",
+    "message_tn": "أنا مسافرك السري الصغير."
+  },
+  {
+    "message_id": "bm_w29_d07",
+    "week": 29,
+    "day": 7,
+    "message_fr": "Tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w30_d01",
+    "week": 30,
+    "day": 1,
+    "message_fr": "Maman, Mon cerveau est tout plissé maintenant pour avoir plus de place.",
+    "emoji": "🧠",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، دماغي متجعد الآن ليكون لديه مساحة أكبر.",
+    "message_tn": "ماما، دماغي متجعد الآن ليكون لديه مساحة أكبر."
+  },
+  {
+    "message_id": "bm_w30_d02",
+    "week": 30,
+    "day": 2,
+    "message_fr": "Pense à tes vitamines, c'est mes super-pouvoirs.",
+    "emoji": "💊",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تذكري فيتاميناتك، إنها قوتي الخارقة.",
+    "message_tn": "تذكري فيتاميناتك، إنها قوتي الخارقة."
+  },
+  {
+    "message_id": "bm_w30_d03",
+    "week": 30,
+    "day": 3,
+    "message_fr": "Maman, je joue à cache-cache avec le cordon.",
+    "emoji": "🙈",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا ألعب الغميضة مع الحبل السري.",
+    "message_tn": "ماما، أنا ألعب الغميضة مع الحبل السري."
+  },
+  {
+    "message_id": "bm_w30_d04",
+    "week": 30,
+    "day": 4,
+    "message_fr": "Incroyable : Mon cerveau est tout plissé maintenant pour avoir plus de place.",
+    "emoji": "🧠",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: دماغي مجعد الآن ليكون لديه مساحة أكبر.",
+    "message_tn": "مذهل: دماغي مجعد الآن ليكون لديه مساحة أكبر."
+  },
+  {
+    "message_id": "bm_w30_d05",
+    "week": 30,
+    "day": 5,
+    "message_fr": "Je suis ton petit passager clandestin.",
+    "emoji": "🚀",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا مسافرك السري الصغير.",
+    "message_tn": "أنا مسافرك السري الصغير."
+  },
+  {
+    "message_id": "bm_w30_d06",
+    "week": 30,
+    "day": 6,
+    "message_fr": "Maman, je fais des galipettes là-dedans !",
+    "emoji": "🤸",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أتشقلب هنا بالداخل!",
+    "message_tn": "ماما، أنا أتشقلب هنا بالداخل!"
+  },
+  {
+    "message_id": "bm_w30_d07",
+    "week": 30,
+    "day": 7,
+    "message_fr": "Devine ce que je fais ? Je suce mon pouce.",
+    "emoji": "👍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "احزري ماذا أفعل؟ أنا أمص إبهامي.",
+    "message_tn": "احزري ماذا أفعل؟ أنا أمص إبهامي."
+  },
+  {
+    "message_id": "bm_w31_d01",
+    "week": 31,
+    "day": 1,
+    "message_fr": "Devine quoi ? Je peux tourner la tête de gauche à droite.",
+    "emoji": "↔️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ أستطيع تحريك رأسي من اليسار إلى اليمين.",
+    "message_tn": "احزري ماذا؟ أستطيع تحريك رأسي من اليسار إلى اليمين."
+  },
+  {
+    "message_id": "bm_w31_d02",
+    "week": 31,
+    "day": 2,
+    "message_fr": "Repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "message_tn": "ارتاحي جيدا يا أمي، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w31_d03",
+    "week": 31,
+    "day": 3,
+    "message_fr": "Prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w31_d04",
+    "week": 31,
+    "day": 4,
+    "message_fr": "Devine quoi ? Je peux tourner la tête de gauche à droite.",
+    "emoji": "↔️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ أستطيع تحريك رأسي من اليسار إلى اليمين.",
+    "message_tn": "احزري ماذا؟ أستطيع تحريك رأسي من اليسار إلى اليمين."
+  },
+  {
+    "message_id": "bm_w31_d05",
+    "week": 31,
+    "day": 5,
+    "message_fr": "J'aime entendre ta voix quand tu parles ou chantes.",
+    "emoji": "🎶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب سماع صوتك عندما تتحدثين أو تغنين.",
+    "message_tn": "أحب سماع صوتك عندما تتحدثين أو تغنين."
+  },
+  {
+    "message_id": "bm_w31_d06",
+    "week": 31,
+    "day": 6,
+    "message_fr": "Maman, tu es mon univers tout entier.",
+    "emoji": "🌍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنتِ عالمي بأكمله.",
+    "message_tn": "ماما، أنتِ عالمي بأكمله."
+  },
+  {
+    "message_id": "bm_w31_d07",
+    "week": 31,
+    "day": 7,
+    "message_fr": "Maman, je fais des galipettes là-dedans !",
+    "emoji": "🤸",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أتشقلب هنا بالداخل!",
+    "message_tn": "ماما، أنا أتشقلب هنا بالداخل!"
+  },
+  {
+    "message_id": "bm_w32_d01",
+    "week": 32,
+    "day": 1,
+    "message_fr": "Incroyable : Je prends beaucoup de place, désolé pour tes côtes !",
+    "emoji": "😅",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: أنا آخذ مساحة كبيرة، آسف لأضلاعك!",
+    "message_tn": "مذهل: أنا آخذ مساحة كبيرة، آسف لأضلاعك!"
+  },
+  {
+    "message_id": "bm_w32_d02",
+    "week": 32,
+    "day": 2,
+    "message_fr": "Je joue à cache-cache avec le cordon.",
+    "emoji": "🙈",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا ألعب الغميضة مع الحبل السري.",
+    "message_tn": "أنا ألعب الغميضة مع الحبل السري."
+  },
+  {
+    "message_id": "bm_w32_d03",
+    "week": 32,
+    "day": 3,
+    "message_fr": "Tu es mon univers tout entier.",
+    "emoji": "🌍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ عالمي بأكمله.",
+    "message_tn": "أنتِ عالمي بأكمله."
+  },
+  {
+    "message_id": "bm_w32_d04",
+    "week": 32,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je prends beaucoup de place, désolé pour tes côtes !",
+    "emoji": "😅",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أنا آخذ مساحة كبيرة، آسف لأضلاعك!",
+    "message_tn": "هل تعلمين... أنا آخذ مساحة كبيرة، آسف لأضلاعك!"
+  },
+  {
+    "message_id": "bm_w32_d05",
+    "week": 32,
+    "day": 5,
+    "message_fr": "Repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "message_tn": "ارتاحي جيدا يا أمي، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w32_d06",
+    "week": 32,
+    "day": 6,
+    "message_fr": "Maman, prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "ماما، خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w32_d07",
+    "week": 32,
+    "day": 7,
+    "message_fr": "Coucou ! C'est moi !",
+    "emoji": "👋",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "مرحبا! هذا أنا!",
+    "message_tn": "مرحبا! هذا أنا!"
+  },
+  {
+    "message_id": "bm_w33_d01",
+    "week": 33,
+    "day": 1,
+    "message_fr": "Sais-tu que... Mon système immunitaire se renforce grâce à toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... جهاز المناعة لدي يتقوى بفضلك.",
+    "message_tn": "هل تعلمين... جهاز المناعة لدي يتقوى بفضلك."
+  },
+  {
+    "message_id": "bm_w33_d02",
+    "week": 33,
+    "day": 2,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w33_d03",
+    "week": 33,
+    "day": 3,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w33_d04",
+    "week": 33,
+    "day": 4,
+    "message_fr": "Maman, Mon système immunitaire se renforce grâce à toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، جهاز المناعة لدي يتقوى بفضلك.",
+    "message_tn": "ماما، جهاز المناعة لدي يتقوى بفضلك."
+  },
+  {
+    "message_id": "bm_w33_d05",
+    "week": 33,
+    "day": 5,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w33_d06",
+    "week": 33,
+    "day": 6,
+    "message_fr": "Tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w33_d07",
+    "week": 33,
+    "day": 7,
+    "message_fr": "J'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w34_d01",
+    "week": 34,
+    "day": 1,
+    "message_fr": "Incroyable : Mes ongles atteignent le bout de mes doigts.",
+    "emoji": "💅",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: أظافري تصل إلى أطراف أصابعي.",
+    "message_tn": "مذهل: أظافري تصل إلى أطراف أصابعي."
+  },
+  {
+    "message_id": "bm_w34_d02",
+    "week": 34,
+    "day": 2,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w34_d03",
+    "week": 34,
+    "day": 3,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w34_d04",
+    "week": 34,
+    "day": 4,
+    "message_fr": "Incroyable : Mes ongles atteignent le bout de mes doigts.",
+    "emoji": "💅",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: أظافري تصل إلى أطراف أصابعي.",
+    "message_tn": "مذهل: أظافري تصل إلى أطراف أصابعي."
+  },
+  {
+    "message_id": "bm_w34_d05",
+    "week": 34,
+    "day": 5,
+    "message_fr": "C'est un peu serré ici, non ?",
+    "emoji": "🏠",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "المكان ضيق قليلا هنا، أليس كذلك؟",
+    "message_tn": "المكان ضيق قليلا هنا، أليس كذلك؟"
+  },
+  {
+    "message_id": "bm_w34_d06",
+    "week": 34,
+    "day": 6,
+    "message_fr": "J'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w34_d07",
+    "week": 34,
+    "day": 7,
+    "message_fr": "Maman, je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "ماما، أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w35_d01",
+    "week": 35,
+    "day": 1,
+    "message_fr": "Maman, Je me prépare pour la grande sortie, je descends doucement.",
+    "emoji": "⬇️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أنا أستعد للخروج الكبير، أنزل ببطء.",
+    "message_tn": "ماما، أنا أستعد للخروج الكبير، أنزل ببطء."
+  },
+  {
+    "message_id": "bm_w35_d02",
+    "week": 35,
+    "day": 2,
+    "message_fr": "Maman, prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "ماما، خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w35_d03",
+    "week": 35,
+    "day": 3,
+    "message_fr": "Prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w35_d04",
+    "week": 35,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je me prépare pour la grande sortie, je descends doucement.",
+    "emoji": "⬇️",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أنا أستعد للخروج الكبير، أنزل ببطء.",
+    "message_tn": "هل تعلمين... أنا أستعد للخروج الكبير، أنزل ببطء."
+  },
+  {
+    "message_id": "bm_w35_d05",
+    "week": 35,
+    "day": 5,
+    "message_fr": "Tu es mon univers tout entier.",
+    "emoji": "🌍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ عالمي بأكمله.",
+    "message_tn": "أنتِ عالمي بأكمله."
+  },
+  {
+    "message_id": "bm_w35_d06",
+    "week": 35,
+    "day": 6,
+    "message_fr": "J'adore quand tu caresses ton ventre, ça me fait des guilis.",
+    "emoji": "🥰",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحب عندما تلمسين بطنك، هذا يدغدغني.",
+    "message_tn": "أحب عندما تلمسين بطنك، هذا يدغدغني."
+  },
+  {
+    "message_id": "bm_w35_d07",
+    "week": 35,
+    "day": 7,
+    "message_fr": "Je me sens en sécurité avec toi.",
+    "emoji": "🛡️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أشعر بالأمان معكِ.",
+    "message_tn": "أشعر بالأمان معكِ."
+  },
+  {
+    "message_id": "bm_w36_d01",
+    "week": 36,
+    "day": 1,
+    "message_fr": "Incroyable : Je perds mon duvet (lanugo), ma peau devient toute douce.",
+    "emoji": "✨",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "مذهل: أفقد الوبر (الزغب)، تصبح بشرتي ناعمة جدا.",
+    "message_tn": "مذهل: أفقد الوبر (الزغب)، تصبح بشرتي ناعمة جدا."
+  },
+  {
+    "message_id": "bm_w36_d02",
+    "week": 36,
+    "day": 2,
+    "message_fr": "Maman, j'essaie d'attraper mes pieds.",
+    "emoji": "🦶",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أحاول الإمساك بقدمي.",
+    "message_tn": "ماما، أحاول الإمساك بقدمي."
+  },
+  {
+    "message_id": "bm_w36_d03",
+    "week": 36,
+    "day": 3,
+    "message_fr": "Maman, courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "ماما، تشجعي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w36_d04",
+    "week": 36,
+    "day": 4,
+    "message_fr": "Maman, Je perds mon duvet (lanugo), ma peau devient toute douce.",
+    "emoji": "✨",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أفقد الوبر (الزغب)، تصبح بشرتي ناعمة جدا.",
+    "message_tn": "ماما، أفقد الوبر (الزغب)، تصبح بشرتي ناعمة جدا."
+  },
+  {
+    "message_id": "bm_w36_d05",
+    "week": 36,
+    "day": 5,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w36_d06",
+    "week": 36,
+    "day": 6,
+    "message_fr": "Maman, je t'aime déjà tellement fort.",
+    "emoji": "❤️",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أحبك كثيرا بالفعل.",
+    "message_tn": "ماما، أنا أحبك كثيرا بالفعل."
+  },
+  {
+    "message_id": "bm_w36_d07",
+    "week": 36,
+    "day": 7,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w37_d01",
+    "week": 37,
+    "day": 1,
+    "message_fr": "Devine quoi ? Je suis considéré comme 'à terme' bientôt, je suis prêt !",
+    "emoji": "🏁",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ سأعتبر 'مكتمل النمو' قريبا، أنا جاهز!",
+    "message_tn": "احزري ماذا؟ سأعتبر 'مكتمل النمو' قريبا، أنا جاهز!"
+  },
+  {
+    "message_id": "bm_w37_d02",
+    "week": 37,
+    "day": 2,
+    "message_fr": "Devine ce que je fais ? Je suce mon pouce.",
+    "emoji": "👍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "احزري ماذا أفعل؟ أنا أمص إبهامي.",
+    "message_tn": "احزري ماذا أفعل؟ أنا أمص إبهامي."
+  },
+  {
+    "message_id": "bm_w37_d03",
+    "week": 37,
+    "day": 3,
+    "message_fr": "Parfois j'ai le hoquet, hips !",
+    "emoji": "🤭",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أحيانا أصاب بالفواق، هيبس!",
+    "message_tn": "أحيانا أصاب بالفواق، هيبس!"
+  },
+  {
+    "message_id": "bm_w37_d04",
+    "week": 37,
+    "day": 4,
+    "message_fr": "Maman, Je suis considéré comme 'à terme' bientôt, je suis prêt !",
+    "emoji": "🏁",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، سأعتبر 'مكتمل النمو' قريبا، أنا جاهز!",
+    "message_tn": "ماما، سأعتبر 'مكتمل النمو' قريبا، أنا جاهز!"
+  },
+  {
+    "message_id": "bm_w37_d05",
+    "week": 37,
+    "day": 5,
+    "message_fr": "Je joue à cache-cache avec le cordon.",
+    "emoji": "🙈",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا ألعب الغميضة مع الحبل السري.",
+    "message_tn": "أنا ألعب الغميضة مع الحبل السري."
+  },
+  {
+    "message_id": "bm_w37_d06",
+    "week": 37,
+    "day": 6,
+    "message_fr": "Maman, je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا كنزك الصغير المخبأ.",
+    "message_tn": "ماما، أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w37_d07",
+    "week": 37,
+    "day": 7,
+    "message_fr": "Repose-toi bien maman, on grandit ensemble.",
+    "emoji": "😴",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ارتاحي جيدا يا أمي، نحن نكبر معا.",
+    "message_tn": "ارتاحي جيدا يا أمي، نحن نكبر معا."
+  },
+  {
+    "message_id": "bm_w38_d01",
+    "week": 38,
+    "day": 1,
+    "message_fr": "Maman, Je m'entraîne à cligner des yeux et à respirer.",
+    "emoji": "😮‍💨",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، أتدرب على الرمش والتنفس.",
+    "message_tn": "ماما، أتدرب على الرمش والتنفس."
+  },
+  {
+    "message_id": "bm_w38_d02",
+    "week": 38,
+    "day": 2,
+    "message_fr": "Chaque jour nous rapproche de notre rencontre.",
+    "emoji": "⏳",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "كل يوم يقربنا من لقائنا.",
+    "message_tn": "كل يوم يقربنا من لقائنا."
+  },
+  {
+    "message_id": "bm_w38_d03",
+    "week": 38,
+    "day": 3,
+    "message_fr": "Maman, je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا كنزك الصغير المخبأ.",
+    "message_tn": "ماما، أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w38_d04",
+    "week": 38,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je m'entraîne à cligner des yeux et à respirer.",
+    "emoji": "😮‍💨",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... أتدرب على الرمش والتنفس.",
+    "message_tn": "هل تعلمين... أتدرب على الرمش والتنفس."
+  },
+  {
+    "message_id": "bm_w38_d05",
+    "week": 38,
+    "day": 5,
+    "message_fr": "Maman, j'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "ماما، لا أطيق الانتظار لرؤية ابتسامتك."
+  },
+  {
+    "message_id": "bm_w38_d06",
+    "week": 38,
+    "day": 6,
+    "message_fr": "Maman, je sens ton amour, ça me fait grandir.",
+    "emoji": "💖",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أشعر بحبك، إنه يجعلني أكبر.",
+    "message_tn": "ماما، أشعر بحبك، إنه يجعلني أكبر."
+  },
+  {
+    "message_id": "bm_w38_d07",
+    "week": 38,
+    "day": 7,
+    "message_fr": "On est une super équipe toi et moi !",
+    "emoji": "🤝",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "نحن فريق رائع أنا وأنتِ!",
+    "message_tn": "نحن فريق رائع أنا وأنتِ!"
+  },
+  {
+    "message_id": "bm_w39_d01",
+    "week": 39,
+    "day": 1,
+    "message_fr": "Maman, Je suis un peu à l'étroit ici, j'ai hâte de m'étirer.",
+    "emoji": "📦",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "ماما، المكان ضيق قليلا هنا، لا أطيق الانتظار لأتمطط.",
+    "message_tn": "ماما، المكان ضيق قليلا هنا، لا أطيق الانتظار لأتمطط."
+  },
+  {
+    "message_id": "bm_w39_d02",
+    "week": 39,
+    "day": 2,
+    "message_fr": "Tu es mon univers tout entier.",
+    "emoji": "🌍",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ عالمي بأكمله.",
+    "message_tn": "أنتِ عالمي بأكمله."
+  },
+  {
+    "message_id": "bm_w39_d03",
+    "week": 39,
+    "day": 3,
+    "message_fr": "Maman, tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "ماما، أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w39_d04",
+    "week": 39,
+    "day": 4,
+    "message_fr": "Sais-tu que... Je suis un peu à l'étroit ici, j'ai hâte de m'étirer.",
+    "emoji": "📦",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... المكان ضيق قليلا هنا، أتوق للتمدد.",
+    "message_tn": "هل تعلمين... المكان ضيق قليلا هنا، أتوق للتمدد."
+  },
+  {
+    "message_id": "bm_w39_d05",
+    "week": 39,
+    "day": 5,
+    "message_fr": "Maman, je donne des coups de pied de ninja !",
+    "emoji": "🥋",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، أنا أركل كركلات النينجا!",
+    "message_tn": "ماما، أنا أركل كركلات النينجا!"
+  },
+  {
+    "message_id": "bm_w39_d06",
+    "week": 39,
+    "day": 6,
+    "message_fr": "Tu es la meilleure maman du monde pour moi.",
+    "emoji": "🏆",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنتِ أفضل أم في العالم بالنسبة لي.",
+    "message_tn": "أنتِ أفضل أم في العالم بالنسبة لي."
+  },
+  {
+    "message_id": "bm_w39_d07",
+    "week": 39,
+    "day": 7,
+    "message_fr": "Il fait tout noir ici, mais c'est douillet.",
+    "emoji": "🌑",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "المكان مظلم تماما هنا، لكنه مريح.",
+    "message_tn": "المكان مظلم تماما هنا، لكنه مريح."
+  },
+  {
+    "message_id": "bm_w40_d01",
+    "week": 40,
+    "day": 1,
+    "message_fr": "Devine quoi ? C'est le grand jour (ou presque) ! J'arrive Maman !",
+    "emoji": "🎉",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "احزري ماذا؟ إنه اليوم الكبير (أو تقريبا)! أنا قادم يا ماما!",
+    "message_tn": "احزري ماذا؟ إنه اليوم الكبير (أو تقريبا)! أنا قادم يا ماما!"
+  },
+  {
+    "message_id": "bm_w40_d02",
+    "week": 40,
+    "day": 2,
+    "message_fr": "Je suis ton petit trésor caché.",
+    "emoji": "💎",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "أنا كنزك الصغير المخبأ.",
+    "message_tn": "أنا كنزك الصغير المخبأ."
+  },
+  {
+    "message_id": "bm_w40_d03",
+    "week": 40,
+    "day": 3,
+    "message_fr": "Prends un moment pour toi, ça me fait du bien aussi.",
+    "emoji": "zen",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "خذي لحظة لنفسك، هذا يفيدني أيضا.",
+    "message_tn": "خذي لحظة لنفسك، هذا يفيدني أيضا."
+  },
+  {
+    "message_id": "bm_w40_d04",
+    "week": 40,
+    "day": 4,
+    "message_fr": "Sais-tu que... C'est le grand jour (ou presque) ! J'arrive Maman !",
+    "emoji": "🎉",
+    "tags": [
+      "development",
+      "milestone"
+    ],
+    "message_ar": "هل تعلمين... إنه اليوم الكبير (أو تقريبا)! أنا قادم يا ماما!",
+    "message_tn": "هل تعلمين... إنه اليوم الكبير (أو تقريبا)! أنا قادم يا ماما!"
+  },
+  {
+    "message_id": "bm_w40_d05",
+    "week": 40,
+    "day": 5,
+    "message_fr": "Maman, courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، تشجعي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "ماما، تشجعي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w40_d06",
+    "week": 40,
+    "day": 6,
+    "message_fr": "Courage maman, tu fais du super boulot !",
+    "emoji": "💪",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!",
+    "message_tn": "تشجعي يا أمي، أنتِ تقومين بعمل رائع!"
+  },
+  {
+    "message_id": "bm_w40_d07",
+    "week": 40,
+    "day": 7,
+    "message_fr": "Maman, j'ai hâte de voir ton sourire.",
+    "emoji": "😃",
+    "tags": [
+      "daily_love"
+    ],
+    "message_ar": "ماما، لا أطيق الانتظار لرؤية ابتسامتك.",
+    "message_tn": "ماما، لا أطيق الانتظار لرؤية ابتسامتك."
+  }
+]

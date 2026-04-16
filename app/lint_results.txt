@@ -1,0 +1,114 @@
+scripts/add_phase2_keys.ts(12,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(12,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(13,39): error TS7006: Parameter 'o' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(13,42): error TS7006: Parameter 'k' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(16,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(16,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(16,33): error TS7006: Parameter 'value' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(26,18): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(26,24): error TS7006: Parameter 'file' implicitly has an 'any' type.
+scripts/add_phase2_keys.ts(26,30): error TS7006: Parameter 'keys' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(8,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(8,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(8,33): error TS7006: Parameter 'value' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(20,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(20,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(21,39): error TS7006: Parameter 'o' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(21,42): error TS7006: Parameter 'k' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(24,18): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(24,24): error TS7006: Parameter 'file' implicitly has an 'any' type.
+scripts/add_trimester_keys.ts(24,30): error TS7006: Parameter 'keys' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(9,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(9,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(9,33): error TS7006: Parameter 'value' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(21,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(21,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(22,39): error TS7006: Parameter 'o' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(22,42): error TS7006: Parameter 'k' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(25,18): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(25,24): error TS7006: Parameter 'file' implicitly has an 'any' type.
+scripts/add_validation_keys.ts(25,30): error TS7006: Parameter 'keys' implicitly has an 'any' type.
+scripts/audit_locales.ts(8,10): error TS7023: 'getKeys' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+scripts/audit_locales.ts(8,18): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/audit_locales.ts(9,9): error TS7034: Variable 'keys' implicitly has type 'any[]' in some locations where its type cannot be determined.
+scripts/audit_locales.ts(13,20): error TS7005: Variable 'keys' implicitly has an 'any[]' type.
+scripts/audit_locales.ts(22,25): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+scripts/audit_locales.ts(24,17): error TS7006: Parameter 'f' implicitly has an 'any' type.
+scripts/audit_locales.ts(69,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(70,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(72,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(73,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(77,28): error TS2339: Property 'fr' does not exist on type '{}'.
+scripts/audit_locales.ts(78,39): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(81,55): error TS2339: Property 'fr' does not exist on type '{}'.
+scripts/audit_locales.ts(81,93): error TS2339: Property 'en' does not exist on type '{}'.
+scripts/audit_locales.ts(81,131): error TS2339: Property 'ar' does not exist on type '{}'.
+scripts/audit_locales.ts(81,169): error TS2339: Property 'tn' does not exist on type '{}'.
+scripts/audit_locales.ts(84,33): error TS2339: Property 'fr' does not exist on type '{}'.
+scripts/audit_locales.ts(86,17): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(87,48): error TS2339: Property 'fr' does not exist on type '{}'.
+scripts/audit_locales.ts(87,65): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(88,35): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+scripts/audit_locales.ts(88,77): error TS2339: Property 'fr' does not exist on type '{}'.
+scripts/audit_locales.ts(106,76): error TS18048: 'item.missing' is possibly 'undefined'.
+scripts/audit_locales.ts(107,13): error TS18048: 'item.missing' is possibly 'undefined'.
+scripts/audit_locales.ts(109,76): error TS18048: 'item.extra' is possibly 'undefined'.
+scripts/audit_locales.ts(110,13): error TS18048: 'item.extra' is possibly 'undefined'.
+scripts/audit_locales.ts(118,35): error TS7006: Parameter 'f' implicitly has an 'any' type.
+scripts/audit_locales.ts(119,93): error TS18048: 'm.missing' is possibly 'undefined'.
+scripts/fix_locales.ts(14,10): error TS7023: 'getKeys' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+scripts/fix_locales.ts(14,18): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/fix_locales.ts(15,9): error TS7034: Variable 'keys' implicitly has type 'any[]' in some locations where its type cannot be determined.
+scripts/fix_locales.ts(19,20): error TS7005: Variable 'keys' implicitly has an 'any[]' type.
+scripts/fix_locales.ts(28,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/fix_locales.ts(28,24): error TS7006: Parameter 'path' implicitly has an 'any' type.
+scripts/fix_locales.ts(29,36): error TS7006: Parameter 'o' implicitly has an 'any' type.
+scripts/fix_locales.ts(29,39): error TS7006: Parameter 'k' implicitly has an 'any' type.
+scripts/fix_locales.ts(33,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/fix_locales.ts(33,24): error TS7006: Parameter 'path' implicitly has an 'any' type.
+scripts/fix_locales.ts(33,30): error TS7006: Parameter 'value' implicitly has an 'any' type.
+scripts/fix_locales.ts(265,24): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+scripts/fix_locales.ts(265,30): error TS7006: Parameter 'file' implicitly has an 'any' type.
+scripts/fix_locales.ts(265,36): error TS7006: Parameter 'keysToAdd' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(5,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(5,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(5,33): error TS7006: Parameter 'value' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(17,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(17,24): error TS7006: Parameter 'dotPath' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(18,48): error TS7006: Parameter 'o' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(18,51): error TS7006: Parameter 'k' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(21,18): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(21,24): error TS7006: Parameter 'file' implicitly has an 'any' type.
+scripts/fix_locales_final.ts(21,30): error TS7006: Parameter 'keys' implicitly has an 'any' type.
+scripts/fix_locales_fr.ts(5,19): error TS7006: Parameter 'obj' implicitly has an 'any' type.
+scripts/fix_locales_fr.ts(5,24): error TS7006: Parameter 'path' implicitly has an 'any' type.
+scripts/fix_locales_fr.ts(5,30): error TS7006: Parameter 'value' implicitly has an 'any' type.
+scripts/generate_offline_data.ts(35,44): error TS7006: Parameter 'article' implicitly has an 'any' type.
+scripts/generate_offline_data.ts(68,68): error TS7006: Parameter 's' implicitly has an 'any' type.
+scripts/generate_offline_data.ts(73,71): error TS7006: Parameter 's' implicitly has an 'any' type.
+scripts/generate_offline_data.ts(82,41): error TS7006: Parameter 'rf' implicitly has an 'any' type.
+scripts/generate_offline_data.ts(99,80): error TS7006: Parameter 's' implicitly has an 'any' type.
+scripts/generate_offline_data.ts(107,47): error TS7006: Parameter 's' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(12,19): error TS7006: Parameter 'filePath' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(12,29): error TS7006: Parameter 'data' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(80,32): error TS7006: Parameter 'w' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(83,37): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ Microscopique: string; "Graine de pavot": string; "Grain de s\u00E9same": string; Lentille: string; Myrtille: string; Framboise: string; Raisin: string; Olive: string; Figue: string; Datte: string; "Citron vert": string; ... 38 more ...; "L'ovulation": string; }'.
+scripts/update_dbs_with_tn.ts(84,22): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ Microscopique: string; "Graine de pavot": string; "Grain de s\u00E9same": string; Lentille: string; Myrtille: string; Framboise: string; Raisin: string; Olive: string; Figue: string; Datte: string; "Citron vert": string; ... 38 more ...; "L'ovulation": string; }'.
+scripts/update_dbs_with_tn.ts(103,35): error TS7006: Parameter 'a' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(116,32): error TS7006: Parameter 'f' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(132,38): error TS7006: Parameter 's' implicitly has an 'any' type.
+scripts/update_dbs_with_tn.ts(134,27): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ Microscopique: string; "Graine de pavot": string; "Grain de s\u00E9same": string; Lentille: string; Myrtille: string; Framboise: string; Raisin: string; Olive: string; Figue: string; Datte: string; "Citron vert": string; ... 38 more ...; "L'ovulation": string; }'.
+scripts/update_dbs_with_tn.ts(135,23): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ Microscopique: string; "Graine de pavot": string; "Grain de s\u00E9same": string; Lentille: string; Myrtille: string; Framboise: string; Raisin: string; Olive: string; Figue: string; Datte: string; "Citron vert": string; ... 38 more ...; "L'ovulation": string; }'.
+scripts/update_templates_tn.ts(8,19): error TS7006: Parameter 'filePath' implicitly has an 'any' type.
+scripts/update_templates_tn.ts(8,29): error TS7006: Parameter 'data' implicitly has an 'any' type.
+scripts/update_templates_tn.ts(50,36): error TS7006: Parameter 't' implicitly has an 'any' type.
+scripts/update_templates_tn.ts(52,27): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ "Premi\u00E8re consultation pr\u00E9natale": string; "\u00C9chographie de datation": string; "D\u00E9pistage de la trisomie 21 (T21)": string; "\u00C9chographie du premier trimestre (Morphologique)": string; ... 20 more ...; "V\u00E9rification des droits et aides": string; }'.
+scripts/update_templates_tn.ts(53,23): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ "Premi\u00E8re consultation pr\u00E9natale": string; "\u00C9chographie de datation": string; "D\u00E9pistage de la trisomie 21 (T21)": string; "\u00C9chographie du premier trimestre (Morphologique)": string; ... 20 more ...; "V\u00E9rification des droits et aides": string; }'.
