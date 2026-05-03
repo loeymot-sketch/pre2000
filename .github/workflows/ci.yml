@@ -10,7 +10,14 @@ jobs:
   validate:
     name: Validate Code Quality
     runs-on: ubuntu-latest
-    
+
+    env:
+      # Opt-in to Node 24 runtime for JS-based GitHub Actions to clear the
+      # "Node 20 deprecated" annotation (deadline 2026-06-02) without bumping
+      # checkout/setup-node majors. The Node engine used by `npm ci` / scripts
+      # is still controlled by `setup-node` below (kept on Node 20 for SDK 54).
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
     defaults:
       run:
         working-directory: ./app
