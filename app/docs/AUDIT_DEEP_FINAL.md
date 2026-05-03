@@ -73,13 +73,13 @@ Chaque cycle s'est conclu par `verify` vert avant commit.
 ## 4. Dettes restantes (non-bloquantes)
 
 ### D1 — Fichiers volumineux
-| Fichier | Lignes (après UI-1) |
-|---------|---------------------|
+| Fichier | Lignes (après UI-1…3) |
+|---------|------------------------|
 | `OnboardingScreen.tsx` | **~1 203** (+ `OnboardingScreen.styles.ts` ~580 + `onboardingConstants.ts` ~61) |
-| `HomeScreen.tsx` | 1 756 |
-| `WeightTrackerScreen.tsx` | 1 586 |
+| `HomeScreen.tsx` | **~747** (+ `HomeScreen.styles.ts` ~1 012) |
+| `WeightTrackerScreen.tsx` | **~889** (+ `WeightTrackerScreen.styles.ts` ~700) |
 
-**UI-1 (fait)** : styles + constantes extraits ; prochaine étape possible = sous-composants JSX (`OnboardingStep*`) pour passer **< 800** lignes sur le screen principal.
+**UI-1…3 (fait)** : styles (et constantes onboarding) extraits. Les 3 écrans dépassent encore **800** lignes de logique/JSX seuls — prochaine étape = **sous-composants** par flux (optionnel).
 
 ### D2 — Mega-commit `6ec5481`
 117 fichiers regroupant écrans / `firestore.rules` / `AuthContext` / i18n. Tests rassurent (Firestore rules parity + auth GDPR), mais une **PR review humaine sécurité** reste due (R1).
@@ -194,4 +194,19 @@ Chaque cycle = un commit, un push, une CI verte avant le suivant. Après UI-3, s
 
 ---
 
-*Doc généré en fin de session, après le dernier `gh run watch` confirmant la 3ᵉ CI verte d'affilée. Pour suite : dis "UI-1" si tu veux que j'attaque le refacto Onboarding, sinon attends le smoke V1 ou la review R1.*
+*Doc mis à jour après UI-2/UI-3 (extraction styles Home + Weight). Pour suite : sous-composants JSX si objectif < 800 lignes par fichier ; gates humains R1 + V1 inchangés.*
+
+---
+
+## 10. Boucle audit → exécution → audit (cette demande)
+
+| Étape | Action | Résultat |
+|-------|--------|----------|
+| Audit A0 | `npm run verify` + `git status` | ✅ 294 tests, arbre propre |
+| Exec UI-2 | `HomeScreen.styles.ts` + imports `Dimensions` / `getTextShadowStyle` | ✅ |
+| Exec UI-3 | `WeightTrackerScreen.styles.ts` + `getShadowStyle` | ✅ |
+| Nettoyage | Imports morts (`styleUtils` home, `getShadowStyle` weight), `Platform` home | ✅ |
+| Audit A1 | `tsc`, `verify`, lints IDE | ✅ |
+| Livraison | `CHANGELOG` + ce doc | prêt commit |
+
+**Aucune régression fonctionnelle attendue** : uniquement déplacement de `StyleSheet.create` + dépendances minimales dans les modules `*.styles.ts`.

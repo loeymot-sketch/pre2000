@@ -22,6 +22,11 @@ Cette session a transformé le projet d'un MVP fonctionnel mais fragile vers un 
 - **`onboardingConstants.ts`** : `getStepCount`, `WEEK_COMPARISONS`, types `PregnancyStatus` / `DateMethod`.
 - **`OnboardingScreen.tsx`** : réduit d’**~1830 → ~1200** lignes (logique + JSX inchangés).
 
+## ✅ UI-2 + UI-3 — Home + WeightTracker styles (2026-05-03)
+
+- **`HomeScreen.styles.ts`** (~1010 lignes) : `StyleSheet` + `Dimensions` + `getTextShadowStyle` ; **`HomeScreen.tsx` ~1756 → ~747**.
+- **`WeightTrackerScreen.styles.ts`** (~700 lignes) : `getShadowStyle` ; **`WeightTrackerScreen.tsx` ~1586 → ~889**.
+
 ## ✅ Boucle C3 + H1 + I1 + B1 + B6 (2026-05-03)
 
 - **C3** : `buildShadow` (web) utilise `hexToRgba(color, opacity)` ; **`hexToRgba`** extrait dans `src/utils/hexToRgba.ts` ; `lint:colors` whitelist ce fichier pour les littéraux `rgba(` internes.
