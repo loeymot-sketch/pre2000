@@ -80,7 +80,7 @@ Convention : **PLAN → EXECUTE → VALIDATE** avec `npm run verify` en fin de l
 |----|----------|-------------------|------|
 | **C3** | ~~Corriger `buildShadow` web~~ **fait** | `theme/index.ts`, `utils/hexToRgba.ts`, `styleUtils.ts`, `check-theme-strings.sh` | `verify` |
 | **H1** | ~~Silence logger en Jest~~ **fait** (partiel) | `logger.ts` | `verify` |
-| **I1** | Option CI : installer `rg` + cache cohérent | `ci.yml` | run GH vert |
+| **I1** | ~~Option CI : installer `rg`~~ **fait** | `ci.yml`, `eas-build.yml` | run GH vert |
 | **V1** | Smoke visuel manuel (FR + AR/TN) | — | checklist humaine |
 | **G1** | Push `main` → `origin` + vérifier Actions | — | humain |
 | **R2** | (Option) Éclater rétroactivement `6ec5481` en 3–5 commits via `git rebase -i` **avant push** si l’équipe exige historique fin | — | **humain** (risque de réécrire l’historique) |
