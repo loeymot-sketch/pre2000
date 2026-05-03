@@ -9,14 +9,14 @@ Snapshot après l'enchaînement complet **C1 → C2 → M2 → C3 → H1 → I1 
 | Indicateur | Valeur |
 |------------|--------|
 | Branche | `main` |
-| HEAD | `3fe7e8d` (poussé sur `origin`) |
-| Commits ajoutés cette session | **14** (depuis `4cdc2f2 up all`) |
-| Diff cumulé | **173 fichiers**, **+9 715 / −2 139** lignes |
-| `npm run verify` local | ✅ **OK** |
+| Réf. `main` | Synchronisé avec `origin` ; **dernier refacto écrans** : `a60c448` (styles Home + Weight). Ce fichier de rapport peut être le dernier commit doc sur la même branche. |
+| Commits ajoutés cette session | **15+** (dont chaîne C1…B6 + UI-1…UI-3) |
+| Diff cumulé | **173 fichiers**, **+9 715 / −2 139** lignes (ordre de grandeur session large) |
+| `npm run verify` local | ✅ **OK** (re-vérifié après dernier push) |
 | Jest | ✅ **24 / 24** suites · **294 / 294** tests · **0** `console.warn` parasite |
 | `tsc --noEmit` | ✅ |
 | `lint:colors` | ✅ (hex + `rgba(` + needles bug) |
-| GitHub Actions | ✅ 3 runs verts consécutifs (`25286622383`, `25286669954`, `25286739475`) |
+| GitHub Actions | ✅ dernier `App CI` **succès** run `25292407047` (~1m14) sur `a60c448` ; runs antérieurs verts (UI-1, docs B6, etc.) |
 | `git status` | propre |
 | Bugs/régressions détectés | **0** |
 | Dettes mineures restantes | **3** (non-bloquantes) |
@@ -73,13 +73,13 @@ Chaque cycle s'est conclu par `verify` vert avant commit.
 ## 4. Dettes restantes (non-bloquantes)
 
 ### D1 — Fichiers volumineux
-| Fichier | Lignes (après UI-1…3) |
-|---------|------------------------|
-| `OnboardingScreen.tsx` | **~1 203** (+ `OnboardingScreen.styles.ts` ~580 + `onboardingConstants.ts` ~61) |
-| `HomeScreen.tsx` | **~747** (+ `HomeScreen.styles.ts` ~1 012) |
-| `WeightTrackerScreen.tsx` | **~889** (+ `WeightTrackerScreen.styles.ts` ~700) |
+| Fichier | Lignes (wc -l, après UI-1…3) |
+|---------|------------------------------|
+| `OnboardingScreen.tsx` | **1 203** (+ `OnboardingScreen.styles.ts` 580 + `onboardingConstants.ts` 61) |
+| `HomeScreen.tsx` | **745** (+ `HomeScreen.styles.ts` 1 015) |
+| `WeightTrackerScreen.tsx` | **889** (+ `WeightTrackerScreen.styles.ts` 701) |
 
-**UI-1…3 (fait)** : styles (et constantes onboarding) extraits. Les 3 écrans dépassent encore **800** lignes de logique/JSX seuls — prochaine étape = **sous-composants** par flux (optionnel).
+**UI-1…3 (fait)** : styles (et constantes onboarding) extraits. Les 3 écrans dépassent encore **800** lignes de logique/JSX pour Onboarding et Weight — prochaine étape = **sous-composants** par flux (optionnel). Home est **sous 800** lignes côté `.tsx`.
 
 ### D2 — Mega-commit `6ec5481`
 117 fichiers regroupant écrans / `firestore.rules` / `AuthContext` / i18n. Tests rassurent (Firestore rules parity + auth GDPR), mais une **PR review humaine sécurité** reste due (R1).
@@ -98,7 +98,10 @@ Annotation deprecation. Action : passer en `actions/checkout@v5` + `setup-node@v
 ## 5. Cohérence repo (état git)
 
 ```
-3fe7e8d  test(jest): mock expo-updates to silence Expo module warnings   ← HEAD
+a60c448  refactor(screens): extract HomeScreen and WeightTrackerScreen styles
+73956e4  refactor(onboarding): extract styles and constants (UI-1)
+db93cc4  docs: deep audit report after B6 + 3 green CI runs
+3fe7e8d  test(jest): mock expo-updates to silence Expo module warnings
 8b13e95  docs: record successful first GitHub Actions run after B1
 2e5133e  fix(ci): move workflows to repo root .github so GitHub Actions runs
 cd61d0b  docs: mark I1 done in post-commit audit missions
@@ -112,7 +115,10 @@ bc73b85  test: streak, Firestore rules parity, health merge, guest migrate, RDV 
 a34dc88  docs: orchestration loop, hex/RTL plan, changelog, architecture
 97cf11d  feat(theme): SSOT palette, pdf shadows, lint:colors, hexToRgba guard
 703443a  chore(ci): run npm run verify on PR and before EAS build
+4cdc2f2  up all
 ```
+
+*(Des commits `docs` peuvent apparaître au-dessus de `a60c448` sur `main` ; l’état technique audité est validé jusqu’à `a60c448` + CI associée.)*
 
 Convention de message **respectée** (Conventional Commits : `feat`, `fix`, `chore`, `docs`, `test`). Aucun fichier `.DS_Store` suivi par git (`.gitignore` racine ajouté).
 
@@ -138,12 +144,11 @@ Convention de message **respectée** (Conventional Commits : `feat`, `fix`, `cho
 ## 7. Mission restante — découpage clair
 
 ### Bloc autonome (peut être enchaîné par l'agent)
-Aucun item critique restant. Proposition d'amélioration continue :
+Aucun item critique restant. **Extraction des `StyleSheet` (UI-1…UI-3) : terminée.**
 
-- **D1 / B7 — refacto `HomeScreen` / `OnboardingScreen` / `WeightTrackerScreen`** :
-  - extraire les `styles` dans des `*.styles.ts`
-  - extraire les sous-composants > 200 lignes vers `components/{home,onboarding,weight}/`
-  - garder chaque cycle < 30 fichiers, `verify` vert
+- **D1 / B7 — suite refacto (optionnelle)** :
+  - extraire les sous-composants > ~200 lignes vers `components/{home,onboarding,weight}/` (cibles : Onboarding + Weight d’abord si objectif < 800 lignes `.tsx` partout)
+  - garder chaque cycle < 30 fichiers, `verify` vert, un commit par cycle
 
 ### Bloc humain (gates explicites — pas de self-approve)
 - **R1 — Security skim** du commit `6ec5481` : relire `firestore.rules` + `AuthContext.tsx` + tests `firestoreRulesParity` + `AuthContext.{gdpr,login}` ; signer dans `docs/gates/`.
@@ -161,31 +166,22 @@ Aucun item critique restant. Proposition d'amélioration continue :
 
 ## 8. Plan orchestré (boucle suivante)
 
-Si tu veux que je continue en autonomie sur **D1 / B7 — refacto sous-composants**, ordre :
+**Fait (cette série)** : UI-1 styles + constantes onboarding ; UI-2 `HomeScreen.styles.ts` ; UI-3 `WeightTrackerScreen.styles.ts` — tous avec `verify` vert et CI `App CI` verte (ex. run `25292407047` sur `a60c448`).
 
-1. **Cycle UI-1** — `OnboardingScreen.tsx` :
-   - extraire `OnboardingScreen.styles.ts` (StyleSheet.create)
-   - extraire `OnboardingStepHero`, `OnboardingProgressBar`, `OnboardingNavButtons` dans `components/onboarding/`
-   - cible : `OnboardingScreen.tsx` < 800 lignes
-   - gate : `verify` + comparaison snapshot UI optionnelle
+**Suite optionnelle — sous-composants JSX** (ordre suggéré) :
 
-2. **Cycle UI-2** — `HomeScreen.tsx` :
-   - extraire styles
-   - extraire `HomeQuickActionsRow`, `HomeAppointmentsBlock`, `HomeRecommendationsCarousel`
-   - cible : `HomeScreen.tsx` < 800 lignes
+1. **UI-4 — Onboarding** : `OnboardingStepHero`, `OnboardingProgressBar`, `OnboardingNavButtons` → `components/onboarding/` ; cible `< 800` lignes `OnboardingScreen.tsx`.
+2. **UI-5 — Weight** : `WeightChart`, `WeightHistoryList`, `WeightInputModal` (noms indicatifs) ; cible `< 800` lignes `WeightTrackerScreen.tsx`.
+3. **UI-6 — Home** (déjà 745 lignes) : `HomeQuickActionsRow`, `HomeAppointmentsBlock`, `HomeRecommendationsCarousel` si on veut alléger encore la lecture du fichier.
 
-3. **Cycle UI-3** — `WeightTrackerScreen.tsx` :
-   - extraire `WeightChart`, `WeightHistoryList`, `WeightInputModal`
-   - cible : `WeightTrackerScreen.tsx` < 800 lignes
-
-Chaque cycle = un commit, un push, une CI verte avant le suivant. Après UI-3, suite humaine **R1** + **V1**.
+Chaque cycle = un commit, un push, CI verte avant le suivant. Les gates humains **R1** + **V1** restent requis avant interprétation « prêt store » complète.
 
 ---
 
 ## 9. Conclusion
 
-- Aucun bug ouvert, aucune régression.
-- **CI distante prouve l'état** (3 runs verts).
+- Aucun bug ouvert, aucune régression détectée en machine.
+- **CI distante prouve l'état** : dernier `App CI` **succès** sur `a60c448` (run `25292407047`, ~1m14s).
 - Le filet de sécurité `lint:colors` + `verify` est en place côté local **et** GitHub.
 - Les 3 dettes restantes (D1/D3/D5) sont **identifiées et priorisées**.
 - Les 2 gates humains (R1, V1) sont **clairement explicités** — l'agent ne les auto-approuve pas.
@@ -194,7 +190,7 @@ Chaque cycle = un commit, un push, une CI verte avant le suivant. Après UI-3, s
 
 ---
 
-*Doc mis à jour après UI-2/UI-3 (extraction styles Home + Weight). Pour suite : sous-composants JSX si objectif < 800 lignes par fichier ; gates humains R1 + V1 inchangés.*
+*Doc mis à jour après boucle audit → exécution → audit (UI-2/UI-3 + CI `25292407047` + `verify` local). Suite : sous-composants JSX (§8) ; gates humains R1 + V1 inchangés.*
 
 ---
 
@@ -207,6 +203,8 @@ Chaque cycle = un commit, un push, une CI verte avant le suivant. Après UI-3, s
 | Exec UI-3 | `WeightTrackerScreen.styles.ts` + `getShadowStyle` | ✅ |
 | Nettoyage | Imports morts (`styleUtils` home, `getShadowStyle` weight), `Platform` home | ✅ |
 | Audit A1 | `tsc`, `verify`, lints IDE | ✅ |
-| Livraison | `CHANGELOG` + ce doc | prêt commit |
+| Livraison | `CHANGELOG` + ce doc | ✅ commit `a60c448` |
+| Push / CI | `origin/main` + `gh run watch` | ✅ `25292407047` success |
+| Audit final | `npm run verify` post-CI | ✅ 2026-05-03 |
 
-**Aucune régression fonctionnelle attendue** : uniquement déplacement de `StyleSheet.create` + dépendances minimales dans les modules `*.styles.ts`.
+**Aucune régression fonctionnelle attendue** : uniquement déplacement de `StyleSheet.create` + dépendances minimales (`Dimensions`, `getTextShadowStyle`, `getShadowStyle`) dans les modules `*.styles.ts`.
