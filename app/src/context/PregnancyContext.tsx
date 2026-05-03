@@ -7,6 +7,13 @@ import { db } from '../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
 import { calculatePregnancyWeek } from '../utils/pregnancyCalculator';
+import { calculateCycleDay } from '../utils/fertility';
+// R3 FIX: EmergencyContact is now defined in types/ so it can be referenced by
+// UserProfile without a circular import. Re-exported here for backward compat
+// (existing imports `import { EmergencyContact } from '../context/PregnancyContext'`
+// keep working).
+import type { EmergencyContact } from '../types';
+export type { EmergencyContact };
 
 export type Profile = {
     firstName: string;
@@ -19,31 +26,45 @@ export type Profile = {
     emergencyContacts?: EmergencyContact[];
 };
 
-export type EmergencyContact = {
-    id: string;
-    name: string;
-    number: string;
-    type: 'partner' | 'doctor' | 'sos' | 'other';
-};
+// MA7-FIX: PregnancyInfo now carries an explicit `mode` so consumers can
+// distinguish a real pregnant user (week/day are valid) from a TTC user
+// (week/day are 0 and must NOT be rendered as pregnancy progress).
+export type PregnancyMode = 'pregnant' | 'ttc';
 
-type PregnancyInfo = {
+export type PregnancyInfo = {
     week: number;
     dayInWeek: number;
+    isInvalid?: boolean;
+    mode: PregnancyMode;
+};
+
+// MA7-FIX: TTCInfo exposes the cycle data needed by future TTC-specific UI
+// without requiring screens to recompute it from raw user fields. All values
+// derive from `user.lmp` (= last period date in TTC mode), `user.cycleLength`,
+// `user.ovulationDate`, `user.fertileWindowStart/End` (set by AuthContext
+// during onboarding via `calculateFertileWindow`).
+export type TTCInfo = {
+    cycleDay: number | null;          // 1-based day of the current cycle, null if LMP missing/in-future
+    daysToOvulation: number | null;   // negative = past, 0 = today, positive = future; null if no ovulationDate
+    inFertileWindow: boolean;         // today ∈ [fertileWindowStart, fertileWindowEnd]
+    cycleLength: number;              // clamped value (defaults to 28 if user.cycleLength missing)
 };
 
 type PregnancyContextType = {
     profile: Profile | null;
     setProfile: (p: Profile) => Promise<void>;
     pregnancyInfo: PregnancyInfo | null;
+    ttcInfo: TTCInfo | null;
     loading: boolean;
 };
 
 const PregnancyContext = createContext<PregnancyContextType | undefined>(undefined);
 
 export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { user } = useAuth();
+    const { user, updateProfile: updateAuthProfile, firebaseUser } = useAuth();
     const [profile, setProfileState] = useState<Profile | null>(null);
     const [pregnancyInfo, setPregnancyInfo] = useState<PregnancyInfo | null>(null);
+    const [ttcInfo, setTtcInfo] = useState<TTCInfo | null>(null);
     const [loading, setLoading] = useState(true);
 
     // Debug: Component mount
@@ -65,7 +86,11 @@ export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                             lastName: user.lastName,
                             country: user.country,
                             lmp: user.lmp || user.pregnancyStartDate,
-                            dpa: user.dpa
+                            dpa: user.dpa,
+                            // R3 FIX: hydrate emergencyContacts from the auth profile so
+                            // they survive app restart (Firestore for auth users,
+                            // AsyncStorage 'user_profile' for the cached snapshot).
+                            emergencyContacts: user.emergencyContacts,
                         };
                         setProfileState(profileData);
                         computeInfo(profileData);
@@ -102,8 +127,10 @@ export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, [user]);
 
     // 🚀 AUTO-SYNC: Recalculate pregnancy info every hour
+    // MA7-FIX: also re-run when the TTC flag flips so a profile that becomes TTC
+    // (or stops being TTC) immediately switches mode without waiting for an hour.
     useEffect(() => {
-        log.debug('[PregnancyContext] 🔍 Auto-sync effect triggered, profile.lmp:', profile?.lmp);
+        log.debug('[PregnancyContext] 🔍 Auto-sync effect triggered, profile.lmp:', profile?.lmp, 'isTTC:', user?.isTTC);
         if (!profile) {
             log.debug('[PregnancyContext] ⚠️ No profile, skipping auto-sync setup');
             return;
@@ -124,9 +151,62 @@ export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             log.debug('[PregnancyContext] 🛑 Clearing auto-sync interval');
             clearInterval(interval);
         };
-    }, [profile?.lmp]); // Depend on lmp to avoid recreating interval on profile object changes
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [profile?.lmp, user?.isTTC, user?.cycleLength, user?.ovulationDate, user?.fertileWindowStart, user?.fertileWindowEnd]);
 
+    // MA7-FIX: when the user is in TTC mode, the date stored in `lmp` is the
+    // last period date — NOT a pregnancy LMP. We must NOT compute a pregnancy
+    // week from it (would falsely render "semaine X de grossesse" for a
+    // non-pregnant user). Instead we expose cycle-tracking data via `ttcInfo`.
     const computeInfo = (p: Profile) => {
+        if (user?.isTTC === true) {
+            const lmpDate = p.lmp ? new Date(p.lmp) : null;
+            const cycleLength = user.cycleLength ?? 28;
+
+            if (!lmpDate || isNaN(lmpDate.getTime())) {
+                log.debug('[PregnancyContext] ⚠️ TTC mode but no valid LMP — exposing minimal TTC info');
+                setPregnancyInfo({ week: 0, dayInWeek: 0, mode: 'ttc' });
+                setTtcInfo({
+                    cycleDay: null,
+                    daysToOvulation: null,
+                    inFertileWindow: false,
+                    cycleLength,
+                });
+                return;
+            }
+
+            const today = new Date();
+            const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+
+            const cycleDay = calculateCycleDay(lmpDate, today);
+
+            let daysToOvulation: number | null = null;
+            if (user.ovulationDate) {
+                const ov = new Date(user.ovulationDate);
+                if (!isNaN(ov.getTime())) {
+                    const ovUtc = Date.UTC(ov.getUTCFullYear(), ov.getUTCMonth(), ov.getUTCDate());
+                    daysToOvulation = Math.round((ovUtc - todayUtc) / (1000 * 60 * 60 * 24));
+                }
+            }
+
+            let inFertileWindow = false;
+            if (user.fertileWindowStart && user.fertileWindowEnd) {
+                const start = new Date(user.fertileWindowStart);
+                const end = new Date(user.fertileWindowEnd);
+                if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                    const startUtc = Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate());
+                    const endUtc = Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate());
+                    inFertileWindow = todayUtc >= startUtc && todayUtc <= endUtc;
+                }
+            }
+
+            log.debug(`[PregnancyContext] 💕 TTC info: cycleDay=${cycleDay}, daysToOvulation=${daysToOvulation}, inFertileWindow=${inFertileWindow}`);
+            setPregnancyInfo({ week: 0, dayInWeek: 0, mode: 'ttc' });
+            setTtcInfo({ cycleDay, daysToOvulation, inFertileWindow, cycleLength });
+            return;
+        }
+
+        // Pregnant mode (existing behavior preserved)
         let lmpDate: Date | null = null;
 
         if (p.lmp) {
@@ -145,9 +225,10 @@ export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             return;
         }
 
-        const { week, day } = calculatePregnancyWeek(lmpDate);
-        log.debug(`[PregnancyContext] 📊 Week ${week}, Day ${day}`);
-        setPregnancyInfo({ week, dayInWeek: day });
+        const { week, day, isInvalid } = calculatePregnancyWeek(lmpDate);
+        log.debug(`[PregnancyContext] 📊 Week ${week}, Day ${day}, isInvalid=${isInvalid}`);
+        setPregnancyInfo({ week, dayInWeek: day, isInvalid: isInvalid ?? false, mode: 'pregnant' });
+        setTtcInfo(null);
     };
 
     const setProfile = async (p: Profile) => {
@@ -158,8 +239,25 @@ export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             // This eliminates the double Firestore write to userProfiles.
             if (!user || user.isGuest) {
                 await AsyncStorage.setItem('guestProfile', JSON.stringify(p));
+            } else if (firebaseUser) {
+                // R3 FIX: emergencyContacts is the only Profile field whose ONLY
+                // write path is PregnancyContext.setProfile (called by
+                // EmergencyContactsSection). All other Profile fields (firstName,
+                // lastName, country, lmp, dpa, prePregnancyWeight, height) are
+                // already persisted to Firestore via AuthContext.updateProfile by
+                // ProfileScreen / OnboardingScreen. So for an authenticated
+                // non-guest user we forward emergencyContacts (and only that)
+                // to AuthContext.updateProfile so it survives app restart.
+                // Without this the contacts were memory-only and lost on cold start.
+                if (Array.isArray(p.emergencyContacts)) {
+                    try {
+                        await updateAuthProfile({ emergencyContacts: p.emergencyContacts });
+                    } catch (e) {
+                        log.warn('[PregnancyContext] ⚠️ Failed to persist emergencyContacts to Firestore:', e);
+                    }
+                }
             }
-            // For auth users: only update in-memory state. AuthContext owns Firestore.
+            // For auth users: also update in-memory state. AuthContext owns Firestore for the rest.
             setProfileState(p);
             computeInfo(p);
         } catch (e) {
@@ -170,7 +268,7 @@ export const PregnancyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     return (
-        <PregnancyContext.Provider value={{ profile, setProfile, pregnancyInfo, loading }}>
+        <PregnancyContext.Provider value={{ profile, setProfile, pregnancyInfo, ttcInfo, loading }}>
             {children}
         </PregnancyContext.Provider>
     );

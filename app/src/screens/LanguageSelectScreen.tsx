@@ -7,6 +7,7 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../i18n';
 import { theme } from '../theme';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../i18n/rtl';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
@@ -72,7 +73,7 @@ export const LanguageSelectScreen = () => {
         <ScrollView style={styles.container}>
             {/* Header with Gradient */}
             <LinearGradient
-                colors={['#FF6B9D', '#C2185B']}
+                colors={[theme.colors.primary, theme.colors.accent]}
                 style={styles.header}
             >
                 <Text style={styles.headerEmoji}>🌐</Text>
@@ -144,7 +145,10 @@ export const LanguageSelectScreen = () => {
                         CommonActions.reset({ index: 0, routes: [{ name: 'AuthChoice' }] })
                     )}
                 >
-                    <Text style={styles.backButtonText}>{t('common.continue')} →</Text>
+                    <View style={styles.continueRow}>
+                        <Text style={styles.backButtonText}>{t('common.continue')}</Text>
+                        <RtlAwareChevron direction="forward" variant="arrow" size={18} color={theme.colors.textSecondary} />
+                    </View>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -173,7 +177,7 @@ const styles = StyleSheet.create({
     },
     headerSubtitle: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         textAlign: 'center',
     },
     content: {
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderWidth: 2,
         borderColor: theme.colors.disabled,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -202,7 +206,7 @@ const styles = StyleSheet.create({
     },
     languageCardSelected: {
         borderColor: theme.colors.primary,
-        backgroundColor: '#FFF0F7',
+        backgroundColor: theme.colors.gradientPinkEnd,
     },
     languageContent: {
         flexDirection: 'row',
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
     languageName: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#1A1A1A',
+        color: theme.colors.textInk,
         marginBottom: 4,
     },
     languageNameSelected: {
@@ -248,23 +252,23 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     infoBox: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         borderRadius: 12,
         padding: 16,
         marginTop: 24,
         marginBottom: 24,
         borderWidth: 1,
-        borderColor: '#BBDEFB',
+        borderColor: theme.colors.blue100,
     },
     infoBoxTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#1976D2',
+        color: theme.colors.info,
         marginBottom: 12,
     },
     infoBoxText: {
         fontSize: 14,
-        color: '#1565C0',
+        color: theme.colors.blue800,
         marginBottom: 8,
         lineHeight: 20,
     },
@@ -280,5 +284,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: theme.colors.textSecondary,
+    },
+    continueRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
 });

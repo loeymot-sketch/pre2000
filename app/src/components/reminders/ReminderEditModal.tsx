@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 /**
  * ReminderEditModal
  * 
@@ -313,7 +314,7 @@ export const ReminderEditModal: React.FC<ReminderEditModalProps> = ({
                                                 style={[
                                                     styles.timeInputV2,
                                                     styles.timeButtonV2,
-                                                    showPickerForIndex === index && { borderColor: '#C2185B', borderWidth: 2 },
+                                                    showPickerForIndex === index && { borderColor: theme.colors.accent, borderWidth: 2 },
                                                     validationError && styles.timeInputError
                                                 ]}
                                                 onPress={() => openPickerForIndex(showPickerForIndex === index ? null : index)}
@@ -416,11 +417,11 @@ export const ReminderEditModal: React.FC<ReminderEditModalProps> = ({
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: theme.colors.blackAlpha50,
         justifyContent: 'flex-end',
     },
     modalContainer: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderTopStartRadius: 24,
         borderTopEndRadius: 24,
         maxHeight: '80%',
@@ -429,7 +430,7 @@ const styles = StyleSheet.create({
     header: {
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
+        borderBottomColor: theme.colors.borderLight,
     },
     closeButton: {
         position: 'absolute',
@@ -438,14 +439,14 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
     },
     closeButtonText: {
         fontSize: 18,
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     headerContent: {
         alignItems: 'center',
@@ -458,7 +459,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         textAlign: 'center',
     },
     content: {
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
     },
     intensityOptions: {
@@ -484,22 +485,22 @@ const styles = StyleSheet.create({
         height: 64,
         borderRadius: 32,
         borderWidth: 2,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.disabled,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
     },
     intensityOptionActive: {
-        borderColor: '#C2185B',
-        backgroundColor: '#FFF5F8',
+        borderColor: theme.colors.accent,
+        backgroundColor: theme.colors.background,
     },
     intensityOptionText: {
         fontSize: 20,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     intensityOptionTextActive: {
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     timesContainer: {
         gap: 12,
@@ -511,14 +512,14 @@ const styles = StyleSheet.create({
     },
     timeLabel: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         width: 80,
     },
     timeInput: {
         flex: 1,
         height: 44,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.disabled,
         borderRadius: 8,
         paddingHorizontal: 12,
         fontSize: 16,
@@ -526,17 +527,17 @@ const styles = StyleSheet.create({
     },
     hint: {
         fontSize: 13,
-        color: '#888',
+        color: theme.colors.neutral350,
         marginTop: 8,
         fontStyle: 'italic',
     },
     footer: {
         padding: 16,
         borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
+        borderTopColor: theme.colors.borderLight,
     },
     saveButton: {
-        backgroundColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
         paddingVertical: 16,
         borderRadius: 12,
         alignItems: 'center',
@@ -545,27 +546,27 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     saveButtonText: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontSize: 16,
         fontWeight: '600',
     },
     intensityOptionSubtext: {
         fontSize: 12,
-        color: '#888',
+        color: theme.colors.neutral350,
         marginTop: 2,
     },
     timeInputError: {
-        borderColor: '#E57373',
-        backgroundColor: '#FFEBEE',
+        borderColor: theme.colors.error,
+        backgroundColor: theme.colors.surfaceRose,
     },
     errorContainer: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
         padding: 12,
         borderRadius: 8,
         marginBottom: 16,
     },
     errorText: {
-        color: '#C62828',
+        color: theme.colors.red800,
         fontSize: 14,
         textAlign: 'center',
     },
@@ -583,20 +584,20 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
         borderWidth: 2,
-        borderColor: '#FF80AB',
+        borderColor: theme.colors.pinkAccentA100,
         justifyContent: 'center',
         alignItems: 'center',
     },
     plusMinusDisabled: {
-        borderColor: '#E0E0E0',
-        backgroundColor: '#F5F5F5',
+        borderColor: theme.colors.disabled,
+        backgroundColor: theme.colors.neutral100,
     },
     plusMinusText: {
         fontSize: 28,
         fontWeight: '600',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     intensityDisplay: {
         alignItems: 'center',
@@ -605,15 +606,15 @@ const styles = StyleSheet.create({
     intensityDisplayText: {
         fontSize: 32,
         fontWeight: '700',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     intensityDisplaySubtext: {
         fontSize: 14,
-        color: '#888',
+        color: theme.colors.neutral350,
     },
     advancedLink: {
         fontSize: 13,
-        color: '#888',
+        color: theme.colors.neutral350,
         textDecorationLine: 'underline',
         marginTop: 8,
     },
@@ -624,7 +625,7 @@ const styles = StyleSheet.create({
     },
     resetButtonText: {
         fontSize: 14,
-        color: '#888',
+        color: theme.colors.neutral350,
     },
     // V2.2: Dynamic time slots styles
     timeRowV2: {
@@ -639,17 +640,17 @@ const styles = StyleSheet.create({
     timeInputV2: {
         height: 48,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.disabled,
         borderRadius: 12,
         paddingHorizontal: 8,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
     },
     removeTimeButton: {
         width: 40,
         height: 48,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
         borderRadius: 12,
         marginLeft: 4,
     },
@@ -658,7 +659,7 @@ const styles = StyleSheet.create({
     },
     addTimeButton: {
         borderWidth: 1,
-        borderColor: '#C2185B',
+        borderColor: theme.colors.accent,
         borderStyle: 'dashed',
         borderRadius: 8,
         paddingVertical: 12,
@@ -667,7 +668,7 @@ const styles = StyleSheet.create({
     },
     addTimeText: {
         fontSize: 14,
-        color: '#C2185B',
+        color: theme.colors.accent,
         fontWeight: '500',
     },
     timeButtonV2: {
@@ -676,19 +677,19 @@ const styles = StyleSheet.create({
     },
     timeButtonText: {
         fontSize: 18,
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: '600',
     },
     iosPickerOverlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: theme.colors.blackAlpha40,
         justifyContent: 'flex-end',
         borderTopStartRadius: 24,
         borderTopEndRadius: 24,
         overflow: 'hidden',
     },
     iosPickerContent: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         height: 300,
         paddingBottom: 20,
     },
@@ -699,17 +700,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
-        backgroundColor: '#FAFAFA',
+        borderBottomColor: theme.colors.disabled,
+        backgroundColor: theme.colors.neutral25,
     },
     iosPickerTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     iosPickerDoneText: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
 });

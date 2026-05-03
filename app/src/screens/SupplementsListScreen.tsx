@@ -25,9 +25,9 @@ export const SupplementsListScreen = () => {
 
     // ── Inside component so t() is never stale (language change safe) ──
     const SAFETY_CONFIG = {
-        ok: { icon: '✓', label: t('common.safetyOk'), color: theme.colors.success, bgColor: '#E8F5E9' },
-        a_surveiller: { icon: '⚠', label: t('common.safetyMonitor'), color: theme.colors.warning, bgColor: '#FFF3E0' },
-        deconseille: { icon: '✗', label: t('common.safetyNotRecommended'), color: theme.colors.error, bgColor: '#FFEBEE' },
+        ok: { icon: '✓', label: t('common.safetyOk'), color: theme.colors.success, bgColor: theme.colors.surfaceGreenTint },
+        a_surveiller: { icon: '⚠', label: t('common.safetyMonitor'), color: theme.colors.warning, bgColor: theme.colors.surfaceOrangeTint },
+        deconseille: { icon: '✗', label: t('common.safetyNotRecommended'), color: theme.colors.error, bgColor: theme.colors.surfaceRose },
     };
 
     useEffect(() => {
@@ -75,6 +75,9 @@ export const SupplementsListScreen = () => {
             <TouchableOpacity
                 onPress={() => navigation.navigate('SupplementDetail', { supplementId: item.supplement_id })}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={getLocalizedContent(item, 'name', i18n.language)}
+                accessibilityHint={t('a11y.openSupplement')}
             >
                 <Card style={styles.card}>
                     <View style={[styles.safetyIndicator, { backgroundColor: safetyConfig.bgColor }]}>
@@ -121,6 +124,8 @@ export const SupplementsListScreen = () => {
                 <TouchableOpacity
                     onPress={() => setRefreshKey(k => k + 1)}
                     style={{ backgroundColor: theme.colors.primary, padding: 12, borderRadius: 8 }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.retry')}
                 >
                     <Text style={{ color: 'white', fontWeight: '600' }}>{t('common.retry')}</Text>
                 </TouchableOpacity>
@@ -136,13 +141,17 @@ export const SupplementsListScreen = () => {
                     <TextInput
                         style={styles.searchInput}
                         placeholder={t('common.searchSupplement')}
-                        placeholderTextColor="#999"
+                        placeholderTextColor={theme.colors.neutral400}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         returnKeyType="search"
                     />
                     {searchQuery.length > 0 && (
-                        <TouchableOpacity onPress={() => setSearchQuery('')}>
+                        <TouchableOpacity
+                            onPress={() => setSearchQuery('')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.close')}
+                        >
                             <Text style={styles.clearIcon}>✕</Text>
                         </TouchableOpacity>
                     )}
@@ -185,7 +194,7 @@ const styles = StyleSheet.create({
     searchBar: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
         borderRadius: 12,
         paddingHorizontal: 12,
         height: 44,
@@ -197,12 +206,12 @@ const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.neutral900,
         height: '100%',
     },
     clearIcon: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         padding: 4,
     },
     listContent: {

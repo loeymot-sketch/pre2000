@@ -103,14 +103,35 @@ export function isHotSeason(): boolean {
 }
 
 /**
- * Check if current date is during Ramadan
- * NOTE: This is a simplified version. For production,
- * use a proper Hijri calendar library.
+ * Approximate Ramadan window per Gregorian year (start/end inclusive, UTC dates).
+ *
+ * MS6: previously this function was a hardcoded `return false` with TODO. We now use
+ * a static table covering 2024-2030 (Umm al-Qura calendar approximations). The table
+ * needs to be extended once a year. For a long-term fix, switch to a Hijri library
+ * (e.g. `hijri-converter` or `@umalqura/core`) — kept minimal here to avoid bundle bloat.
+ *
+ * If the user sets `is_ramadan: true` manually in their profile (userFlags), it
+ * overrides this calculation in `buildContextProfile`.
  */
-export function isRamadan(): boolean {
-    // TODO: Implement with Hijri calendar
-    // For now, return false (will be set manually in user profile)
-    return false;
+const RAMADAN_WINDOWS: Record<number, [string, string]> = {
+    2024: ['2024-03-11', '2024-04-09'],
+    2025: ['2025-03-01', '2025-03-30'],
+    2026: ['2026-02-18', '2026-03-19'],
+    2027: ['2027-02-08', '2027-03-08'],
+    2028: ['2028-01-28', '2028-02-26'],
+    2029: ['2029-01-16', '2029-02-14'],
+    2030: ['2030-01-05', '2030-02-03'],
+};
+
+export function isRamadan(now: Date = new Date()): boolean {
+    const year = now.getFullYear();
+    const window = RAMADAN_WINDOWS[year];
+    if (!window) {
+        // Unknown year (table not extended) — return false rather than guess
+        return false;
+    }
+    const todayStr = now.toISOString().split('T')[0];
+    return todayStr >= window[0] && todayStr <= window[1];
 }
 
 /**

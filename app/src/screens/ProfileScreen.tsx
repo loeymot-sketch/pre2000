@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { addDays, format } from 'date-fns';
 import { useDateLocale } from '../hooks/useDateLocale';
 import { LanguageSelector } from '../components/common/LanguageSelector';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { useTranslation } from 'react-i18next';
 import { EmergencyContactsSection } from '../components/profile/EmergencyContactsSection';
 import { openSupportEmail } from '../services/supportService';
@@ -208,6 +209,9 @@ export const ProfileScreen = () => {
                             country === c.key && styles.countryButtonSelected,
                         ]}
                         onPress={() => setCountry(c.key)}
+                        accessibilityRole="button"
+                        accessibilityLabel={c.label}
+                        accessibilityState={{ selected: country === c.key }}
                     >
                         <Text
                             style={[
@@ -282,7 +286,7 @@ export const ProfileScreen = () => {
                                         style={styles.input}
                                         value={height}
                                         onChangeText={setHeight}
-                                        placeholder="ex: 165"
+                                        placeholder={t('profile.heightPlaceholder')}
                                         keyboardType="numeric"
                                         maxLength={3}
                                     />
@@ -293,7 +297,7 @@ export const ProfileScreen = () => {
                                         style={styles.input}
                                         value={prePregnancyWeight}
                                         onChangeText={setPrePregnancyWeight}
-                                        placeholder="ex: 60"
+                                        placeholder={t('profile.weightPlaceholderShort')}
                                         keyboardType="numeric"
                                         maxLength={5}
                                     />
@@ -308,6 +312,9 @@ export const ProfileScreen = () => {
                                 <TouchableOpacity
                                     style={styles.dateButton}
                                     onPress={() => setShowDatePicker(true)}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`${t('profile.lmpLabel')}: ${format(lmp, 'dd MMM yyyy', { locale: dateLocale })}`}
+                                    accessibilityHint={t('a11y.selectDate')}
                                 >
                                     <Text style={styles.dateButtonText}>
                                         {format(lmp, 'dd MMM yyyy', { locale: dateLocale })}
@@ -345,6 +352,10 @@ export const ProfileScreen = () => {
                                 style={[styles.saveButton, loading && styles.saveButtonDisabled]}
                                 onPress={handleSave}
                                 disabled={loading}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('a11y.saveChanges')}
+                                accessibilityHint={t('a11y.saveChangesHint')}
+                                accessibilityState={{ disabled: loading, busy: loading }}
                             >
                                 {loading ? (
                                     <ActivityIndicator color="white" />
@@ -358,12 +369,18 @@ export const ProfileScreen = () => {
                     {/* Section 2: Tableaux de bord */}
                     <Text style={[styles.sectionTitle, { marginTop: 24 }]}>{t('common.dashboard')}</Text>
                     <View style={styles.menuSection}>
-                        <TouchableOpacity style={[styles.menuRow, { borderBottomWidth: 0 }]} onPress={() => navigation.navigate('HealthDashboard')}>
+                        <TouchableOpacity
+                            style={[styles.menuRow, { borderBottomWidth: 0 }]}
+                            onPress={() => navigation.navigate('HealthDashboard')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('profile.health')}
+                            accessibilityHint={t('a11y.openItem')}
+                        >
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="heart-outline" size={24} color="#C2185B" style={styles.menuIcon} />
+                                <Ionicons name="heart-outline" size={24} color={theme.colors.accent} style={styles.menuIcon} />
                                 <Text style={styles.menuLabel}>{t('profile.health')}</Text>
                             </View>
-                            <Text style={styles.menuArrow}>›</Text>
+                            <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                         </TouchableOpacity>
                     </View>
 
@@ -372,60 +389,91 @@ export const ProfileScreen = () => {
                     <View style={styles.menuSection}>
                         <View style={styles.menuRow}>
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="globe-outline" size={24} color="#1976D2" style={styles.menuIcon} />
+                                <Ionicons name="globe-outline" size={24} color={theme.colors.info} style={styles.menuIcon} />
                                 <Text style={styles.menuLabel}>{t('profile.languageSection')}</Text>
                             </View>
                             <LanguageSelector isCompact={true} />
                         </View>
-                        <TouchableOpacity style={[styles.menuRow, { borderBottomWidth: 0 }]} onPress={() => navigation.navigate('Settings')}>
+                        <TouchableOpacity
+                            style={[styles.menuRow, { borderBottomWidth: 0 }]}
+                            onPress={() => navigation.navigate('Settings')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('profile.notifications')}
+                            accessibilityHint={t('a11y.openSettings')}
+                        >
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="notifications-outline" size={24} color="#F57C00" style={styles.menuIcon} />
+                                <Ionicons name="notifications-outline" size={24} color={theme.colors.accentOrangeDeep} style={styles.menuIcon} />
                                 <Text style={styles.menuLabel}>{t('profile.notifications')}</Text>
                             </View>
-                            <Text style={styles.menuArrow}>›</Text>
+                            <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                         </TouchableOpacity>
                     </View>
 
                     {/* Section 4: Légal & Support */}
                     <Text style={[styles.sectionTitle, { marginTop: 24 }]}>{t('common.legal')}</Text>
                     <View style={styles.menuSection}>
-                        <TouchableOpacity style={styles.menuRow} onPress={() => navigation.navigate('PrivacyPolicy')}>
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={() => navigation.navigate('PrivacyPolicy')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('common.privacyPolicy')}
+                            accessibilityHint={t('a11y.openItem')}
+                        >
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="shield-checkmark-outline" size={24} color="#388E3C" style={styles.menuIcon} />
+                                <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.green700} style={styles.menuIcon} />
                                 <Text style={styles.menuLabel}>{t('common.privacyPolicy')}</Text>
                             </View>
-                            <Text style={styles.menuArrow}>›</Text>
+                            <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.menuRow} onPress={() => openSupportEmail(t)}>
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={() => openSupportEmail(t)}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('support.reportProblem')}
+                        >
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="headset-outline" size={24} color="#7B1FA2" style={styles.menuIcon} />
+                                <Ionicons name="headset-outline" size={24} color={theme.colors.purple700} style={styles.menuIcon} />
                                 <Text style={styles.menuLabel}>{t('support.reportProblem')}</Text>
                             </View>
-                            <Text style={styles.menuArrow}>›</Text>
+                            <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                         </TouchableOpacity>
                     </View>
 
                     {/* Section 5: Zone de danger -> Sécurité */}
                     <Text style={[styles.sectionTitle, { marginTop: 24, color: theme.colors.error }]}>{t('common.dangerZone')}</Text>
                     <View style={styles.menuSection}>
-                        <TouchableOpacity style={styles.menuRow} onPress={handleLogout}>
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={handleLogout}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.logout')}
+                            accessibilityHint={t('a11y.logoutHint')}
+                        >
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="log-out-outline" size={24} color="#D32F2F" style={styles.menuIcon} />
+                                <Ionicons name="log-out-outline" size={24} color={theme.colors.red700} style={styles.menuIcon} />
                                 <Text style={[styles.menuLabel, { color: theme.colors.error }]}>{t('profile.logout')}</Text>
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.menuRow} onPress={handleResetProfile}>
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={handleResetProfile}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('profile.reset')}
+                        >
                             <View style={styles.menuRowLeft}>
-                                <Ionicons name="refresh-circle-outline" size={24} color="#E65100" style={styles.menuIcon} />
-                                <Text style={[styles.menuLabel, { color: '#E65100' }]}>{t('profile.reset')}</Text>
+                                <Ionicons name="refresh-circle-outline" size={24} color={theme.colors.orange900} style={styles.menuIcon} />
+                                <Text style={[styles.menuLabel, { color: theme.colors.orange900 }]}>{t('profile.reset')}</Text>
                             </View>
                         </TouchableOpacity>
 
                         {!user?.isGuest && (
                             <TouchableOpacity
                                 style={[styles.menuRow, { borderBottomWidth: 0 }]}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('a11y.deleteAccount')}
+                                accessibilityHint={t('a11y.deleteAccountHint')}
                                 onPress={async () => {
                                     Alert.alert(
                                         t('profile.deleteAccountTitle'),
@@ -456,7 +504,7 @@ export const ProfileScreen = () => {
                                 }}
                             >
                                 <View style={styles.menuRowLeft}>
-                                    <Ionicons name="trash-outline" size={24} color="#B00020" style={styles.menuIcon} />
+                                    <Ionicons name="trash-outline" size={24} color={theme.colors.materialRedDark} style={styles.menuIcon} />
                                     <Text style={[styles.menuLabel, { color: theme.colors.error }]}>{t('profile.deleteAccount')}</Text>
                                 </View>
                             </TouchableOpacity>
@@ -498,11 +546,11 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         borderRadius: 50,
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: theme.colors.whiteAlpha30,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 4,
-        borderColor: 'rgba(255, 255, 255, 0.5)',
+        borderColor: theme.colors.whiteAlpha50,
         marginBottom: 16,
     },
     profileLetter: {
@@ -518,7 +566,7 @@ const styles = StyleSheet.create({
     },
     headerSubtitle: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
     },
     content: {
         padding: 16,
@@ -529,12 +577,12 @@ const styles = StyleSheet.create({
         borderRadius: theme.borderRadius.l,
         padding: 20,
         marginBottom: 16,
-        ...getShadowStyle(3, '#000', 0.1, 6, { width: 0, height: 2 }),
+        ...getShadowStyle(3, theme.colors.black, 0.1, 6, { width: 0, height: 2 }),
     },
     pregnancyCard: {
-        backgroundColor: '#FFF0F7',
+        backgroundColor: theme.colors.gradientPinkEnd,
         borderWidth: 1,
-        borderColor: '#FFD6E8',
+        borderColor: theme.colors.borderPinkPastel,
     },
     cardHeader: {
         flexDirection: 'row',
@@ -565,7 +613,7 @@ const styles = StyleSheet.create({
     },
     infoItem: {
         flex: 1,
-        backgroundColor: 'rgba(255, 107, 157, 0.1)',
+        backgroundColor: theme.colors.primaryAlpha10,
         padding: 16,
         borderRadius: theme.borderRadius.m,
         alignItems: 'center',
@@ -645,7 +693,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
     },
     dateButton: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderRadius: theme.borderRadius.m,
@@ -664,16 +712,16 @@ const styles = StyleSheet.create({
         marginVertical: 8,
     },
     dpaContainer: {
-        backgroundColor: '#FFF8E1',
+        backgroundColor: theme.colors.surfaceAmberTint,
         padding: 16,
         borderRadius: theme.borderRadius.m,
         borderWidth: 1,
-        borderColor: '#FFE082',
+        borderColor: theme.colors.amberBorder,
     },
     dpaText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         marginTop: 8,
     },
     dpaSubtext: {
@@ -710,7 +758,7 @@ const styles = StyleSheet.create({
     },
     saveButtonDisabled: {
         opacity: 0.7,
-        backgroundColor: '#ccc',
+        backgroundColor: theme.colors.neutral300,
     },
     saveButtonText: {
         fontSize: 16,
@@ -734,7 +782,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
     },
     logoutButton: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
         paddingVertical: 14,
         borderRadius: theme.borderRadius.m,
         alignItems: 'center',
@@ -746,7 +794,7 @@ const styles = StyleSheet.create({
         color: theme.colors.error,
     },
     resetButton: {
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
         paddingVertical: 14,
         borderRadius: theme.borderRadius.m,
         alignItems: 'center',
@@ -757,10 +805,10 @@ const styles = StyleSheet.create({
     resetButtonText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#E65100',
+        color: theme.colors.orange900,
     },
     userTypeBadge: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         padding: 16,
         borderRadius: theme.borderRadius.m,
         alignItems: 'center',
@@ -779,10 +827,10 @@ const styles = StyleSheet.create({
     },
     menuSection: {
         marginTop: 24,
-        backgroundColor: '#FAFAFA',
+        backgroundColor: theme.colors.neutral25,
         borderRadius: theme.borderRadius.l,
         borderWidth: 1,
-        borderColor: '#EFEFEF',
+        borderColor: theme.colors.neutral50,
         overflow: 'hidden',
     },
     menuRow: {
@@ -791,7 +839,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#EFEFEF',
+        borderBottomColor: theme.colors.neutral50,
         backgroundColor: theme.colors.white,
     },
     menuRowLeft: {
@@ -811,7 +859,7 @@ const styles = StyleSheet.create({
     },
     menuArrow: {
         fontSize: 20,
-        color: '#CCC',
+        color: theme.colors.neutral300,
     },
     modalHeader: {
         flexDirection: 'row',
@@ -821,7 +869,7 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'ios' ? 24 : 16,
         backgroundColor: theme.colors.white,
         borderBottomWidth: 1,
-        borderBottomColor: '#EFEFEF',
+        borderBottomColor: theme.colors.neutral50,
     },
     modalHeaderButton: {
         padding: 8,

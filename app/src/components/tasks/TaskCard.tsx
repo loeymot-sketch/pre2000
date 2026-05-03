@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import { createLogger } from '../../utils/logger';
 import { getShadowStyle } from '../../utils/styleUtils';
 const log = createLogger('TaskCard');
@@ -98,19 +99,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 16,
         marginBottom: 12,
-        ...getShadowStyle(4, '#000', 0.08, 8, { width: 0, height: 2 }),
+        ...getShadowStyle(4, theme.colors.black, 0.08, 8, { width: 0, height: 2 }),
         borderWidth: 1,
         borderColor: 'transparent',
     },
     taskCardCompleted: {
         opacity: 0.8,
-        backgroundColor: '#FAFAFA',
-        ...getShadowStyle(0, '#000', 0, 0, { width: 0, height: 0 }),
+        backgroundColor: theme.colors.neutral25,
+        ...getShadowStyle(0, theme.colors.black, 0, 0, { width: 0, height: 0 }),
         borderWidth: 1,
-        borderColor: '#EEE',
+        borderColor: theme.colors.neutral150,
     },
     taskCheckbox: {
         width: 24,
@@ -119,13 +120,13 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderWidth: 2,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.disabled,
     },
     taskCheckboxCheckedContainer: {
-        backgroundColor: '#C2185B',
-        borderColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
+        borderColor: theme.colors.accent,
     },
     taskCheckboxEmpty: {
         width: 0,
@@ -134,18 +135,18 @@ const styles = StyleSheet.create({
     taskCheckboxChecked: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#FFF',
+        color: theme.colors.white,
     },
     taskContent: {
         flex: 1,
     },
     taskTitle: {
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: '600',
     },
     taskTitleCompleted: {
         textDecorationLine: 'line-through',
-        color: '#AAA',
+        color: theme.colors.gray500,
     },
 });

@@ -235,6 +235,17 @@ export interface Video {
 }
 
 
+// R3 FIX: EmergencyContact is the canonical shape for the emergency contacts list
+// persisted on the user profile. Defined here (and re-exported from
+// PregnancyContext.tsx for backward compat) so that `UserProfile.emergencyContacts`
+// can reference it without a circular import between types/ and context/.
+export interface EmergencyContact {
+    id: string;
+    name: string;
+    number: string;
+    type: 'partner' | 'doctor' | 'sos' | 'other';
+}
+
 export interface UserProfile {
     uid: string;
     email?: string;
@@ -253,6 +264,22 @@ export interface UserProfile {
     // PROFILE-FIX: Physical data needed for BMI + weight gain recommendations
     height?: number;                // Height in cm
     prePregnancyWeight?: number;    // Pre-pregnancy weight in kg
+    // R3 FIX: emergency contacts persisted on the profile (Firestore for auth users,
+    // AsyncStorage 'guestProfile' for guests). Firestore supports arrays natively;
+    // no sub-collection is needed.
+    emergencyContacts?: EmergencyContact[];
+    // TTC-FIX: Trying-To-Conceive mode flag + cycle data.
+    // When isTTC === true, currentWeek is forced to 0 and the user is NOT pregnant —
+    // downstream UI must check isTTC and avoid rendering pregnancy-week content.
+    // TODO (Strategy B): replace isTTC + isGuest booleans with a single
+    // `mode: 'pregnant' | 'ttc' | 'curious'` discriminated union and migrate the
+    // home / dashboard screens to render TTC-specific cards (cycle day, fertile
+    // window) instead of the pregnancy week badge. See OnboardingScreen.handleFinishTTC.
+    isTTC?: boolean;
+    cycleLength?: number;            // Days, clamped to [21, 35]
+    ovulationDate?: string;          // ISO Date string — estimated for the current cycle
+    fertileWindowStart?: string;     // ISO Date string — ovulation - 5 days
+    fertileWindowEnd?: string;       // ISO Date string — ovulation + 1 day
 }
 
 // User's personal calendar events/appointments

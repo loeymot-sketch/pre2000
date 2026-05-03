@@ -71,12 +71,12 @@ export const WeekRemindersCard: React.FC<WeekRemindersCardProps> = ({
         return (
             <View style={styles.container}>
                 <LinearGradient
-                    colors={['#FFF3E0', '#FFF9F5', '#FFFFFF']}
+                    colors={[theme.colors.surfaceOrangeTint, theme.colors.surfaceCreamWarm, theme.colors.white]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.gradient}
                 >
-                    <ActivityIndicator size="small" color="#FF6F00" />
+                    <ActivityIndicator size="small" color={theme.colors.orangeDeepAccent} />
                 </LinearGradient>
             </View>
         );
@@ -85,7 +85,7 @@ export const WeekRemindersCard: React.FC<WeekRemindersCardProps> = ({
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={['#FFF3E0', '#FFF9F5', '#FFFFFF']}
+                colors={[theme.colors.surfaceOrangeTint, theme.colors.surfaceCreamWarm, theme.colors.white]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.gradient}
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         borderRadius: 16,
         overflow: 'hidden',
-        ...getShadowStyle(3, '#000', 0.1, 4, { width: 0, height: 2 }),
+        ...getShadowStyle(3, theme.colors.black, 0.1, 4, { width: 0, height: 2 }),
     },
     gradient: {
         padding: 20,
@@ -189,19 +189,19 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#E65100',
+        color: theme.colors.orange900,
         flex: 1,
     },
     viewAllButton: {
         alignSelf: 'flex-start',
         paddingVertical: 6,
         paddingHorizontal: 12,
-        backgroundColor: 'rgba(255, 111, 0, 0.1)',
+        backgroundColor: theme.colors.orangeDeepAlpha10,
         borderRadius: 12,
     },
     viewAllText: {
         fontSize: 14,
-        color: '#FF6F00',
+        color: theme.colors.orangeDeepAccent,
         fontWeight: '600',
     },
     section: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     item: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: theme.colors.whiteAlpha50,
         borderRadius: 12,
         padding: 12,
         borderStartWidth: 3,
@@ -229,18 +229,18 @@ const styles = StyleSheet.create({
     itemTitle: {
         fontSize: 15,
         fontWeight: '600',
-        color: '#BF360C',
+        color: theme.colors.deepOrange900,
         marginBottom: 4,
     },
     itemDesc: {
         fontSize: 13,
-        color: '#5D4037',
+        color: theme.colors.brownText800,
         lineHeight: 18,
         marginBottom: 4,
     },
     itemMeta: {
         fontSize: 12,
-        color: '#8D6E63',
+        color: theme.colors.textLight,
         fontStyle: 'italic',
     },
 });

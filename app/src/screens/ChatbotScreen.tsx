@@ -6,11 +6,14 @@ import { ChatbotSuggestion, Article, ChatResponse } from '../types';
 import { theme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { useNavigation } from '@react-navigation/native';
 import { chatbotLimiter } from '../utils/rateLimiter';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedContent } from '../utils/i18nHelpers';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+import { useAuth } from '../context/AuthContext';
+import { resolveEmergencyNumber } from '../utils/clinicalChecks';
 
 interface Message {
     id: string;
@@ -22,8 +25,12 @@ interface Message {
 export const ChatbotScreen = () => {
     useScreenAnalytics('ChatbotScreen');
     const { t, i18n } = useTranslation();
+    const { user } = useAuth();
     // BUG-05+06 FIX: RTL detection for Arabic and Tunisian
     const isRTL = ['ar', 'tn'].includes(i18n.language);
+    // CB4-FIX (SAFETY): pick emergency number from country first, then locale.
+    // null → no confident match; the call button is hidden rather than dial wrong.
+    const emergencyNumber = resolveEmergencyNumber(user?.country, i18n.language);
     const [messages, setMessages] = useState<Message[]>([
         { id: '1', text: t('common.chatWelcome'), sender: 'bot' }
     ]);
@@ -120,6 +127,8 @@ export const ChatbotScreen = () => {
                     <TouchableOpacity
                         style={styles.retryButton}
                         onPress={() => handleSend((item.data as any).originalText, true)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('common.retry')}
                     >
                         <Text style={styles.retryText}>{t('common.retry')}</Text>
                     </TouchableOpacity>
@@ -137,20 +146,31 @@ export const ChatbotScreen = () => {
                                 ? t('common.chatEmergency')
                                 : `⚠️ ${t('common.chatResponse.redFlagHigh')}`}
                         </Text>
-                        {item.data?.redFlag?.severity === 'emergency' && (
+                        {/*
+                            CB4-FIX (SAFETY):
+                            - emergency AND urgent_consult both expose a call action.
+                            - Number resolved by country → locale fallback. If null
+                              (unknown country / non-mapped locale), we do NOT render
+                              a tel: button — never dial a wrong country's number.
+                        */}
+                        {emergencyNumber ? (
                             <TouchableOpacity
                                 style={styles.callButton}
                                 onPress={() => {
-                                    const number = i18n.language === 'tn' || i18n.language === 'ar'
-                                        ? 'tel:197' // SAMU Tunisie
-                                        : 'tel:15';  // SAMU France
-                                    Linking.openURL(number).catch(() =>
+                                    Linking.openURL(`tel:${emergencyNumber}`).catch(() =>
                                         Alert.alert(t('common.chatEmergency'), t('common.chatEmergencyAction'))
                                     );
                                 }}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('a11y.emergencyCall')}
+                                accessibilityHint={t('a11y.emergencyCallHint')}
                             >
-                                <Text style={styles.callButtonText}>📞 {t('common.chatEmergencyAction')}</Text>
+                                <Text style={styles.callButtonText}>📞 {t('common.chatEmergencyAction')} ({emergencyNumber})</Text>
                             </TouchableOpacity>
+                        ) : (
+                            <Text style={styles.alertText}>
+                                {t('common.chatEmergencyAction')}
+                            </Text>
                         )}
                     </View>
                 )}
@@ -169,6 +189,9 @@ export const ChatbotScreen = () => {
                                         anchor: item.data?.anchor
                                     }
                                 })}
+                                accessibilityRole="button"
+                                accessibilityLabel={getLocalizedContent(article, 'title', i18n.language) || article.title_fr || ''}
+                                accessibilityHint={t('a11y.readArticle')}
                             >
                                 <Text style={styles.articleLinkText}>📄 {getLocalizedContent(article, 'title', i18n.language) || article.title_fr || ''}</Text>
                             </TouchableOpacity>
@@ -185,6 +208,8 @@ export const ChatbotScreen = () => {
                             onPress={() => navigation.navigate('Home', {
                                 screen: 'HomeMain',
                             })}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('common.chatSeeTipHome')}
                         >
                             <Text style={styles.articleLinkText}>{t('common.chatSeeTipHome')}</Text>
                         </TouchableOpacity>
@@ -198,6 +223,8 @@ export const ChatbotScreen = () => {
                         <TouchableOpacity
                             style={styles.articleLink}
                             onPress={() => navigation.navigate('Rappels')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('common.chatSeeReminders')}
                         >
                             <Text style={styles.articleLinkText}>{t('common.chatSeeReminders')}</Text>
                         </TouchableOpacity>
@@ -239,6 +266,9 @@ export const ChatbotScreen = () => {
                         <TouchableOpacity
                             style={styles.suggestionButton}
                             onPress={() => handleSend(getSuggestionLabel(item))}
+                            accessibilityRole="button"
+                            accessibilityLabel={getSuggestionLabel(item)}
+                            accessibilityHint={t('a11y.suggestionChip')}
                         >
                             <Text style={styles.suggestionText}>{getSuggestionLabel(item)}</Text>
                         </TouchableOpacity>
@@ -265,11 +295,20 @@ export const ChatbotScreen = () => {
                     onPress={() => handleSend()}
                     disabled={!inputText.trim() || loading}
                     style={[styles.sendButton, (!inputText.trim() || loading) && styles.sendButtonDisabled]}
-                    accessibilityLabel={t('common.send')}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('a11y.sendMessage')}
+                    accessibilityState={{ disabled: !inputText.trim() || loading }}
                 >
-                    <Text style={[styles.sendButtonText, (!inputText.trim() || loading) && styles.sendButtonTextDisabled]}>
-                        {loading ? '⏳' : '➤'}
-                    </Text>
+                    {loading ? (
+                        <Text style={[styles.sendButtonText, styles.sendButtonTextDisabled]}>⏳</Text>
+                    ) : (
+                        <RtlAwareChevron
+                            direction="forward"
+                            variant="bold"
+                            size={18}
+                            color={inputText.trim() ? theme.colors.white : theme.colors.materialGray400}
+                        />
+                    )}
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -354,13 +393,13 @@ const styles = StyleSheet.create({
     alertContainer: {
         marginTop: theme.spacing.s,
         padding: theme.spacing.s,
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
         borderRadius: theme.borderRadius.s,
         borderWidth: 1,
-        borderColor: '#FFB74D',
+        borderColor: theme.colors.warning,
     },
     alertContainerCritical: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
         borderColor: theme.colors.error,
     },
     alertTitle: {
@@ -382,7 +421,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     callButtonText: {
-        color: '#FFFFFF',
+        color: theme.colors.white,
         fontWeight: 'bold',
         fontSize: 14,
     },
@@ -423,7 +462,7 @@ const styles = StyleSheet.create({
     },
     disclaimerText: {
         fontSize: 11,
-        color: '#9E9E9E',
+        color: theme.colors.gray500,
         textAlign: 'center',
         fontStyle: 'italic',
     },
@@ -438,13 +477,13 @@ const styles = StyleSheet.create({
         marginStart: 8,
     },
     sendButtonDisabled: {
-        backgroundColor: '#E0E0E0',
+        backgroundColor: theme.colors.disabled,
     },
     sendButtonText: {
         fontSize: 18,
-        color: '#FFFFFF',
+        color: theme.colors.white,
     },
     sendButtonTextDisabled: {
-        color: '#BDBDBD',
+        color: theme.colors.materialGray400,
     },
 });

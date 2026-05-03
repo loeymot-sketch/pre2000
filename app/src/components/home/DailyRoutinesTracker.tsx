@@ -1,6 +1,9 @@
+import { theme } from '../../theme';
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { createLogger } from '../../utils/logger';
+const log = createLogger('DailyRoutinesTracker');
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { DailyChecklistItem, UserTask, UserEvent } from '../../types';
 import { useAuth } from '../../context/AuthContext';
@@ -8,6 +11,7 @@ import { usePregnancy } from '../../context/PregnancyContext';
 import { generateDailyChecklist, loadDailyProgress } from '../../services/dailyChecklistService';
 import { getUserTasks } from '../../services/taskService';
 import { isToday, isTomorrow, isThisWeek, format } from 'date-fns';
+import { RtlAwareChevron } from '../common/RtlAwareChevron';
 
 interface UnifiedDaySummaryProps {
     appointments?: UserEvent[];
@@ -31,7 +35,9 @@ export const DailyRoutinesTracker: React.FC<UnifiedDaySummaryProps> = ({
             const currentWeek = pregnancyInfo?.week || 1;
 
             // 1. Load Routines
-            const generatedItems = await generateDailyChecklist([], currentWeek, user?.uid);
+            // P3.4 FIX: Pass appointments through so today's RDV appear in the routine.
+            // Was hardcoded [] → checklist never knew about RDV (only the summary line did).
+            const generatedItems = await generateDailyChecklist(appointments, currentWeek, user?.uid);
             const routineItems = generatedItems.filter(item => item.type !== 'appointment');
             const itemsWithProgress = await loadDailyProgress(routineItems);
 
@@ -86,11 +92,11 @@ export const DailyRoutinesTracker: React.FC<UnifiedDaySummaryProps> = ({
             setCompletedItems(completedRoutines + completedTasks);
 
         } catch (error) {
-            console.error('Error loading daily tracking:', error);
+            log.error('Error loading daily tracking:', error);
         } finally {
             setLoading(false);
         }
-    }, [user?.uid, pregnancyInfo?.week]);
+    }, [user?.uid, pregnancyInfo?.week, appointments]);
 
     useFocusEffect(
         useCallback(() => {
@@ -163,12 +169,12 @@ export const DailyRoutinesTracker: React.FC<UnifiedDaySummaryProps> = ({
             >
                 <View style={styles.leftContent}>
                     <Text style={styles.emoji}>{icon}</Text>
-                    <Text style={[styles.title, { color: '#FFFFFF' }]}>
+                    <Text style={[styles.title, { color: theme.colors.white }]}>
                         {appointmentMessage}
                     </Text>
                 </View>
                 <View style={styles.rightContent}>
-                    <Text style={styles.chevron}>›</Text>
+                    <RtlAwareChevron direction="forward" size={22} color={theme.colors.white} />
                 </View>
             </TouchableOpacity>
         );
@@ -186,12 +192,12 @@ export const DailyRoutinesTracker: React.FC<UnifiedDaySummaryProps> = ({
                     <View style={styles.topTaskRow}>
                         <View style={styles.leftContent}>
                             <Text style={styles.emoji}>✨</Text>
-                            <Text style={[styles.title, { color: '#FFFFFF' }]}>
+                            <Text style={[styles.title, { color: theme.colors.white }]}>
                                 {t('home.myDay', 'Ma Journée')} {completedItems}/{totalItems}
                             </Text>
                         </View>
                         <View style={styles.rightContent}>
-                            <Text style={styles.chevron}>›</Text>
+                            <RtlAwareChevron direction="forward" size={22} color={theme.colors.white} />
                         </View>
                     </View>
                     {/* Micro Progress Bar at the bottom of the tasks line */}
@@ -199,7 +205,7 @@ export const DailyRoutinesTracker: React.FC<UnifiedDaySummaryProps> = ({
                         <View
                             style={[
                                 styles.progressBarFill,
-                                { width: `${progressPercent}%`, backgroundColor: progressPercent === 100 ? '#4CAF50' : '#FFFFFF' }
+                                { width: `${progressPercent}%`, backgroundColor: progressPercent === 100 ? theme.colors.green500 : theme.colors.white }
                             ]}
                         />
                     </View>
@@ -233,12 +239,12 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
     },
     cardContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // Subtle translucent glass effect
+        backgroundColor: theme.colors.whiteAlpha15, // Subtle translucent glass effect
         borderRadius: 20, // Modern card shape
         paddingVertical: 12,
         paddingHorizontal: 10,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.25)', // Very subtle border
+        borderColor: theme.colors.whiteAlpha25, // Very subtle border
         width: '100%', // Take full available width of container
         maxWidth: 400, // Keep it from being too wide on large screens
     },
@@ -250,12 +256,12 @@ const styles = StyleSheet.create({
     verticalDivider: {
         width: 1,
         height: '80%', // Limit height of the divider instead of spanning stretch
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         marginHorizontal: 8, // slightly more breathing room
     },
     divider: {
         height: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         marginVertical: 10,
     },
     sharedContentRow: {
@@ -291,19 +297,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 11,
         fontWeight: '600',
-        color: '#FFFFFF',
+        color: theme.colors.white,
         flexShrink: 1, // Allow shrinking within leftContent
-    },
-    chevron: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: 'rgba(255, 255, 255, 0.6)',
-        marginBottom: 2,
-        marginLeft: 2,
     },
     progressBarBackground: {
         height: 4,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         borderRadius: 2,
         overflow: 'hidden',
         marginTop: 6, // Space between text and bar

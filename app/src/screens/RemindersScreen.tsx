@@ -21,10 +21,10 @@ export const RemindersScreen = () => {
         <Tab.Navigator
             screenOptions={{
                 tabBarActiveTintColor: theme.colors.accent,
-                tabBarInactiveTintColor: '#999',
+                tabBarInactiveTintColor: theme.colors.neutral400,
                 tabBarLabelStyle: { fontSize: 14, fontWeight: '600' },
-                tabBarStyle: { backgroundColor: '#FFF' },
-                tabBarIndicatorStyle: { backgroundColor: '#C2185B' },
+                tabBarStyle: { backgroundColor: theme.colors.white },
+                tabBarIndicatorStyle: { backgroundColor: theme.colors.accent },
             }}
         >
             <Tab.Screen

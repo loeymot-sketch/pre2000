@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Activ
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import { useNavigation } from '@react-navigation/native';
 import { theme } from '../../theme';
+import { hexToRgba } from '../../utils/styleUtils';
 import { getHistoricalData } from '../../services/dailyChecklistService';
-import { getReminderCompletions, calculateStreak, getAllReminders } from '../../services/remindersV2Service';
+// F5: use getEssentialReminders (already filters rem_hyd_water + sorts by essential_rank)
+import { getReminderCompletions, calculateStreak, getEssentialReminders } from '../../services/remindersV2Service';
+import { getLocalizedTrilang } from '../../utils/i18nHelpers';
 import { createLogger } from '../../utils/logger';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,6 +15,7 @@ import { useDateLocale } from '../../hooks/useDateLocale';
 import { useAuth } from '../../context/AuthContext';
 import { format, parseISO } from 'date-fns';
 import { useScreenAnalytics } from '../../hooks/useScreenAnalytics';
+import { RtlAwareChevron } from '../../components/common/RtlAwareChevron';
 
 const log = createLogger('StatisticsScreen');
 const screenWidth = Dimensions.get('window').width;
@@ -19,7 +23,7 @@ const screenWidth = Dimensions.get('window').width;
 export const StatisticsScreen = () => {
     useScreenAnalytics('StatisticsScreen');
     const navigation = useNavigation();
-    const { t } = useTranslation(['common', 'profile', 'reminders']);
+    const { t, i18n } = useTranslation(['common', 'profile', 'reminders']);
     const dateLocale = useDateLocale();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
@@ -54,34 +58,26 @@ export const StatisticsScreen = () => {
             const stats = await getHistoricalData(days);
             setData(stats);
 
-            // STATS-FIX: Load real streaks from remindersV2
+            // F5: align KEY_REMINDERS with the actual catalogue shown in UI.
+            // Was hardcoded list including `rem_hyd_water` which is filtered out
+            // everywhere else → user saw a badge for a reminder that doesn't exist.
+            // Now derived from `getEssentialReminders` (rank-sorted, water excluded).
             const userId = user?.isGuest ? undefined : user?.uid;
-            const allReminders = getAllReminders();
-
-            // Compute streak for each reminder & find global best
-            const KEY_REMINDERS = ['rem_hyd_water', 'rem_vit_prenatal', 'rem_mov_walk', 'rem_sleep_quality'];
-            const EMOJIS: Record<string, string> = {
-                'rem_hyd_water': '💧',
-                'rem_vit_prenatal': '💊',
-                'rem_mov_walk': '🚶‍♀️',
-                'rem_sleep_quality': '😴',
-            };
+            const essentials = getEssentialReminders().slice(0, 4); // top 4 by essential_rank
 
             let globalMax = 0;
             const badges = await Promise.all(
-                KEY_REMINDERS.map(async (id) => {
-                    const reminder = allReminders.find(r => r.id === id);
-                    const dates = await getReminderCompletions(id, userId);
+                essentials.map(async (reminder) => {
+                    const dates = await getReminderCompletions(reminder.id, userId);
                     const streak = calculateStreak(dates);
                     if (streak > globalMax) globalMax = streak;
                     return {
-                        id,
-                        emoji: EMOJIS[id] || '⭐',
-                        title: reminder
-                            ? (typeof reminder.title === 'string'
-                                ? reminder.title
-                                : (reminder.title as any)?.fr || id)
-                            : id,
+                        id: reminder.id,
+                        emoji: reminder.ui?.icon || '⭐',
+                        // F5: use the trilang helper instead of forcing .fr — respects user language
+                        title: typeof reminder.title === 'string'
+                            ? reminder.title
+                            : getLocalizedTrilang(reminder.title as any, i18n.language),
                         streak,
                         unlocked: streak >= 3,
                     };
@@ -97,7 +93,7 @@ export const StatisticsScreen = () => {
         } finally {
             setLoading(false);
         }
-    }, [timeRange, user?.uid]);
+    }, [timeRange, user?.uid, i18n.language]);
 
     if (loading) {
         return (
@@ -125,14 +121,17 @@ export const StatisticsScreen = () => {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>← {t('common.back')}</Text>
+                    <View style={styles.backRow}>
+                        <RtlAwareChevron direction="back" variant="arrow" size={16} color={theme.colors.primary} />
+                        <Text style={styles.backButtonText}>{t('common.back')}</Text>
+                    </View>
                 </TouchableOpacity>
                 <Text style={styles.title}>{t('common.myStats')}</Text>
             </View>
             {/* Streak Hero Card */}
             <View style={styles.streakContainer}>
                 <LinearGradient
-                    colors={overallStreak >= 7 ? ['#FF6F00', '#FF8F00'] : overallStreak >= 3 ? ['#C2185B', '#E91E63'] : ['#7B1FA2', '#9C27B0']}
+                    colors={overallStreak >= 7 ? [theme.colors.orangeDeepAccent, theme.colors.orangeStreakLight] : overallStreak >= 3 ? [theme.colors.accent, theme.colors.pinkAccent] : [theme.colors.purple700, theme.colors.accentPurple]}
                     start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
                     style={styles.streakCard}
                 >
@@ -199,10 +198,10 @@ export const StatisticsScreen = () => {
                         backgroundGradientFrom: theme.colors.white,
                         backgroundGradientTo: theme.colors.white,
                         decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(194, 24, 91, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                        color: (opacity = 1) => hexToRgba(theme.colors.accent, opacity),
+                        labelColor: (opacity = 1) => hexToRgba(theme.colors.black, opacity),
                         style: { borderRadius: 16 },
-                        propsForDots: { r: "6", strokeWidth: "2", stroke: "#C2185B" }
+                        propsForDots: { r: "6", strokeWidth: "2", stroke: theme.colors.accent }
                     }}
                     bezier
                     style={styles.chart}
@@ -228,8 +227,8 @@ export const StatisticsScreen = () => {
                         backgroundGradientFrom: theme.colors.white,
                         backgroundGradientTo: theme.colors.white,
                         decimalPlaces: 1,
-                        color: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                        color: (opacity = 1) => hexToRgba(theme.colors.blue600, opacity),
+                        labelColor: (opacity = 1) => hexToRgba(theme.colors.black, opacity),
                         barPercentage: 0.5,
                     }}
                     style={styles.chart}
@@ -264,7 +263,7 @@ export const StatisticsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
     },
     centerContainer: {
         flex: 1,
@@ -284,6 +283,11 @@ const styles = StyleSheet.create({
     backButton: {
         marginEnd: 16,
     },
+    backRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
     backButtonText: {
         fontSize: 16,
         color: theme.colors.primary,
@@ -291,7 +295,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
+        color: theme.colors.text,
     },
     // New Gamification Styles
     streakContainer: {
@@ -301,7 +305,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 16,
         elevation: 4,
-        shadowColor: '#F57C00',
+        shadowColor: theme.colors.accentOrangeDeep,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 6,
@@ -321,7 +325,7 @@ const styles = StyleSheet.create({
     },
     streakLabel: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         fontWeight: '600',
     },
     badgesContainer: {
@@ -339,7 +343,7 @@ const styles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 8,
@@ -347,8 +351,8 @@ const styles = StyleSheet.create({
         borderColor: theme.colors.warning,
     },
     badgeIconLocked: {
-        backgroundColor: '#EEEEEE',
-        borderColor: '#BDBDBD',
+        backgroundColor: theme.colors.divider,
+        borderColor: theme.colors.materialGray400,
     },
     badgeIcon: {
         fontSize: 24,
@@ -356,7 +360,7 @@ const styles = StyleSheet.create({
     badgeTitle: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         textAlign: 'center',
         marginBottom: 4,
     },
@@ -396,7 +400,7 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 16,
         elevation: 2,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -404,7 +408,7 @@ const styles = StyleSheet.create({
     chartTitle: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 16,
     },
     chart: {
@@ -422,7 +426,7 @@ const styles = StyleSheet.create({
     emptyTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
     },
     emptyText: {
@@ -453,18 +457,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     vitaminTaken: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.surfaceGreenTint,
         borderWidth: 1,
-        borderColor: '#4CAF50',
+        borderColor: theme.colors.green500,
     },
     vitaminMissed: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
         borderWidth: 1,
-        borderColor: '#EF5350',
+        borderColor: theme.colors.redAccentLight,
     },
     vitaminIcon: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
 });

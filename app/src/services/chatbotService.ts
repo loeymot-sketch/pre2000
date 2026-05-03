@@ -166,6 +166,8 @@ const ensureEngineInitialized = async () => {
             ...suggestions.flatMap(s => [
                 ...((s as any).label_en ? ((s as any).label_en as string).split(' ') : []),
             ]),
+            // CB1-FIX (SAFETY): include EN red-flag keywords in the engine vocabulary
+            ...redFlags.flatMap(rf => (rf as any).keywords_en ? ((rf as any).keywords_en as string).split(',').map((k: string) => k.trim()) : []),
         ];
         keywordEngine = new KeywordEngine(vocabulary);
         log.success('KeywordEngine initialized');
@@ -205,72 +207,78 @@ export const _analyzeMessage = async (text: string): Promise<ChatResponse> => {
     await ensureEngineInitialized();
     if (!keywordEngine) throw new Error('Failed to initialize KeywordEngine');
 
-    log.info('📩 User message:', text);
+    // U-FIX-2 (RGPD): never log message verbatim — could be PHI / health-sensitive.
+    // Log length only so we still observe traffic shape without storing patient text.
+    log.info(`📩 User message received (length=${text.length})`);
 
     // 1. Process Query (Fuzzy Match + Negation + Synonyms)
     const { positive, negative } = keywordEngine.processQuery(text);
-    log.info('🔍 Positive keywords:', positive);
-    log.info('⛔ Negative keywords:', negative);
+    log.debug(`🔍 ${positive.length} positive / ${negative.length} negative tokens extracted`);
 
-    // Note: We no longer abort early if positive keywords aren't matched immediately.
-    // Arabizi inputs won't trigger Arabic script detection but will still be handled 
-    // down the pipeline via Semantic Matching (Vector Engine) or Synonym Expansion.
-    // The previous implementation mistakenly aborted valid TN dialect queries here.
     const textIsArabic = isArabicScript(text);
+
+    // U-FIX-1 (SAFETY): For Arabic / Tunisian scripts the latin KeywordEngine often
+    // produces 0 positive tokens, which previously bypassed the red-flag matcher
+    // entirely and silently dropped emergencies. We now match the raw text directly
+    // against keywords_ar / keywords_tn (substring) for Arabic input, in parallel
+    // with the standard token-based path for latin/Arabizi.
+    const normalizedText = text.toLowerCase().trim();
 
     // 2. Check Red Flags (Critical) — use cache
     const redFlags = await getRedFlagsCached();
     const matchedFlags: { flag: RedFlag; score: number }[] = [];
 
-    if (textIsArabic && positive.length === 0) {
-        // Jump directly to semantic (vector) search for Arabic input
-        log.info('🌐 Arabic script detected — bypassing French keyword engine, using semantic search');
-    } else {
+    for (const flag of redFlags) {
+        const keywordsFr = flag.keywords_fr ? flag.keywords_fr.split(',').map(k => k.trim().toLowerCase()).filter(Boolean) : [];
+        const keywordsAr = flag.keywords_ar ? flag.keywords_ar.split(',').map(k => k.trim().toLowerCase()).filter(Boolean) : [];
+        const keywordsTn = flag.keywords_tn ? flag.keywords_tn.split(',').map(k => k.trim().toLowerCase()).filter(Boolean) : [];
+        // CB1-FIX (SAFETY): also include English keywords so EN-speaking users
+        // trigger red flags. Previously omitted → emergencies silently dropped for EN.
+        const keywordsEn = flag.keywords_en ? flag.keywords_en.split(',').map(k => k.trim().toLowerCase()).filter(Boolean) : [];
 
-        for (const flag of redFlags) {
-            const keywordsFr = flag.keywords_fr ? flag.keywords_fr.split(',').map(k => k.trim().toLowerCase()) : [];
-            const keywordsAr = flag.keywords_ar ? flag.keywords_ar.split(',').map(k => k.trim().toLowerCase()) : [];
-            const keywordsTn = flag.keywords_tn ? flag.keywords_tn.split(',').map(k => k.trim().toLowerCase()) : [];
+        const allKeywords = [...keywordsFr, ...keywordsAr, ...keywordsTn, ...keywordsEn];
 
-            const allKeywords = [...keywordsFr, ...keywordsAr, ...keywordsTn];
+        let matchCount = 0;
+        let negatedCount = 0;
 
-            let matchCount = 0;
-            let negatedCount = 0;
-
-            allKeywords.forEach(keyword => {
-                // Check if keyword is in positive list
-                if (positive.some(word => word.includes(keyword) || keyword.includes(word))) {
-                    matchCount++;
-                }
-                // Check if keyword is explicitly negated
-                if (negative.some(word => word.includes(keyword) || keyword.includes(word))) {
-                    negatedCount++;
-                }
-            });
-
-            // Also check label safely by resolving localized label content
-            const localLabelFr = flag.label_fr?.toLowerCase() || '';
-            const localLabelAr = flag.label_ar?.toLowerCase() || '';
-            const localLabelTn = flag.label_tn?.toLowerCase() || '';
-
-            if (positive.some(w => localLabelFr.includes(w) || localLabelAr.includes(w) || localLabelTn.includes(w))) {
+        allKeywords.forEach(keyword => {
+            // Path A: token-based (latin/Arabizi/normalized) — Levenshtein-friendly
+            if (positive.some(word => word.includes(keyword) || keyword.includes(word))) {
                 matchCount++;
             }
-
-            // If explicitly negated, we ignore this flag or reduce score drastically
-            if (negatedCount > 0) {
-                log.debug(`Ignoring flag ${flag.red_flag_id} due to negation.`);
-                continue;
+            // Path B (U-FIX-1): direct substring match on the raw normalized text.
+            // Critical for Arabic/Tunisian script which doesn't go through the latin tokenizer.
+            else if (textIsArabic && keyword.length >= 2 && normalizedText.includes(keyword)) {
+                matchCount++;
             }
-
-            if (matchCount > 0) {
-                const severityScore = SEVERITY_PRIORITY[flag.severity?.toLowerCase() || 'faible'] || 0;
-                const score = (matchCount * 10) + (severityScore * 5);
-                matchedFlags.push({ flag, score });
+            // Negation guard (only via tokenized path — negation in arabic NLP is harder)
+            if (negative.some(word => word.includes(keyword) || keyword.includes(word))) {
+                negatedCount++;
             }
+        });
+
+        // Also check label safely by resolving localized label content
+        const localLabelFr = flag.label_fr?.toLowerCase() || '';
+        const localLabelAr = flag.label_ar?.toLowerCase() || '';
+        const localLabelTn = flag.label_tn?.toLowerCase() || '';
+        const localLabelEn = (flag as any).label_en?.toLowerCase() || ''; // CB1-FIX
+
+        if (positive.some(w => localLabelFr.includes(w) || localLabelAr.includes(w) || localLabelTn.includes(w) || localLabelEn.includes(w))) {
+            matchCount++;
         }
 
-    } // end of Arabic bypass block
+        // If explicitly negated, we ignore this flag or reduce score drastically
+        if (negatedCount > 0) {
+            log.debug(`Ignoring flag ${flag.red_flag_id} due to negation.`);
+            continue;
+        }
+
+        if (matchCount > 0) {
+            const severityScore = SEVERITY_PRIORITY[flag.severity?.toLowerCase() || 'faible'] || 0;
+            const score = (matchCount * 10) + (severityScore * 5);
+            matchedFlags.push({ flag, score });
+        }
+    }
 
     if (matchedFlags.length > 0) {
         matchedFlags.sort((a, b) => b.score - a.score);

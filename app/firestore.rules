@@ -101,6 +101,24 @@ service cloud.firestore {
       allow delete: if isOwnerOfResource();
     }
 
+    // Glucose Metrics (healthService.saveGlucoseEntry / getGlucoseHistory)
+    // Added P1.1 — was missing, causing all glycemia writes to fail in prod.
+    match /glucoseMetrics/{metricId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
+    // Symptoms Log (healthService.saveSymptomEntry / getDailySymptoms)
+    // Added P1.1 — was missing, causing all symptom writes to fail in prod.
+    match /symptomsLog/{logId} {
+      allow read: if isOwnerOfResource();
+      allow create: if isOwnerOfData();
+      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow delete: if isOwnerOfResource();
+    }
+
     // =========================================================
     // 📚 STATIC CONTENT (Read-only for users)
     // =========================================================

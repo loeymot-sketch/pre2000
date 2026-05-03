@@ -64,11 +64,11 @@ export const HydrationCard = () => {
     });
 
     // Theme Colors (Pink/Peach)
-    const cardGradient = ['#FFF0F5', '#FFE4E1'] as const; // LavenderBlush to MistyRose
-    const progressGradient = ['#FF80AB', '#FF4081'] as const; // Pink Accent
-    const buttonGradient = ['#FF6B9D', '#EC407A'] as const; // Primary Pink
-    const iconColor = '#D81B60';
-    const textColor = '#880E4F';
+    const cardGradient = [theme.colors.lavenderBlush, theme.colors.roseMisty] as const;
+    const progressGradient = [theme.colors.pinkAccentA100, theme.colors.pinkAccentBright] as const;
+    const buttonGradient = [theme.colors.primary, theme.colors.pink400ui] as const;
+    const iconColor = theme.colors.accentDarkPink;
+    const textColor = theme.colors.deepPink;
 
     return (
         <View style={styles.container}>
@@ -144,7 +144,7 @@ export const HydrationCard = () => {
                             style={styles.addButtonGradient}
                         >
                             <View style={styles.addIconCircle}>
-                                <Ionicons name="add" size={20} color="#C2185B" />
+                                <Ionicons name="add" size={20} color={theme.colors.accent} />
                             </View>
                             <Text style={styles.addButtonText}>{t('reminders.hydration.addWater')}</Text>
                         </LinearGradient>
@@ -164,7 +164,7 @@ export const HydrationCard = () => {
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>{t('reminders.hydration.settingsTitle')}</Text>
                             <TouchableOpacity onPress={() => setShowSettings(false)}>
-                                <Ionicons name="close" size={24} color="#999" />
+                                <Ionicons name="close" size={24} color={theme.colors.neutral400} />
                             </TouchableOpacity>
                         </View>
 
@@ -200,7 +200,7 @@ export const HydrationCard = () => {
                                     await saveHydrationData(newData);
                                     setData(newData);
                                 }}
-                                trackColor={{ false: '#ccc', true: '#FF4081' }}
+                                trackColor={{ false: theme.colors.neutral300, true: theme.colors.pinkAccentBright }}
                             />
                         </View>
 
@@ -218,13 +218,13 @@ const styles = StyleSheet.create({
     container: {
         marginBottom: 20,
         borderRadius: 24,
-        ...getShadowStyle(8, '#D81B60', 0.15, 12, { width: 0, height: 4 }),
+        ...getShadowStyle(8, theme.colors.accentDarkPink, 0.15, 12, { width: 0, height: 4 }),
     },
     card: {
         borderRadius: 24,
         padding: 20,
         borderWidth: 1,
-        borderColor: '#FFC1E3',
+        borderColor: theme.colors.border,
     },
     header: {
         flexDirection: 'row',
@@ -240,11 +240,11 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 12,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         justifyContent: 'center',
         alignItems: 'center',
         marginEnd: 12,
-        ...getShadowStyle(2, '#D81B60', 0.1, 4, { width: 0, height: 2 }),
+        ...getShadowStyle(2, theme.colors.accentDarkPink, 0.1, 4, { width: 0, height: 2 }),
     },
     emoji: {
         fontSize: 20,
@@ -252,12 +252,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#880E4F',
+        color: theme.colors.deepPink,
         marginBottom: 2,
     },
     subtitle: {
         fontSize: 12,
-        color: '#AD1457',
+        color: theme.colors.pinkDark700,
         fontWeight: '500',
     },
     settingsButton: {
@@ -275,22 +275,22 @@ const styles = StyleSheet.create({
     amountLarge: {
         fontSize: 32,
         fontWeight: '800',
-        color: '#C2185B',
+        color: theme.colors.accent,
         lineHeight: 38,
     },
     unit: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#E91E63',
+        color: theme.colors.pinkAccent,
     },
     goalText: {
         fontSize: 13,
-        color: '#AD1457',
+        color: theme.colors.pinkDark700,
         fontWeight: '500',
         marginTop: 2,
     },
     percentageContainer: {
-        backgroundColor: '#FCE4EC',
+        backgroundColor: theme.colors.surfacePinkTint,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 20,
@@ -298,15 +298,15 @@ const styles = StyleSheet.create({
     percentage: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     progressBarContainer: {
         height: 16,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 8,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: '#F8BBD0',
+        borderColor: theme.colors.pinkBorderSoft,
     },
     progressBarBg: {
         flex: 1,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
         borderRadius: 16,
         overflow: 'hidden',
-        ...getShadowStyle(4, '#D81B60', 0.2, 8, { width: 0, height: 4 }),
+        ...getShadowStyle(4, theme.colors.accentDarkPink, 0.2, 8, { width: 0, height: 4 }),
     },
     addButtonGradient: {
         flexDirection: 'row',
@@ -333,27 +333,27 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         borderRadius: 12,
-        backgroundColor: 'rgba(255,255,255,0.8)',
+        backgroundColor: theme.colors.whiteAlpha80,
         justifyContent: 'center',
         alignItems: 'center',
     },
     addButtonText: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontSize: 15,
         fontWeight: '700',
     },
     // Modal Styles
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        backgroundColor: theme.colors.blackAlpha40,
         justifyContent: 'center',
         padding: 24,
     },
     modalContent: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 24,
         padding: 24,
-        ...getShadowStyle(10, '#000', 0.15, 20, { width: 0, height: 8 }),
+        ...getShadowStyle(10, theme.colors.black, 0.15, 20, { width: 0, height: 8 }),
     },
     modalHeader: {
         flexDirection: 'row',
@@ -364,29 +364,29 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#880E4F',
+        color: theme.colors.deepPink,
     },
     inputGroup: {
         marginBottom: 20,
     },
     label: {
         fontSize: 14,
-        color: '#AD1457',
+        color: theme.colors.pinkDark700,
         fontWeight: '600',
         marginBottom: 8,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#F8BBD0',
+        borderColor: theme.colors.pinkBorderSoft,
         borderRadius: 12,
         padding: 14,
         fontSize: 16,
-        backgroundColor: '#FFF0F5',
-        color: '#880E4F',
+        backgroundColor: theme.colors.lavenderBlush,
+        color: theme.colors.deepPink,
     },
     hint: {
         fontSize: 12,
-        color: '#F48FB1',
+        color: theme.colors.pink200,
         marginTop: 6,
         marginStart: 4,
     },
@@ -398,18 +398,18 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     saveButton: {
-        backgroundColor: '#EC407A',
+        backgroundColor: theme.colors.pink400ui,
         padding: 16,
         borderRadius: 16,
         alignItems: 'center',
-        shadowColor: '#EC407A',
+        shadowColor: theme.colors.pink400ui,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 4,
     },
     saveButtonText: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontSize: 16,
         fontWeight: '700',
     },

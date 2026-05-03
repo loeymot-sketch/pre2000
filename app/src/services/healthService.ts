@@ -304,6 +304,39 @@ export const getSymptomsHistory = async (userId: string, limitDays = 30): Promis
 };
 
 
+/**
+ * P3.7 FIX: Single source of truth for weight history.
+ * Merges entries from `healthMetrics` (legacy / dashboard inputs) and `weight_entries`
+ * (WeightTrackerScreen inputs) into a unified HealthMetric[] sorted by date.
+ *
+ * Use this helper anywhere a complete weight view is needed (graphs, stats, exports).
+ * Avoids the bug where the dashboard graph showed only one half of the user's data.
+ */
+export const getMergedWeightHistory = async (userId: string): Promise<HealthMetric[]> => {
+    if (!userId || userId.startsWith('guest_')) {
+        return [];
+    }
+    const [oldEntries, v2Entries] = await Promise.all([
+        getWeightHistory(userId),
+        getWeightHistoryV2(userId),
+    ]);
+
+    const v2AsHealthMetric: HealthMetric[] = v2Entries.map(w => ({
+        metric_id: w.id || '',
+        user_id: w.user_id,
+        type: 'weight' as const,
+        value: w.weight,
+        date: w.date,
+        week: w.week_of_pregnancy,
+        notes: w.notes || '',
+        created_at: w.date,
+    }));
+
+    return [...oldEntries, ...v2AsHealthMetric].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+};
+
 export const getHealthStats = async (userId: string, currentWeek: number): Promise<HealthStats> => {
     // P0 FIX: Block Firestore reads for guest users
     if (!userId || userId.startsWith('guest_')) {

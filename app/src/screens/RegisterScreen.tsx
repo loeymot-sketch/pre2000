@@ -10,6 +10,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { theme } from '../theme';
 import { Button } from '../components/common/Button';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { useNavigation } from '@react-navigation/native';
 import { validateEmail, validatePassword, validatePasswordMatch } from '../utils/validation';
@@ -47,7 +48,7 @@ export const RegisterScreen = () => {
         return 3;
     }, [password]);
 
-    const strengthColor = ['transparent', '#EF5350', '#FF9800', '#4CAF50'][passwordStrength];
+    const strengthColor = ['transparent', theme.colors.redAccentLight, theme.colors.orange500, theme.colors.green500][passwordStrength];
     const strengthLabel = [
         '',
         t('errors.passwordLength', { defaultValue: 'Min. 8 caractères' }),
@@ -107,7 +108,7 @@ export const RegisterScreen = () => {
                         accessibilityRole="button"
                         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                     >
-                        <Text style={styles.backArrow}>{isRTL ? '→' : '←'}</Text>
+                        <RtlAwareChevron direction="back" variant="arrow" size={24} color={theme.colors.textSecondary} />
                     </TouchableOpacity>
 
                     <Text style={[styles.title, isRTL && styles.rtlText]}>{t('register')}</Text>
@@ -267,10 +268,6 @@ const styles = StyleSheet.create({
         left: undefined,
         right: theme.spacing.l,
     },
-    backArrow: {
-        fontSize: 24,
-        color: theme.colors.textSecondary,
-    },
     title: {
         fontSize: 28,
         fontWeight: 'bold',
@@ -339,7 +336,7 @@ const styles = StyleSheet.create({
     strengthBarBg: {
         flex: 1,
         height: 4,
-        backgroundColor: '#E0E0E0',
+        backgroundColor: theme.colors.disabled,
         borderRadius: 2,
         overflow: 'hidden',
     },

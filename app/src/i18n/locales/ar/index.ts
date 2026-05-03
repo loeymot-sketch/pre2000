@@ -1,7 +1,5 @@
-import uiAr from './ui.json';
-import babyEvolutionAr from './babyEvolution.json';
-import supportAr from './support.json';
-import articleUar from './article.json';
+// CLEANUP: ui/babyEvolution/support/article namespaces were duplicated in common.json
+// (which is spread at root). The standalone .json files have been removed.
 import authAr from './auth.json';
 import commonAr from './common.json';
 import profileAr from './profile.json';

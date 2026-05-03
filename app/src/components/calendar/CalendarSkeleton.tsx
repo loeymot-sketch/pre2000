@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         padding: theme.spacing.m,
     },
     skeleton: {
-        backgroundColor: '#E0E0E0',
+        backgroundColor: theme.colors.disabled,
         borderRadius: 4,
     },
     header: {

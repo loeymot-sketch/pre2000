@@ -1,6 +1,6 @@
 import { createLogger } from '../utils/logger';
 const log = createLogger('OnboardingScreen');
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
     View,
     Text,
@@ -33,6 +33,8 @@ import { calculatePregnancyWeek } from '../utils/pregnancyCalculator';
 import { useDateLocale } from '../hooks/useDateLocale';
 import { getPickerLocale } from '../utils/pickerLocale';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { calculateFertileWindow } from '../utils/fertility';
 
 const { width } = Dimensions.get('window');
 
@@ -187,22 +189,34 @@ export const OnboardingScreen = () => {
     const weekComparison = WEEK_COMPARISONS[pregnancyInfo.week] || WEEK_COMPARISONS[1];
 
     // Animation for step transitions
-    const animateTransition = (callback: () => void) => {
+    const stepRef = useRef(step);
+    stepRef.current = step;
+
+    const animateTransition = useCallback((callback: () => void) => {
         Animated.sequence([
             Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: Platform.OS !== 'web' }),
             Animated.timing(fadeAnim, { toValue: 1, duration: 150, useNativeDriver: Platform.OS !== 'web' }),
         ]).start();
         setTimeout(callback, 150);
-    };
+    }, [fadeAnim]);
 
-    const nextStep = () => {
-        animateTransition(() => setStep(s => s + 1));
-        analytics.then(a => a && logEvent(a, 'onboarding_step_complete', { step }));
-    };
-
-    const prevStep = () => {
+    const prevStep = useCallback(() => {
         animateTransition(() => setStep(s => s - 1));
-    };
+    }, [animateTransition]);
+
+    const nextStep = useCallback(() => {
+        analytics.then(a => a && logEvent(a, 'onboarding_step_complete', { step: stepRef.current }));
+        animateTransition(() => setStep(s => s + 1));
+    }, [animateTransition]);
+
+    useEffect(() => {
+        const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+            if (stepRef.current <= 1) return false;
+            prevStep();
+            return true;
+        });
+        return () => sub.remove();
+    }, [prevStep]);
 
     const handleDateChange = (event: any, date?: Date) => {
         setShowDatePicker(Platform.OS === 'ios');
@@ -314,6 +328,9 @@ export const OnboardingScreen = () => {
                 <TouchableOpacity
                     style={[styles.optionCard, pregnancyStatus === 'pregnant' && styles.optionCardSelected]}
                     onPress={() => { setPregnancyStatus('pregnant'); nextStep(); }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('onboarding.step1.pregnant')}
+                    accessibilityState={{ selected: pregnancyStatus === 'pregnant' }}
                 >
                     <Text style={styles.optionEmoji}>🤰</Text>
                     <Text style={styles.optionText}>{t('onboarding.step1.pregnant')}</Text>
@@ -322,6 +339,9 @@ export const OnboardingScreen = () => {
                 <TouchableOpacity
                     style={[styles.optionCard, pregnancyStatus === 'trying' && styles.optionCardSelected]}
                     onPress={() => { setPregnancyStatus('trying'); nextStep(); }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('onboarding.step1.trying')}
+                    accessibilityState={{ selected: pregnancyStatus === 'trying' }}
                 >
                     <Text style={styles.optionEmoji}>💕</Text>
                     <Text style={styles.optionText}>{t('onboarding.step1.trying')}</Text>
@@ -330,6 +350,9 @@ export const OnboardingScreen = () => {
                 <TouchableOpacity
                     style={[styles.optionCard, pregnancyStatus === 'curious' && styles.optionCardSelected]}
                     onPress={() => { setPregnancyStatus('curious'); nextStep(); }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('onboarding.step1.curious')}
+                    accessibilityState={{ selected: pregnancyStatus === 'curious' }}
                 >
                     <Text style={styles.optionEmoji}>👀</Text>
                     <Text style={styles.optionText}>{t('onboarding.step1.curious')}</Text>
@@ -350,6 +373,9 @@ export const OnboardingScreen = () => {
                 <TouchableOpacity
                     style={[styles.methodButton, dateMethod === 'ddr' && styles.methodButtonActive]}
                     onPress={() => setDateMethod('ddr')}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('onboarding.step2.methodDdr')}
+                    accessibilityState={{ selected: dateMethod === 'ddr' }}
                 >
                     <Text style={[styles.methodText, dateMethod === 'ddr' && styles.methodTextActive]}>
                         {t('onboarding.step2.methodDdr')}
@@ -358,6 +384,9 @@ export const OnboardingScreen = () => {
                 <TouchableOpacity
                     style={[styles.methodButton, dateMethod === 'conception' && styles.methodButtonActive]}
                     onPress={() => setDateMethod('conception')}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('onboarding.step2.methodConception')}
+                    accessibilityState={{ selected: dateMethod === 'conception' }}
                 >
                     <Text style={[styles.methodText, dateMethod === 'conception' && styles.methodTextActive]}>
                         {t('onboarding.step2.methodConception')}
@@ -387,14 +416,20 @@ export const OnboardingScreen = () => {
                             padding: 16,
                             fontSize: 18,
                             borderRadius: 12,
-                            border: '2px solid #FFB6C1',
+                            border: `2px solid ${theme.colors.pinkLightPastel}`,
                             backgroundColor: theme.colors.white,
                             textAlign: 'center',
                         }}
                     />
                 ) : (
                     <>
-                        <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateInput}>
+                        <TouchableOpacity
+                            onPress={() => setShowDatePicker(true)}
+                            style={styles.dateInput}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${t('onboarding.step2.labelDdr')}: ${format(selectedDate, 'd MMMM yyyy', { locale: dateLocale })}`}
+                            accessibilityHint={t('a11y.selectDate')}
+                        >
                             <Text style={styles.dateText}>
                                 {format(selectedDate, 'd MMMM yyyy', { locale: dateLocale })}
                             </Text>
@@ -416,7 +451,7 @@ export const OnboardingScreen = () => {
                 {/* Live Preview */}
                 <View style={styles.previewBox}>
                     {pregnancyInfo.isInvalid ? (
-                        <Text style={[styles.previewLabel, { color: '#D32F2F', textAlign: 'center', fontWeight: 'bold' }]}>
+                        <Text style={[styles.previewLabel, { color: theme.colors.red700, textAlign: 'center', fontWeight: 'bold' }]}>
                             {t('onboarding.step2.invalidDate', 'Date invalide : votre grossesse dépasse 40 semaines.')}
                         </Text>
                     ) : (
@@ -432,7 +467,12 @@ export const OnboardingScreen = () => {
             </View>
 
             <View style={styles.navButtons}>
-                <TouchableOpacity onPress={prevStep} style={styles.backButton}>
+                <TouchableOpacity
+                    onPress={prevStep}
+                    style={styles.backButton}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('a11y.onboardingBack')}
+                >
                     <Text style={styles.backButtonText}>{t('common.back')}</Text>
                 </TouchableOpacity>
                 <Button
@@ -463,7 +503,7 @@ export const OnboardingScreen = () => {
                     value={firstName}
                     onChangeText={setFirstName}
                     autoCapitalize="words"
-                    placeholderTextColor="#999"
+                    placeholderTextColor={theme.colors.neutral400}
                 />
             </View>
 
@@ -475,6 +515,9 @@ export const OnboardingScreen = () => {
                             key={range}
                             style={[styles.ageRangeButton, ageRange === range && styles.ageRangeButtonSelected]}
                             onPress={() => setAgeRange(range)}
+                            accessibilityRole="button"
+                            accessibilityLabel={range}
+                            accessibilityState={{ selected: ageRange === range }}
                         >
                             <Text style={[styles.ageRangeText, ageRange === range && styles.ageRangeTextSelected]}>
                                 {range}
@@ -499,6 +542,9 @@ export const OnboardingScreen = () => {
                             key={item.value}
                             style={[styles.radioOption, country === item.value && styles.radioOptionSelected]}
                             onPress={() => setCountry(item.value)}
+                            accessibilityRole="button"
+                            accessibilityLabel={t(item.key)}
+                            accessibilityState={{ selected: country === item.value }}
                         >
                             <Text style={styles.radioText}>{t(item.key)}</Text>
                         </TouchableOpacity>
@@ -512,12 +558,18 @@ export const OnboardingScreen = () => {
                     <TouchableOpacity
                         style={[styles.radioOption, isFirstPregnancy === true && styles.radioOptionSelected]}
                         onPress={() => setIsFirstPregnancy(true)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('onboarding.step3.firstPregnancyYes')}
+                        accessibilityState={{ selected: isFirstPregnancy === true }}
                     >
                         <Text style={styles.radioText}>{t('onboarding.step3.firstPregnancyYes')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.radioOption, isFirstPregnancy === false && styles.radioOptionSelected]}
                         onPress={() => setIsFirstPregnancy(false)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('onboarding.step3.firstPregnancyNo')}
+                        accessibilityState={{ selected: isFirstPregnancy === false }}
                     >
                         <Text style={styles.radioText}>{t('onboarding.step3.firstPregnancyNo')}</Text>
                     </TouchableOpacity>
@@ -545,7 +597,7 @@ export const OnboardingScreen = () => {
 
         return (
             <LinearGradient
-                colors={['#FFE8F0', '#FFF5F8', '#FFFFFF']}
+                colors={[theme.colors.surfacePinkWash, theme.colors.background, theme.colors.white]}
                 style={styles.finalContainer}
             >
                 <ScrollView
@@ -584,7 +636,7 @@ export const OnboardingScreen = () => {
                                 <TextInput
                                     style={styles.accountInput}
                                     placeholder={t('onboarding.step4.emailPlaceholder')}
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor={theme.colors.neutral400}
                                     value={email}
                                     onChangeText={setEmail}
                                     keyboardType="email-address"
@@ -594,7 +646,7 @@ export const OnboardingScreen = () => {
                                 <TextInput
                                     style={styles.accountInput}
                                     placeholder={t('onboarding.step4.passwordPlaceholder')}
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor={theme.colors.neutral400}
                                     value={password}
                                     onChangeText={setPassword}
                                     secureTextEntry
@@ -605,15 +657,18 @@ export const OnboardingScreen = () => {
                         {error ? <ErrorMessage message={error} /> : null}
 
                         {/* Create account button - REQUIRED */}
+                        {/* U-FIX-10: align button gating with the actual policy
+                            (8 chars + 1 digit) to match RegisterScreen and validatePassword.
+                            Was 6 chars only — created accounts that the prod policy rejects. */}
                         <TouchableOpacity
                             style={styles.startButton}
-                            onPress={() => handleFinish(!!(!user && email && password))}
-                            disabled={loading || (!user && !(email.trim().length > 0 && password.length >= 6))}
+                            onPress={() => handleFinish(!!(!user && canCreateAccount))}
+                            disabled={loading || (!user && !canCreateAccount)}
                         >
                             <LinearGradient
-                                colors={loading || (!user && !(email.trim().length > 0 && password.length >= 6))
-                                    ? ['#CCC', '#AAA']
-                                    : ['#FF6B9D', '#C2185B']}
+                                colors={loading || (!user && !canCreateAccount)
+                                    ? [theme.colors.neutral300, theme.colors.gray500]
+                                    : [theme.colors.primary, theme.colors.accent]}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.startButtonGradient}
@@ -672,7 +727,7 @@ export const OnboardingScreen = () => {
                             padding: 16,
                             fontSize: 18,
                             borderRadius: 12,
-                            border: '2px solid #FFB6C1',
+                            border: `2px solid ${theme.colors.pinkLightPastel}`,
                             backgroundColor: theme.colors.white,
                             textAlign: 'center',
                         }}
@@ -741,7 +796,7 @@ export const OnboardingScreen = () => {
 
         return (
             <LinearGradient
-                colors={['#FFE8F0', '#FFF5F8', '#FFFFFF']}
+                colors={[theme.colors.surfacePinkWash, theme.colors.background, theme.colors.white]}
                 style={styles.finalContainer}
             >
                 <ScrollView
@@ -783,7 +838,7 @@ export const OnboardingScreen = () => {
                             <TextInput
                                 style={styles.accountInput}
                                 placeholder={t('onboarding.step4.emailPlaceholder')}
-                                placeholderTextColor="#999"
+                                placeholderTextColor={theme.colors.neutral400}
                                 value={email}
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
@@ -793,7 +848,7 @@ export const OnboardingScreen = () => {
                             <TextInput
                                 style={styles.accountInput}
                                 placeholder={t('onboarding.step4.passwordPlaceholder')}
-                                placeholderTextColor="#999"
+                                placeholderTextColor={theme.colors.neutral400}
                                 value={password}
                                 onChangeText={setPassword}
                                 secureTextEntry
@@ -802,15 +857,19 @@ export const OnboardingScreen = () => {
 
                         {error ? <ErrorMessage message={error} /> : null}
 
+                        {/* U-FIX-10: enforce 8 chars + 1 digit (same policy as RegisterScreen) */}
+                        {/* TTC-FIX: previously called handleFinish (the pregnancy handler), which
+                            (a) used `selectedDate` (today) instead of the user's lastPeriodDate, and
+                            (b) created a real pregnancy profile. Now wired to handleFinishTTC. */}
                         <TouchableOpacity
                             style={styles.startButton}
-                            onPress={() => handleFinish(true)}
-                            disabled={loading || !(email.trim().length > 0 && password.length >= 6)}
+                            onPress={() => handleFinishTTC(true)}
+                            disabled={loading || !(email.trim().length > 0 && password.length >= 8 && /\d/.test(password))}
                         >
                             <LinearGradient
-                                colors={loading || !(email.trim().length > 0 && password.length >= 6)
-                                    ? ['#CCC', '#AAA']
-                                    : ['#FF6B9D', '#C2185B']}
+                                colors={loading || !(email.trim().length > 0 && password.length >= 8 && /\d/.test(password))
+                                    ? [theme.colors.neutral300, theme.colors.gray500]
+                                    : [theme.colors.primary, theme.colors.accent]}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.startButtonGradient}
@@ -823,7 +882,7 @@ export const OnboardingScreen = () => {
 
                         <TouchableOpacity
                             style={styles.skipAccountButton}
-                            onPress={() => handleFinish(false)}
+                            onPress={() => handleFinishTTC(false)}
                         >
                             <Text style={styles.skipAccountText}>{t('onboarding.step4.skipAccount')}</Text>
                         </TouchableOpacity>
@@ -896,7 +955,7 @@ export const OnboardingScreen = () => {
     // STEP 3 (Final) for Curious: Welcome Screen
     const renderStep3Curious = () => (
         <LinearGradient
-            colors={['#FFE8F0', '#FFF5F8', '#FFFFFF']}
+            colors={[theme.colors.surfacePinkWash, theme.colors.background, theme.colors.white]}
             style={styles.finalContainer}
         >
             <ScrollView
@@ -940,7 +999,7 @@ export const OnboardingScreen = () => {
                         disabled={loading}
                     >
                         <LinearGradient
-                            colors={loading ? ['#CCC', '#AAA'] : ['#FF6B9D', '#C2185B']}
+                            colors={loading ? [theme.colors.neutral300, theme.colors.gray500] : [theme.colors.primary, theme.colors.accent]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.startButtonGradient}
@@ -963,6 +1022,22 @@ export const OnboardingScreen = () => {
     // FINISH HANDLERS FOR DIFFERENT FLOWS
     // ==========================================
 
+    // TTC-FIX: previously this handler stored a fake LMP (today − 7 days) and ignored
+    // both `lastPeriodDate` and `cycleLength`. Result: TTC users were silently treated
+    // as week 1 of a pregnancy, which is medically wrong and dangerous (ghost pregnancy
+    // dashboard, fake DPA, fake baby evolution). Two structural bugs fixed here:
+    //   1. Use the REAL `lastPeriodDate` the user entered as the cycle start.
+    //   2. Mark the profile with `isTTC: true` so currentWeek is forced to 0 and
+    //      downstream UI can branch on the flag.
+    // We also persist a standalone `ttcProfile` snapshot in AsyncStorage so the dedicated
+    // TTC home (Strategy B) can hydrate from local storage without re-asking the user.
+    //
+    // TODO (Strategy B — product-coherent): replace the boolean `isTTC` with a real
+    // `mode: 'pregnant' | 'ttc' | 'curious'` discriminated union on UserProfile,
+    // build a TTC-specific home that shows "Cycle day X" + "Estimated fertile window
+    // around <date>" instead of the pregnancy week badge, and add a one-tap conversion
+    // path "I'm pregnant!" that promotes the TTC profile to a full pregnancy profile
+    // by reusing the stored lastPeriodDate as the LMP.
     const handleFinishTTC = async (createAccount: boolean = false) => {
         setError('');
 
@@ -989,20 +1064,47 @@ export const OnboardingScreen = () => {
                     }
                 }
 
-                // For TTC, we use lastPeriodDate as a reference but it's NOT a pregnancy LMP
-                // We'll set a fake "week 0" to indicate pre-pregnancy
-                const fakeLmp = new Date(); // Use today, week calculation will give week 1
-                fakeLmp.setDate(fakeLmp.getDate() - 7); // Pretend LMP was 1 week ago for demo purposes
+                // TTC-FIX: compute the fertility window from the REAL last period date,
+                // then persist a standalone snapshot in AsyncStorage so that the future
+                // dedicated TTC home (Strategy B) can hydrate without re-prompting.
+                const fertility = calculateFertileWindow(lastPeriodDate, cycleLength);
+                const ttcProfile = {
+                    firstName: firstName || t('onboarding.step4.defaultName'),
+                    country,
+                    ageRange: ageRange || null,
+                    lastPeriodDate: lastPeriodDate.toISOString(),
+                    cycleLength,
+                    ovulationDate: fertility.ovulationDate.toISOString(),
+                    fertileWindowStart: fertility.fertileWindowStart.toISOString(),
+                    fertileWindowEnd: fertility.fertileWindowEnd.toISOString(),
+                    createdAt: new Date().toISOString(),
+                };
+                try {
+                    await AsyncStorage.setItem('ttcProfile', JSON.stringify(ttcProfile));
+                    log.debug('[Onboarding] 💾 TTC profile snapshot saved to AsyncStorage');
+                } catch (storageError) {
+                    log.warn('[Onboarding] ⚠️ Failed to persist ttcProfile snapshot (non-blocking):', storageError);
+                }
 
+                log.warn(
+                    '[Onboarding] ⚠️ TTC user created with isTTC=true. ' +
+                    'A dedicated TTC home screen is NOT YET implemented — current MainTabs ' +
+                    'will render pregnancy-style content with currentWeek=0 until Strategy B ships.'
+                );
+
+                // TTC-FIX: pass the REAL lastPeriodDate (NOT a fake today − 7) and signal
+                // TTC mode so AuthContext stores currentWeek=0, isTTC=true, cycleLength,
+                // and the precomputed fertility window — instead of a ghost pregnancy.
                 await retryOperation(() => loginAsGuest(
                     firstName || t('onboarding.step4.defaultName'),
-                    fakeLmp,
+                    lastPeriodDate,
                     country,
                     undefined,
                     undefined,
                     ageRange || undefined,
                     undefined,
-                    authenticatedUser ?? undefined
+                    authenticatedUser ?? undefined,
+                    { isTTC: true, cycleLength },
                 ));
 
                 analytics.then(a => a && logEvent(a, 'onboarding_ttc_complete', {
@@ -1159,7 +1261,7 @@ const styles = StyleSheet.create({
     },
     progressContainer: {
         height: 4,
-        backgroundColor: '#FFE4EC',
+        backgroundColor: theme.colors.surfacePinkSoft,
         marginTop: Platform.OS === 'ios' ? 50 : 20,
     },
     progressBar: {
@@ -1185,7 +1287,7 @@ const styles = StyleSheet.create({
     stepTitle: {
         fontSize: 26,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         textAlign: 'center',
         marginBottom: 8,
         lineHeight: 34,
@@ -1207,11 +1309,11 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 20,
         borderWidth: 2,
-        borderColor: '#FFE4EC',
+        borderColor: theme.colors.surfacePinkSoft,
     },
     optionCardSelected: {
         borderColor: theme.colors.primary,
-        backgroundColor: '#FFF5F8',
+        backgroundColor: theme.colors.background,
     },
     optionEmoji: {
         fontSize: 32,
@@ -1220,7 +1322,7 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     methodSelector: {
         flexDirection: 'row',
@@ -1231,11 +1333,11 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 14,
         borderRadius: 12,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
         alignItems: 'center',
     },
     methodButtonActive: {
-        backgroundColor: '#FFE4EC',
+        backgroundColor: theme.colors.surfacePinkSoft,
     },
     methodText: {
         fontSize: 14,
@@ -1252,7 +1354,7 @@ const styles = StyleSheet.create({
     dateLabel: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
     },
     dateInput: {
@@ -1260,19 +1362,19 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: '#FFB6C1',
+        borderColor: theme.colors.pinkLightPastel,
         backgroundColor: theme.colors.white,
         alignItems: 'center',
     },
     dateText: {
         fontSize: 18,
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: '600',
     },
     previewBox: {
         marginTop: 20,
         padding: 16,
-        backgroundColor: '#FFF5F8',
+        backgroundColor: theme.colors.background,
         borderRadius: 12,
         alignItems: 'center',
     },
@@ -1299,7 +1401,7 @@ const styles = StyleSheet.create({
     inputLabel: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
     },
     textInput: {
@@ -1307,8 +1409,8 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#DDD',
-        backgroundColor: '#FAFAFA',
+        borderColor: theme.colors.neutral200,
+        backgroundColor: theme.colors.neutral25,
         fontSize: 16,
     },
     radioGroup: {
@@ -1318,16 +1420,16 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: '#EEE',
-        backgroundColor: '#FAFAFA',
+        borderColor: theme.colors.neutral150,
+        backgroundColor: theme.colors.neutral25,
     },
     radioOptionSelected: {
         borderColor: theme.colors.primary,
-        backgroundColor: '#FFF5F8',
+        backgroundColor: theme.colors.background,
     },
     radioText: {
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     navButtons: {
         flexDirection: 'row',
@@ -1381,7 +1483,7 @@ const styles = StyleSheet.create({
     weekNumber: {
         fontSize: 36,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     dayNumber: {
         fontSize: 18,
@@ -1399,7 +1501,7 @@ const styles = StyleSheet.create({
     divider: {
         width: 60,
         height: 2,
-        backgroundColor: '#FFB6C1',
+        backgroundColor: theme.colors.pinkLightPastel,
         marginVertical: 24,
     },
     emotionalText: {
@@ -1445,7 +1547,7 @@ const styles = StyleSheet.create({
     accountTitle: {
         fontSize: 18,
         fontWeight: '700' as const,
-        color: '#333',
+        color: theme.colors.neutral900,
         textAlign: 'center' as const,
         marginBottom: 6,
     },
@@ -1462,7 +1564,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.white,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#FFB6C1',
+        borderColor: theme.colors.pinkLightPastel,
     },
     checkbox: {
         width: 24,
@@ -1484,7 +1586,7 @@ const styles = StyleSheet.create({
     },
     accountToggleText: {
         fontSize: 14,
-        color: '#333',
+        color: theme.colors.neutral900,
         flex: 1,
     },
     accountFields: {
@@ -1497,8 +1599,8 @@ const styles = StyleSheet.create({
         padding: 14,
         fontSize: 16,
         borderWidth: 1,
-        borderColor: '#FFB6C1',
-        color: '#333',
+        borderColor: theme.colors.pinkLightPastel,
+        color: theme.colors.neutral900,
         marginTop: 10,
         width: '100%',
     },
@@ -1530,7 +1632,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: theme.colors.white,
         borderWidth: 2,
-        borderColor: '#FFB6C1',
+        borderColor: theme.colors.pinkLightPastel,
         minWidth: 70,
         alignItems: 'center' as const,
     },
@@ -1561,7 +1663,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 25,
-        backgroundColor: '#FFE4EC',
+        backgroundColor: theme.colors.surfacePinkSoft,
         alignItems: 'center' as const,
         justifyContent: 'center' as const,
         borderWidth: 2,
@@ -1587,18 +1689,18 @@ const styles = StyleSheet.create({
         marginTop: -4,
     },
     ttcInfoBox: {
-        backgroundColor: '#FFF5F8',
+        backgroundColor: theme.colors.background,
         borderRadius: 16,
         padding: 20,
         marginVertical: 16,
         borderWidth: 2,
-        borderColor: '#FFE4EC',
+        borderColor: theme.colors.surfacePinkSoft,
         alignItems: 'center' as const,
     },
     ttcInfoTitle: {
         fontSize: 16,
         fontWeight: '600' as const,
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
     },
     ttcInfoDate: {
@@ -1644,7 +1746,7 @@ const styles = StyleSheet.create({
         width: 44,
         height: 44,
         borderRadius: 22,
-        backgroundColor: '#FFE4EC',
+        backgroundColor: theme.colors.surfacePinkSoft,
         alignItems: 'center' as const,
         justifyContent: 'center' as const,
         borderWidth: 2,
@@ -1658,7 +1760,7 @@ const styles = StyleSheet.create({
     sliderTrack: {
         flex: 1,
         height: 8,
-        backgroundColor: '#FFE4EC',
+        backgroundColor: theme.colors.surfacePinkSoft,
         borderRadius: 4,
         overflow: 'hidden' as const,
     },
@@ -1676,25 +1778,25 @@ const styles = StyleSheet.create({
     },
     trimesterLabel: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontWeight: '500' as const,
     },
     curiousInfoBox: {
-        backgroundColor: '#F0F4FF',
+        backgroundColor: theme.colors.blueTintVeryPale,
         borderRadius: 16,
         padding: 20,
         marginVertical: 16,
         borderWidth: 2,
-        borderColor: '#E0E8FF',
+        borderColor: theme.colors.blueTintPale,
     },
     curiousInfoText: {
         fontSize: 14,
-        color: '#555',
+        color: theme.colors.neutral700,
         lineHeight: 24,
     },
     iosPickerOverlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: theme.colors.blackAlpha40,
         justifyContent: 'flex-end',
         borderTopStartRadius: 24,
         borderTopEndRadius: 24,
@@ -1713,12 +1815,12 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         borderBottomWidth: 1,
         borderBottomColor: theme.colors.disabled,
-        backgroundColor: '#FAFAFA',
+        backgroundColor: theme.colors.neutral25,
     },
     iosPickerTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     iosPickerDoneText: {
         fontSize: 16,

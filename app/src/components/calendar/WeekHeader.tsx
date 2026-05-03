@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
+import { RtlAwareChevron } from '../common/RtlAwareChevron';
 import { useTranslation } from 'react-i18next';
 
 interface WeekHeaderProps {
@@ -28,7 +29,12 @@ export const WeekHeader: React.FC<WeekHeaderProps> = ({
                     disabled={!canGoPrevious}
                     style={[styles.navButton, !canGoPrevious && styles.navButtonDisabled]}
                 >
-                    <Text style={[styles.navIcon, !canGoPrevious && styles.navIconDisabled]}>◀︎</Text>
+                    <RtlAwareChevron
+                        direction="back"
+                        variant="caret"
+                        size={24}
+                        color={canGoPrevious ? theme.colors.primary : theme.colors.textLight}
+                    />
                 </TouchableOpacity>
 
                 <View style={styles.weekInfo}>
@@ -40,7 +46,12 @@ export const WeekHeader: React.FC<WeekHeaderProps> = ({
                     disabled={!canGoNext}
                     style={[styles.navButton, !canGoNext && styles.navButtonDisabled]}
                 >
-                    <Text style={[styles.navIcon, !canGoNext && styles.navIconDisabled]}>▶︎</Text>
+                    <RtlAwareChevron
+                        direction="forward"
+                        variant="caret"
+                        size={24}
+                        color={canGoNext ? theme.colors.primary : theme.colors.textLight}
+                    />
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
@@ -71,13 +82,6 @@ const styles = StyleSheet.create({
     },
     navButtonDisabled: {
         opacity: 0.3,
-    },
-    navIcon: {
-        fontSize: 24,
-        color: theme.colors.primary,
-    },
-    navIconDisabled: {
-        color: theme.colors.textLight,
     },
     weekInfo: {
         flex: 1,

@@ -28,19 +28,19 @@ describe('pregnancyCalculator', () => {
         it('should return Week 1, Day 1 when LMP is today', () => {
             const lmp = new Date(TODAY);
             const result = calculatePregnancyWeek(lmp);
-            expect(result).toEqual({ week: 1, day: 1 });
+            expect(result).toEqual({ week: 1, day: 1, isInvalid: false });
         });
 
         it('should return Week 1, Day 7 when LMP was 6 days ago', () => {
             const lmp = new Date('2024-01-04T10:00:00.000Z'); // 6 days before Jan 10
             const result = calculatePregnancyWeek(lmp);
-            expect(result).toEqual({ week: 1, day: 7 });
+            expect(result).toEqual({ week: 1, day: 7, isInvalid: false });
         });
 
         it('should return Week 2, Day 1 when LMP was 7 days ago (Start of Week 2)', () => {
             const lmp = new Date('2024-01-03T10:00:00.000Z'); // 7 days before Jan 10
             const result = calculatePregnancyWeek(lmp);
-            expect(result).toEqual({ week: 2, day: 1 });
+            expect(result).toEqual({ week: 2, day: 1, isInvalid: false });
         });
 
         it('should return Week 10, Day 1 when LMP was exactly 9 weeks ago', () => {
@@ -48,14 +48,14 @@ describe('pregnancyCalculator', () => {
             // Jan 10 - 63 days = Nov 8, 2023
             const lmp = new Date('2023-11-08T10:00:00.000Z');
             const result = calculatePregnancyWeek(lmp);
-            expect(result).toEqual({ week: 10, day: 1 });
+            expect(result).toEqual({ week: 10, day: 1, isInvalid: false });
         });
 
         it('should ignore time components (noon vs midnight)', () => {
             // Jan 3 at 23:59 should still be 7 days ago relative to Jan 10
             const lmp = new Date('2024-01-03T23:59:59.000Z');
             const result = calculatePregnancyWeek(lmp);
-            expect(result).toEqual({ week: 2, day: 1 });
+            expect(result).toEqual({ week: 2, day: 1, isInvalid: false });
         });
 
         // ---------------------------------------------------------------------
@@ -74,7 +74,7 @@ describe('pregnancyCalculator', () => {
             // Jan 10 2024 - 294 days = ~March 2023
             const wayBack = new Date('2023-03-22T10:00:00.000Z');
             const result = calculatePregnancyWeek(wayBack);
-            expect(result).toEqual({ week: 40, day: 7 });
+            expect(result).toEqual({ week: 40, day: 7, isInvalid: true });
         });
 
         // ---------------------------------------------------------------------
@@ -101,7 +101,7 @@ describe('pregnancyCalculator', () => {
 
             // Expect correct calculation accounting for Feb 29
             // If leap year wasn't handled, it might be off by 1
-            expect(result).toEqual({ week: 1, day: 3 });
+            expect(result).toEqual({ week: 1, day: 3, isInvalid: false });
         });
     });
 });

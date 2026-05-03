@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import React, { useRef, useEffect } from 'react';
 import {
     View,
@@ -14,11 +15,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { getBabyGrowthForWeek } from '../../config/babyGrowthData';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { RtlAwareChevron } from '../common/RtlAwareChevron';
 
 const { width } = Dimensions.get('window');
 
 interface BabyGrowthCardProps {
     currentWeek: number;
+    /** U-FIX-6: optional day-in-week (1..7) for accurate dayOfPregnancy display.
+     *  When omitted, falls back to `currentWeek * 7` (legacy behavior). */
+    currentDay?: number;
     babyName?: string;
     dueDate?: Date;
     weekData?: Week;
@@ -26,6 +31,7 @@ interface BabyGrowthCardProps {
 
 export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
     currentWeek,
+    currentDay,
     babyName,
     dueDate,
     weekData,
@@ -41,7 +47,12 @@ export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
     // Calculate progression
     const totalWeeks = 40;
     const progressPercent = Math.min((currentWeek / totalWeeks) * 100, 100);
-    const dayOfPregnancy = currentWeek * 7;
+    // U-FIX-6: was `currentWeek * 7` which always overshot by `7 - dayInWeek` days.
+    // E.g. week 10 day 3 displayed day 70 instead of day 66 (= (10-1)*7 + 3).
+    // Falls back to legacy formula if currentDay isn't passed (no regression).
+    const dayOfPregnancy = currentDay != null
+        ? Math.max(1, (currentWeek - 1) * 7 + currentDay)
+        : currentWeek * 7;
 
     // Animation on mount/update
     useEffect(() => {
@@ -82,7 +93,7 @@ export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
 
             {/* Image Container avec dégradé */}
             <LinearGradient
-                colors={['#FFE5EC', '#FFF0F5']}
+                colors={[theme.colors.surfaceBlush, theme.colors.lavenderBlush]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.imageContainer}
@@ -91,6 +102,9 @@ export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
                     source={monthData.image}
                     style={styles.babyImage}
                     resizeMode="contain"
+                    accessible
+                    accessibilityRole="image"
+                    accessibilityLabel={t('a11y.babyIllustrationMonth', { month: monthData.month })}
                 />
 
 
@@ -110,7 +124,7 @@ export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
             <View style={styles.progressContainer}>
                 <View style={styles.progressBar}>
                     <LinearGradient
-                        colors={['#FF6B9D', '#FF8FB3']}
+                        colors={[theme.colors.primary, theme.colors.pinkSoft300]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={[styles.progressFill, { width: `${progressPercent}%` }]}
@@ -138,11 +152,15 @@ export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
                     navigation.navigate('BabyEvolution' as never);
                 }}
                 activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={t('home.babyEvolution')}
+                accessibilityHint={t('a11y.openItem')}
             >
                 <Text style={styles.ctaText}>
                     {t('home.babyEvolution')}
                 </Text>
-                <Text style={styles.ctaIcon}>→</Text>
+                {/* RTL FIX: arrow auto-mirrors via RtlAwareChevron (was hardcoded '→') */}
+                <RtlAwareChevron direction="forward" variant="arrow" size={18} color={theme.colors.white} />
             </TouchableOpacity>
         </Animated.View>
     );
@@ -150,12 +168,12 @@ export const BabyGrowthCard = React.memo<BabyGrowthCardProps>(({
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 24,
         padding: 20,
         marginHorizontal: 16,
         marginVertical: 12,
-        shadowColor: '#FF6B9D',
+        shadowColor: theme.colors.primary,
         shadowOpacity: 0.15,
         shadowRadius: 20,
         shadowOffset: { width: 0, height: 8 },
@@ -170,13 +188,13 @@ const styles = StyleSheet.create({
     babyName: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#2D2D2D',
+        color: theme.colors.neutral900,
     },
     monthBadge: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#FF6B9D',
-        backgroundColor: '#FFE5EC',
+        color: theme.colors.primary,
+        backgroundColor: theme.colors.surfaceBlush,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 12,
@@ -198,11 +216,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 16,
         right: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        backgroundColor: theme.colors.whiteAlpha95,
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderRadius: 16,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 8,
         shadowOffset: { width: 0, height: 2 },
@@ -216,19 +234,19 @@ const styles = StyleSheet.create({
     comparisonText: {
         fontSize: 13,
         fontWeight: '600',
-        color: '#2D2D2D',
+        color: theme.colors.neutral900,
         marginBottom: 2,
     },
     sizeText: {
         fontSize: 11,
-        color: '#757575',
+        color: theme.colors.gray600,
     },
     timeline: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingVertical: 12,
-        backgroundColor: '#FFF5F7',
+        backgroundColor: theme.colors.surfacePinkMist,
         borderRadius: 12,
         marginBottom: 16,
     },
@@ -243,12 +261,12 @@ const styles = StyleSheet.create({
     timelineText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#2D2D2D',
+        color: theme.colors.neutral900,
     },
     timelineDivider: {
         width: 1,
         height: 20,
-        backgroundColor: '#FFB6C1',
+        backgroundColor: theme.colors.pinkLightPastel,
         opacity: 0.3,
     },
     progressContainer: {
@@ -260,7 +278,7 @@ const styles = StyleSheet.create({
     progressBar: {
         flex: 1,
         height: 8,
-        backgroundColor: '#FFE5EC',
+        backgroundColor: theme.colors.surfaceBlush,
         borderRadius: 4,
         overflow: 'hidden',
     },
@@ -271,14 +289,14 @@ const styles = StyleSheet.create({
     progressText: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#FF6B9D',
+        color: theme.colors.primary,
         minWidth: 45,
         textAlign: 'right',
     },
     factContainer: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        backgroundColor: '#FFF9E6',
+        backgroundColor: theme.colors.surfaceTip,
         padding: 12,
         borderRadius: 12,
         marginBottom: 14,
@@ -291,19 +309,19 @@ const styles = StyleSheet.create({
     factText: {
         flex: 1,
         fontSize: 13,
-        color: '#5D4E37',
+        color: theme.colors.brownText700,
         lineHeight: 18,
     },
     ctaButton: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FF6B9D',
+        backgroundColor: theme.colors.primary,
         paddingVertical: 14,
         paddingHorizontal: 20,
         borderRadius: 14,
         gap: 8,
-        shadowColor: '#FF6B9D',
+        shadowColor: theme.colors.primary,
         shadowOpacity: 0.3,
         shadowRadius: 8,
         shadowOffset: { width: 0, height: 4 },
@@ -313,10 +331,10 @@ const styles = StyleSheet.create({
     ctaText: {
         fontSize: 15,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: theme.colors.white,
     },
     ctaIcon: {
         fontSize: 18,
-        color: '#FFFFFF',
+        color: theme.colors.white,
     },
 });

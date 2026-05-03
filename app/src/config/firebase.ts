@@ -32,6 +32,11 @@ export const db = initializeFirestore(app, {
 export { auth };
 
 // 3. Analytics
+// NOTE: firebase/analytics is the Web SDK and is NOT supported on React Native /
+// Hermes — `isSupported()` resolves to `false`, so this promise always resolves
+// to `null` in the app. All analyticsService methods are intentionally no-ops as
+// a result. See src/services/analyticsService.ts for the migration path to
+// @react-native-firebase/analytics when telemetry becomes a priority.
 export const analytics = isSupported().then(yes => yes ? getAnalytics(app) : null);
 
 export default app;

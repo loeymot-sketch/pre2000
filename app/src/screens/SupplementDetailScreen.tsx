@@ -82,6 +82,8 @@ export const SupplementDetailScreen = () => {
                 <TouchableOpacity
                     onPress={() => setRefreshKey(k => k + 1)}
                     style={{ marginTop: 16, padding: 14, backgroundColor: theme.colors.primary, borderRadius: theme.borderRadius.m }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.retry')}
                 >
                     <Text style={{ color: theme.colors.white, fontWeight: '600' }}>{t('common.retry')}</Text>
                 </TouchableOpacity>
@@ -118,6 +120,7 @@ export const SupplementDetailScreen = () => {
                 style={styles.backButton}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 accessibilityRole="button"
+                accessibilityLabel={t('a11y.back')}
             >
                 <Ionicons
                     name={isRTL ? 'arrow-forward' : 'arrow-back'}

@@ -37,13 +37,13 @@ OS: ${Platform.OS} ${Platform.Version}
             try {
                 await Clipboard.setStringAsync(SUPPORT_EMAIL);
                 Alert.alert(
-                    t('support.reportProblem', 'Signaler un problème'),
-                    `Impossible d'ouvrir l'application Mail.\n\nL'adresse ${SUPPORT_EMAIL} a été copiée dans votre presse-papier.`
+                    t('support.reportProblem'),
+                    t('support.mailUnavailableCopied', { email: SUPPORT_EMAIL })
                 );
             } catch (clipboardError) {
                 Alert.alert(
-                    t('common.error', 'Erreur'),
-                    `Veuillez nous écrire à : ${SUPPORT_EMAIL}`
+                    t('common.error'),
+                    t('support.pleaseWriteUs', { email: SUPPORT_EMAIL })
                 );
             }
         }

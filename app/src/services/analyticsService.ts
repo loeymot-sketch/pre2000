@@ -1,3 +1,27 @@
+/**
+ * @fileoverview Analytics service — currently a NO-OP wrapper on React Native.
+ *
+ * STATUS (2026-05): firebase/analytics (Web SDK) is NOT supported in React Native /
+ * Hermes runtime. `isSupported()` returns false, so the analytics instance resolves
+ * to null and ALL methods (logEvent, setUserId, etc.) are silently dropped in prod.
+ *
+ * This file preserves the API surface so all call-sites (useScreenAnalytics,
+ * LoginScreen, RegisterScreen, App.tsx onStateChange) continue to compile and
+ * behave as no-ops without crashing.
+ *
+ * MIGRATION PATH (when telemetry becomes a priority):
+ *   1. Install @react-native-firebase/app and @react-native-firebase/analytics
+ *      (requires native build = expo prebuild + EAS rebuild, not Expo Go)
+ *   2. Replace `firebase/analytics` imports below with @react-native-firebase/analytics
+ *   3. Remove the isSupported() guard and the null-instance branches — the native
+ *      SDK is always available on iOS / Android once linked
+ *   4. Test on a real device (analytics events do not surface on simulators)
+ *
+ * Until then, every method here is intentionally a no-op. In __DEV__ we log a
+ * single warning at startup to surface this state, instead of silently dropping
+ * thousands of events with no observability.
+ */
+
 import { analytics } from '../config/firebase';
 import {
     logEvent as firebaseLogEvent,
@@ -11,12 +35,45 @@ import { logger } from '../utils/logger';
 /**
  * Service to handle Firebase Analytics.
  * Wraps the async initialization of the analytics instance.
+ *
+ * On React Native (Hermes), the underlying analyticsInstance always resolves to
+ * `null` because firebase/analytics (Web SDK) is unsupported. All public methods
+ * therefore short-circuit silently — see file header for the migration path.
  */
 class AnalyticsService {
     private analyticsInstance: Promise<Analytics | null>;
 
     constructor() {
         this.analyticsInstance = analytics;
+
+        // Surface the no-op state ONCE at startup in dev. The constructor runs a
+        // single time (module-level singleton below), so this fires exactly once
+        // per app launch — no per-event spam.
+        this.analyticsInstance.then(instance => {
+            if (!instance && __DEV__) {
+                logger.warn(
+                    'Analytics',
+                    'firebase/analytics is unavailable on this runtime — all events will be no-ops. See migration path in analyticsService.ts JSDoc.'
+                );
+            }
+        });
+    }
+
+    /**
+     * Indicates whether analytics is actually operational on this runtime.
+     *
+     * Returns `true` only when the underlying Firebase Analytics instance was
+     * successfully initialized (i.e. running on a supported web environment).
+     * On React Native this currently always resolves to `false` — useful for
+     * surfacing the state in DiagnosticScreen or feature flags.
+     */
+    async isOperational(): Promise<boolean> {
+        try {
+            const instance = await this.analyticsInstance;
+            return instance !== null;
+        } catch {
+            return false;
+        }
     }
 
     /**

@@ -1,7 +1,5 @@
-import uiEn from './ui.json';
-import babyEvolutionEn from './babyEvolution.json';
-import supportEn from './support.json';
-import articleUen from './article.json';
+// CLEANUP: ui/babyEvolution/support/article namespaces were duplicated in common.json
+// (which is spread at root). The standalone .json files have been removed.
 import authEn from './auth.json';
 import commonEn from './common.json';
 import profileEn from './profile.json';

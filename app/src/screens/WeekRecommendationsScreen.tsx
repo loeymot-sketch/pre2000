@@ -56,15 +56,33 @@ export const WeekRecommendationsScreen = () => {
             }
         };
 
-        if (!weekLoading && weekData) {
-            fetchRecommendations();
+        // U-FIX-7: was infinite spinner if weekData stayed null (week missing in Firestore
+        // or hook errored). Now we drop the local loading flag once the hook is done,
+        // even if there's no data to fetch — caller renders the proper empty state.
+        if (weekLoading) return;
+        if (!weekData) {
+            setLoading(false);
+            return;
         }
+        fetchRecommendations();
     }, [weekData, weekLoading]);
 
     if (weekLoading || loading) {
         return (
             <View style={styles.centerContainer}>
                 <ActivityIndicator size="large" color={theme.colors.primary} />
+            </View>
+        );
+    }
+
+    // U-FIX-7: explicit empty state if the week has no recommendations / week data missing.
+    if (!weekData) {
+        return (
+            <View style={styles.centerContainer}>
+                <Text style={{ fontSize: 40, marginBottom: 12 }}>📭</Text>
+                <Text style={{ color: theme.colors.textLight, textAlign: 'center', paddingHorizontal: 24 }}>
+                    {t('common.errors.weekDataNotFound') || t('common.errorLoadingData')}
+                </Text>
             </View>
         );
     }

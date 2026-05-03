@@ -74,7 +74,15 @@ describe('NotificationService', () => {
                 content: expect.objectContaining({
                     title: 'Title',
                     body: 'Body',
-                    data: { type: 'reminder', reminderId: 'rem-1' }
+                    // P-FIX (deep-link): payload now carries `screen` + `highlightId` so the
+                    // global notification listener in App.tsx can navigate even when TasksTab
+                    // has never been mounted (no per-screen focused listener).
+                    data: {
+                        type: 'reminder',
+                        reminderId: 'rem-1',
+                        screen: 'TasksTab',
+                        highlightId: 'rem-1',
+                    }
                 }),
                 trigger: expect.objectContaining({
                     hour: 8,

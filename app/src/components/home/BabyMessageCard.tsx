@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import { createLogger } from '../../utils/logger';
 const log = createLogger('BabyMessageCard');
 import React from 'react';
@@ -27,7 +28,7 @@ export const BabyMessageCard: React.FC<BabyMessageCardProps> = ({
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={['#FFE5F1', '#FFF0F5']}
+                colors={[theme.colors.gradientPinkStart, theme.colors.lavenderBlush]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.gradient}
@@ -55,8 +56,8 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 20,
         borderStartWidth: 4,
-        borderStartColor: '#FF69B4', // Hot Pink accent
-        ...getShadowStyle(4, '#FF69B4', 0.1, 8, { width: 0, height: 4 }),
+        borderStartColor: theme.colors.hotPink, // Hot Pink accent
+        ...getShadowStyle(4, theme.colors.hotPink, 0.1, 8, { width: 0, height: 4 }),
     },
     header: {
         flexDirection: 'row',
@@ -70,19 +71,19 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     message: {
         fontSize: 16,
         lineHeight: 24,
-        color: '#424242',
+        color: theme.colors.neutral900,
         marginBottom: 12,
         fontStyle: 'italic',
     },
     footer: {
         fontSize: 12,
         fontStyle: 'italic',
-        color: '#757575',
+        color: theme.colors.gray600,
         textAlign: 'right',
     },
 });

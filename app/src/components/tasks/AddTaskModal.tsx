@@ -274,8 +274,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                                 <Switch
                                     value={isRecurring}
                                     onValueChange={setIsRecurring}
-                                    trackColor={{ false: '#DDD', true: '#FF6B9D' }}
-                                    thumbColor={isRecurring ? '#C2185B' : '#f4f3f4'}
+                                    trackColor={{ false: theme.colors.neutral200, true: theme.colors.primary }}
+                                    thumbColor={isRecurring ? theme.colors.accent : theme.colors.iosGroupedBackground}
                                 />
                             </View>
 
@@ -362,8 +362,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                                 <Switch
                                     value={reminderEnabled}
                                     onValueChange={setReminderEnabled}
-                                    trackColor={{ false: '#DDD', true: '#FF6B9D' }}
-                                    thumbColor={reminderEnabled ? '#C2185B' : '#f4f3f4'}
+                                    trackColor={{ false: theme.colors.neutral200, true: theme.colors.primary }}
+                                    thumbColor={reminderEnabled ? theme.colors.accent : theme.colors.iosGroupedBackground}
                                 />
                             </View>
 
@@ -389,11 +389,11 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                                                     style={{
                                                         padding: 10,
                                                         borderRadius: 8,
-                                                        border: '1px solid #DDD',
+                                                        border: `1px solid ${theme.colors.neutral200}`,
                                                         fontSize: 16,
                                                         width: '100%',
                                                         fontFamily: 'system-ui',
-                                                        backgroundColor: '#F9F9F9'
+                                                        backgroundColor: theme.colors.surfaceGrayStripe
                                                     }}
                                                 />
                                             </View>
@@ -411,11 +411,11 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                                                     style={{
                                                         padding: 10,
                                                         borderRadius: 8,
-                                                        border: '1px solid #DDD',
+                                                        border: `1px solid ${theme.colors.neutral200}`,
                                                         fontSize: 16,
                                                         width: '100%',
                                                         fontFamily: 'system-ui',
-                                                        backgroundColor: '#F9F9F9'
+                                                        backgroundColor: theme.colors.surfaceGrayStripe
                                                     }}
                                                 />
                                             </View>
@@ -529,7 +529,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                                                                     setTempTimeDate(null);
                                                                 }}
                                                             >
-                                                                <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Valider l'heure</Text>
+                                                                <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>Valider l'heure</Text>
                                                             </TouchableOpacity>
                                                         )}
                                                     </View>
@@ -589,7 +589,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                             disabled={loading || (title || '').trim().length < 3}
                         >
                             {loading ? (
-                                <ActivityIndicator color="#FFF" size="small" />
+                                <ActivityIndicator color={theme.colors.white} size="small" />
                             ) : (
                                 <Text style={styles.createButtonText}>
                                     {initialTask ? t('tasks.modal.update') : t('tasks.modal.create')}
@@ -606,7 +606,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: theme.colors.blackAlpha50,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -614,10 +614,10 @@ const styles = StyleSheet.create({
         width: '90%',
         maxWidth: 400,
         maxHeight: '90%',
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 20,
         padding: 24,
-        ...getShadowStyle(8, '#000', 0.3, 8, { width: 0, height: 4 }),
+        ...getShadowStyle(8, theme.colors.black, 0.3, 8, { width: 0, height: 4 }),
     },
     header: {
         flexDirection: 'row',
@@ -628,14 +628,14 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     closeButton: {
         padding: 4,
     },
     closeText: {
         fontSize: 24,
-        color: '#999',
+        color: theme.colors.neutral400,
     },
     inputGroup: {
         marginBottom: 20,
@@ -643,16 +643,16 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 15,
         fontWeight: '600',
-        color: '#555',
+        color: theme.colors.neutral700,
         marginBottom: 8,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#DDD',
+        borderColor: theme.colors.neutral200,
         borderRadius: 12,
         padding: 12,
         fontSize: 16,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
     },
     priorityButtons: {
         flexDirection: 'row',
@@ -664,32 +664,32 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: '#DDD',
-        backgroundColor: '#F9F9F9',
+        borderColor: theme.colors.neutral200,
+        backgroundColor: theme.colors.surfaceGrayStripe,
         alignItems: 'center',
     },
     priorityButtonActiveHigh: {
-        borderColor: '#E53935',
-        backgroundColor: '#E53935',
+        borderColor: theme.colors.red600,
+        backgroundColor: theme.colors.red600,
     },
     priorityButtonActiveMedium: {
-        borderColor: '#FFA726',
-        backgroundColor: '#FFA726',
+        borderColor: theme.colors.orange400,
+        backgroundColor: theme.colors.orange400,
     },
     priorityButtonActiveLow: {
-        borderColor: '#66BB6A',
-        backgroundColor: '#66BB6A',
+        borderColor: theme.colors.green400,
+        backgroundColor: theme.colors.green400,
     },
     priorityButtonText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     priorityButtonTextActive: {
-        color: '#FFF',
+        color: theme.colors.white,
     },
     error: {
-        color: '#E53935',
+        color: theme.colors.red600,
         fontSize: 14,
         marginBottom: 12,
         textAlign: 'center',
@@ -704,19 +704,19 @@ const styles = StyleSheet.create({
         paddingVertical: 14,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#C2185B',
+        borderColor: theme.colors.accent,
         alignItems: 'center',
     },
     cancelButtonText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     createButton: {
         flex: 1,
         paddingVertical: 14,
         borderRadius: 12,
-        backgroundColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
         alignItems: 'center',
     },
     createButtonDisabled: {
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     createButtonText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#FFF',
+        color: theme.colors.white,
     },
 
     switchRow: {
@@ -738,26 +738,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
         padding: 12,
         borderRadius: 12,
         marginTop: 8,
     },
     dateLabel: {
         fontSize: 14,
-        color: '#555',
+        color: theme.colors.neutral700,
     },
     dateButton: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#DDD',
+        borderColor: theme.colors.neutral200,
     },
     dateButtonText: {
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: '600',
     },
     dateButtonsRow: {
@@ -771,54 +771,54 @@ const styles = StyleSheet.create({
         paddingHorizontal: 4,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#DDD',
-        backgroundColor: '#FFF',
+        borderColor: theme.colors.neutral200,
+        backgroundColor: theme.colors.white,
         alignItems: 'center',
     },
     dateOptionButtonActive: {
-        backgroundColor: '#FF6B9D',
-        borderColor: '#FF6B9D',
+        backgroundColor: theme.colors.primary,
+        borderColor: theme.colors.primary,
     },
     dateOptionText: {
         fontSize: 13,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '500',
     },
     dateOptionTextActive: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontWeight: '600',
     },
     selectedDateText: {
         fontSize: 14,
-        color: '#C2185B',
+        color: theme.colors.accent,
         textAlign: 'center',
         marginTop: 4,
         fontWeight: '500',
     },
     infoBox: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         padding: 12,
         borderRadius: 12,
         marginBottom: 20,
         borderWidth: 1,
-        borderColor: '#90CAF9',
+        borderColor: theme.colors.blue200,
     },
     infoText: {
         fontSize: 13,
-        color: '#1565C0',
+        color: theme.colors.blue800,
         lineHeight: 18,
     },
     recurrenceContainer: {
         marginTop: 12,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
         borderRadius: 12,
         padding: 12,
         borderWidth: 1,
-        borderColor: '#EFEFEF',
+        borderColor: theme.colors.neutral50,
     },
     segmentControl: {
         flexDirection: 'row',
-        backgroundColor: '#E0E0E0',
+        backgroundColor: theme.colors.disabled,
         borderRadius: 8,
         padding: 2,
         marginBottom: 12,
@@ -830,17 +830,17 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     segmentButtonActive: {
-        backgroundColor: '#FFF',
-        ...getShadowStyle(1, '#000', 0.1, 2, { width: 0, height: 1 }),
+        backgroundColor: theme.colors.white,
+        ...getShadowStyle(1, theme.colors.black, 0.1, 2, { width: 0, height: 1 }),
     },
     segmentButtonText: {
         fontSize: 12,
         fontWeight: '500',
-        color: '#666',
+        color: theme.colors.textSecondary,
         textAlign: 'center',
     },
     segmentButtonTextActive: {
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: 'bold',
     },
     intervalRow: {
@@ -850,17 +850,17 @@ const styles = StyleSheet.create({
     },
     intervalLabel: {
         fontSize: 14,
-        color: '#555',
+        color: theme.colors.neutral700,
     },
     intervalInput: {
         borderWidth: 1,
-        borderColor: '#DDD',
+        borderColor: theme.colors.neutral200,
         borderRadius: 8,
         paddingHorizontal: 12,
         paddingVertical: 6,
         width: 60,
         textAlign: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         fontSize: 16,
     },
     daysContainer: {
@@ -872,19 +872,19 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: '#EFEFEF',
+        backgroundColor: theme.colors.neutral50,
         justifyContent: 'center',
         alignItems: 'center',
     },
     dayBubbleActive: {
-        backgroundColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
     },
     dayBubbleText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     dayBubbleTextActive: {
-        color: '#FFF',
+        color: theme.colors.white,
     },
 });

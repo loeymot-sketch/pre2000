@@ -80,10 +80,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const getBackgroundColor = () => {
         switch (type) {
-            case 'success': return '#4CAF50';
-            case 'error': return '#F44336';
-            case 'info': return '#2196F3';
-            default: return '#333';
+            case 'success': return theme.colors.green500;
+            case 'error': return theme.colors.critical;
+            case 'info': return theme.colors.blue600;
+            default: return theme.colors.neutral900;
         }
     };
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         right: 20,
         borderRadius: 12,
         padding: 16,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         marginEnd: 12,
     },
     message: {
-        color: '#FFFFFF',
+        color: theme.colors.white,
         fontSize: 14,
         fontWeight: '600',
         flex: 1,

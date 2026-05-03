@@ -112,5 +112,12 @@
         "t3": "3rd trimester: Water retention is common. Rest and hydrate! 💧"
     },
     "errorReset": "Unable to reset data.",
-    "weekShort": "W"
+    "weekShort": "W",
+    "bmi": "BMI",
+    "bmiCategory": {
+        "underweight": "Underweight",
+        "normal": "Normal weight",
+        "overweight": "Overweight",
+        "obese": "Obesity"
+    }
 }

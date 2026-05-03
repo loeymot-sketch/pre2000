@@ -4,6 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { theme } from '../theme';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
 
+// Brand contact email — same value across locales, kept in a single constant
+// so the address shown in the UI and the mailto: target can never drift.
+const CONTACT_EMAIL = 'contact@mamabebe.app';
+
 /**
  * PrivacyPolicyScreen - Legal compliance for App Store
  * Required for: Apple App Store, Google Play Store, RGPD
@@ -15,7 +19,7 @@ export const PrivacyPolicyScreen = () => {
     const [activeTab, setActiveTab] = useState<'privacy' | 'terms' | 'cookies'>('privacy');
 
     const handleContactPress = () => {
-        Linking.openURL('mailto:contact@mamabebe.app');
+        Linking.openURL(`mailto:${CONTACT_EMAIL}`);
     };
 
     return (
@@ -105,7 +109,7 @@ export const PrivacyPolicyScreen = () => {
                                     {t('privacy.contact.text')}
                                 </Text>
                                 <TouchableOpacity style={styles.contactButton} onPress={handleContactPress}>
-                                    <Text style={styles.contactButtonText}>📧 contact@mamabebe.app</Text>
+                                    <Text style={styles.contactButtonText}>📧 {CONTACT_EMAIL}</Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -179,7 +183,7 @@ export const PrivacyPolicyScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
     },
     header: {
         padding: 20,
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 4,
     },
     headerSubtitle: {
@@ -244,7 +248,7 @@ const styles = StyleSheet.create({
     },
     paragraph: {
         fontSize: 15,
-        color: '#444',
+        color: theme.colors.neutral800,
         lineHeight: 24,
         marginBottom: 8,
     },
@@ -254,7 +258,7 @@ const styles = StyleSheet.create({
     },
     bulletItem: {
         fontSize: 14,
-        color: '#444',
+        color: theme.colors.neutral800,
         lineHeight: 24,
         marginBottom: 4,
     },
@@ -262,11 +266,11 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     highlightText: {
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
-        color: '#E65100',
+        color: theme.colors.orange900,
         fontWeight: '500',
     },
     alertBox: {
@@ -298,6 +302,6 @@ const styles = StyleSheet.create({
     },
     footerText: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
     },
 });

@@ -38,5 +38,54 @@
     "symptomHeadache": "Headache",
     "symptomSwelling": "Swelling",
     "symptomInsomnia": "Insomnia",
-    "noSymptomsToday": "No symptoms logged today ✨"
+    "noSymptomsToday": "No symptoms logged today ✨",
+    "disclaimer": "⚠️ This information is indicative and does not replace medical advice. When in doubt, contact your healthcare provider.",
+    "kg": "kg",
+    "mmolL": "mmol/L",
+    "mmHg": "mmHg",
+    "alerts": {
+        "proceed": "Save anyway",
+        "cancel": "Cancel",
+        "callEmergency": "Call emergency services",
+        "glucoseLow": {
+            "title": "Low blood sugar",
+            "message": "Low blood sugar detected. If you feel unwell, take fast sugar (juice, honey) and contact your healthcare provider."
+        },
+        "glucoseSurveillance": {
+            "title": "Blood sugar to monitor",
+            "message": "This reading is slightly above normal. Record it and mention it at your next appointment."
+        },
+        "glucoseHigh": {
+            "title": "High blood sugar",
+            "message": "High blood sugar. Mention it to your healthcare provider promptly."
+        },
+        "glucoseVeryHigh": {
+            "title": "Very high blood sugar",
+            "message": "Very high blood sugar. Contact your healthcare provider quickly."
+        },
+        "bpPreHyp": {
+            "title": "Blood pressure to monitor",
+            "message": "Your blood pressure is slightly above normal. Record it and mention it at your next appointment."
+        },
+        "bpHigh": {
+            "title": "High blood pressure",
+            "message": "High blood pressure. Mention it to your healthcare provider at your next appointment."
+        },
+        "bpSevere": {
+            "title": "Very high blood pressure",
+            "message": "Very high blood pressure. Contact your healthcare provider without delay — risk of pre-eclampsia."
+        },
+        "bpLow": {
+            "title": "Low blood pressure",
+            "message": "Low blood pressure. Rest, hydrate, and tell your doctor if it persists."
+        },
+        "weightLossRapid": {
+            "title": "Significant weight loss",
+            "message": "Significant weight loss detected. Contact your doctor if you are not eating well or have severe nausea."
+        },
+        "weightVariation": {
+            "title": "Large weight change",
+            "message": "The change since your last entry is large. Please double-check the value before saving."
+        }
+    }
 }

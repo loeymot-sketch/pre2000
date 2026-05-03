@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,7 +20,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({ weekData, currentWeekNumber 
             <Text style={styles.sectionTitleMain}>🍼 {t('common.heroTitle')}</Text>
 
             <LinearGradient
-                colors={['#FFEEE8', '#FFE8F0']}
+                colors={[theme.colors.gradientPeachStart, theme.colors.surfacePinkWash]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.heroCardGradient}
@@ -70,14 +71,14 @@ const styles = StyleSheet.create({
     sectionTitleMain: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
         marginStart: 4,
     },
     heroCardGradient: {
         borderRadius: 24,
         padding: 24,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 12,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     },
     heroWeekText: {
         fontSize: 14,
-        color: '#C2185B',
+        color: theme.colors.accent,
         fontWeight: '600',
     },
     heroStatsRow: {
@@ -103,13 +104,13 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     heroStatCard: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 16,
         alignItems: 'center',
         minWidth: 100,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 4,
@@ -118,15 +119,15 @@ const styles = StyleSheet.create({
     heroStatValue: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     heroStatLabel: {
         fontSize: 12,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginTop: 4,
     },
     heroComparisonBox: {
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: theme.colors.whiteAlpha70,
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
@@ -134,17 +135,17 @@ const styles = StyleSheet.create({
     },
     heroComparisonLabel: {
         fontSize: 12,
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     heroComparisonValue: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginTop: 4,
     },
     heroDevText: {
         fontSize: 15,
-        color: '#444',
+        color: theme.colors.neutral800,
         lineHeight: 24,
         textAlign: 'center',
     },

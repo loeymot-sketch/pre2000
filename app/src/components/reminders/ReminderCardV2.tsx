@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 /**
  * ReminderCardV2
  * 
@@ -110,8 +111,8 @@ export const ReminderCardV2: React.FC<ReminderCardV2Props> = ({
                 <Switch
                     value={isEnabled}
                     onValueChange={onToggle}
-                    trackColor={{ false: '#ccc', true: '#C2185B' }}
-                    thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
+                    trackColor={{ false: theme.colors.neutral300, true: theme.colors.accent }}
+                    thumbColor={isEnabled ? theme.colors.white : theme.colors.iosGroupedBackground}
                 />
             </View>
 
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     card: {
         padding: 14,
         borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
+        borderBottomColor: theme.colors.borderLight,
     },
     mainRow: {
         flexDirection: 'row',
@@ -209,11 +210,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     description: {
         fontSize: 13,
-        color: '#888',
+        color: theme.colors.neutral350,
         marginTop: 2,
         lineHeight: 18,
     },
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
         paddingTop: 12,
         borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
+        borderTopColor: theme.colors.borderLight,
     },
     intensityRow: {
         flexDirection: 'row',
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     },
     controlLabel: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginEnd: 10,
     },
     intensityButtons: {
@@ -245,30 +246,30 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#C2185B',
+        borderColor: theme.colors.accent,
         marginEnd: 8,
     },
     intensityButtonActive: {
-        backgroundColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
     },
     intensityButtonText: {
         fontSize: 14,
-        color: '#C2185B',
+        color: theme.colors.accent,
         fontWeight: '600',
     },
     intensityButtonTextActive: {
-        color: '#FFF',
+        color: theme.colors.white,
     },
     frequencyUnit: {
         fontSize: 13,
-        color: '#888',
+        color: theme.colors.neutral350,
     },
     frequencyInfo: {
         marginBottom: 10,
     },
     frequencyInfoText: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '500',
     },
 
@@ -277,18 +278,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.surface,
         padding: 10,
         borderRadius: 8,
     },
     timesLabel: {
         fontSize: 13,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginEnd: 8,
     },
     timesValue: {
         fontSize: 14,
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: '500',
         flex: 1,
     },
@@ -299,7 +300,7 @@ const styles = StyleSheet.create({
     },
     personalizeText: {
         fontSize: 13,
-        color: '#C2185B',
+        color: theme.colors.accent,
         fontWeight: '500',
     },
 
@@ -307,18 +308,18 @@ const styles = StyleSheet.create({
     advancedOptions: {
         marginTop: 8,
         padding: 12,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
         borderRadius: 8,
     },
     advancedLabel: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginBottom: 4,
     },
     advancedHint: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontStyle: 'italic',
     },
 
@@ -330,7 +331,7 @@ const styles = StyleSheet.create({
     },
     daysLabel: {
         fontSize: 13,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginEnd: 8,
     },
     daysContainer: {
@@ -341,22 +342,22 @@ const styles = StyleSheet.create({
         height: 28,
         borderRadius: 14,
         borderWidth: 1,
-        borderColor: '#DDD',
+        borderColor: theme.colors.neutral200,
         justifyContent: 'center',
         alignItems: 'center',
         marginEnd: 4,
     },
     dayChipActive: {
-        backgroundColor: '#C2185B',
-        borderColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
+        borderColor: theme.colors.accent,
     },
     dayChipText: {
         fontSize: 12,
-        color: '#888',
+        color: theme.colors.neutral350,
         fontWeight: '500',
     },
     dayChipTextActive: {
-        color: '#FFF',
+        color: theme.colors.white,
     },
 
     // Frequency preview (when card is disabled)
@@ -366,7 +367,7 @@ const styles = StyleSheet.create({
     },
     frequencyPreviewText: {
         fontSize: 13,
-        color: '#888',
+        color: theme.colors.neutral350,
     },
 
     // Edit button
@@ -377,19 +378,19 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 16,
         marginTop: 8,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
         borderRadius: 8,
     },
     editButtonText: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '500',
     },
 
     // V2.1.2: Compact mode styles for OFF cards
     cardCompact: {
         paddingVertical: 8,
-        backgroundColor: '#FAFAFA',
+        backgroundColor: theme.colors.neutral25,
     },
     frequencyPreviewCompact: {
         paddingStart: 48,
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     },
     summaryText: {
         fontSize: 13,
-        color: '#666',
+        color: theme.colors.textSecondary,
         flex: 1,
     },
     editLink: {
@@ -414,6 +415,6 @@ const styles = StyleSheet.create({
     },
     editLinkText: {
         fontSize: 12,
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
 });

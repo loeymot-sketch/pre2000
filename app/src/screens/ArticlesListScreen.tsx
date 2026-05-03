@@ -11,6 +11,7 @@ import { getAntigravityArticlesByCategory } from '../services/contentService'; /
 import { theme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Tag } from '../components/common/Tag';
+import { Skeleton } from '../components/common/Skeleton'; // D4
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
@@ -64,7 +65,17 @@ export const ArticlesListScreen = () => {
                 if (!isMounted) return;
                 const oldArts = oldSnapshot.docs.map(doc => doc.data() as Article);
                 const agArts = agSnapshot.docs.map(doc => doc.data() as ArticleAntigravity);
-                setArticles([...oldArts, ...agArts]);
+                // U-FIX-9: dedupe by article_id with Antigravity priority (consistent with
+                // ArticleDetailScreen which resolves AG first then falls back to `articles`).
+                // Was: simple concat → duplicate FlatList keys + same article shown twice.
+                const byId = new Map<string, Article | ArticleAntigravity>();
+                for (const a of oldArts) {
+                    if (a.article_id) byId.set(a.article_id, a);
+                }
+                for (const a of agArts) {
+                    if (a.article_id) byId.set(a.article_id, a); // overrides legacy entry
+                }
+                setArticles(Array.from(byId.values()));
             } catch (err) {
                 log.error('[ArticlesListScreen] ❌ Error fetching articles:', err);
                 if (isMounted) setError(true);
@@ -109,6 +120,9 @@ export const ArticlesListScreen = () => {
             <TouchableOpacity
                 onPress={() => handleArticlePress(item.article_id)}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={getLocalizedContent(item, 'title', i18n.language)}
+                accessibilityHint={t('a11y.readArticle')}
             >
                 <Card style={styles.card}>
                     <View style={styles.iconContainer}>
@@ -132,9 +146,12 @@ export const ArticlesListScreen = () => {
     }, [handleArticlePress, i18n.language, t]);
 
     if (loading) {
+        // D4: card-list skeleton replaces the spinner
         return (
-            <View style={styles.centerContainer}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { padding: 16 }]}>
+                {[0, 1, 2, 3, 4].map(i => (
+                    <Skeleton.Card key={i} style={{ height: 96, marginBottom: 12 }} />
+                ))}
             </View>
         );
     }
@@ -146,7 +163,12 @@ export const ArticlesListScreen = () => {
                 <Text style={{ textAlign: 'center', marginVertical: 10, color: theme.colors.textLight }}>
                     {t('common.errorBoundary.message')}
                 </Text>
-                <TouchableOpacity onPress={retryLoad} style={{ backgroundColor: theme.colors.primary, padding: 10, borderRadius: 8 }}>
+                <TouchableOpacity
+                    onPress={retryLoad}
+                    style={{ backgroundColor: theme.colors.primary, padding: 10, borderRadius: 8 }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.retry')}
+                >
                     <Text style={{ color: 'white' }}>{t('common.errorBoundary.retry')}</Text>
                 </TouchableOpacity>
             </View>
@@ -162,13 +184,17 @@ export const ArticlesListScreen = () => {
                         ref={searchInputRef}
                         style={styles.searchInput}
                         placeholder={t('common.searchArticlePlaceholder')}
-                        placeholderTextColor="#999"
+                        placeholderTextColor={theme.colors.neutral400}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         returnKeyType="search"
                     />
                     {searchQuery.length > 0 && (
-                        <TouchableOpacity onPress={() => setSearchQuery('')}>
+                        <TouchableOpacity
+                            onPress={() => setSearchQuery('')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.close')}
+                        >
                             <Text style={styles.clearIcon}>✕</Text>
                         </TouchableOpacity>
                     )}
@@ -211,7 +237,7 @@ const styles = StyleSheet.create({
     searchBar: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
         borderRadius: 12,
         paddingHorizontal: 12,
         height: 44,
@@ -223,12 +249,12 @@ const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.neutral900,
         height: '100%',
     },
     clearIcon: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         padding: 4,
     },
     listContent: {

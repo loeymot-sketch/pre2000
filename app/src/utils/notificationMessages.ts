@@ -34,7 +34,11 @@ const getMessages = (key: string, locale?: string): NotificationMessage[] => {
     if (locale) {
         options.lng = locale;
     }
-    const messages = i18n.t(`notifications:${key}`, options) as unknown as NotificationMessage[];
+    // U-FIX-12: i18n is configured with a SINGLE namespace ('translation') and the
+    // notifications.json content is exported under the `notifications` root key in
+    // each locale's index.ts. So the lookup must be `notifications.X` (dot path),
+    // not `notifications:X` (colon = namespace prefix that doesn't exist here).
+    const messages = i18n.t(`notifications.${key}`, options) as unknown as NotificationMessage[];
     return Array.isArray(messages) ? messages : [];
 };
 
@@ -157,47 +161,41 @@ export const getMedicalTrackingMessage = (locale?: string) => {
 };
 
 /**
- * Get message by reminder type
- * Complete mapping of all reminder types to appropriate message families
+ * Get message by reminder type.
+ *
+ * F14 FIX: matches first by V2 catalogue PREFIX (rem_<family>_*) which is the
+ * canonical convention (deterministic, no overlap), then falls back to the
+ * legacy substring `includes` paths for backward compatibility with older IDs.
+ *
+ * Default fallback is now the WELLNESS family (generic encouraging tone) instead
+ * of HYDRATION (which would say "drink water!" for unrelated reminders).
  */
 export const getReminderMessage = (reminderType: string, locale?: string): { title: string; body: string } => {
     const type = reminderType.toLowerCase();
 
-    // Hydration family
-    if (type.includes('hydration') || type.includes('eau') || type.includes('water')) {
-        return getHydrationMessage(locale);
-    }
-
-    // Vitamins/Medication family
-    if (type.includes('vitamin') || type.includes('medication') || type.includes('medicament') || type.includes('fer') || type.includes('iron') || type.includes('folate') || type.includes('acide_folique')) {
-        return getVitaminMessage(locale);
-    }
-
-    // Rest family
-    if (type.includes('rest') || type.includes('sieste') || type.includes('sleep') || type.includes('repos')) {
-        return getRestMessage(locale);
-    }
-
-    // Exercise family
-    if (type.includes('exercise') || type.includes('walk') || type.includes('marche') || type.includes('yoga') || type.includes('kegel')) {
-        return getExerciseMessage(locale);
-    }
-
-    // Meal family
-    if (type.includes('meal') || type.includes('snack') || type.includes('repas') || type.includes('collation') || type.includes('petit_dejeuner') || type.includes('dejeuner') || type.includes('diner')) {
-        return getMealMessage(locale);
-    }
-
-    // Medical tracking family (glucose, tension, etc.)
-    if (type.includes('glucose') || type.includes('tension') || type.includes('bp') || type.includes('blood') || type.includes('poids') || type.includes('weight')) {
+    // ── Path A: explicit V2 prefix (rem_<family>_*) — deterministic
+    if (type.startsWith('rem_hyd_')) return getHydrationMessage(locale);
+    if (type.startsWith('rem_vit_') || type.startsWith('rem_med_')) return getVitaminMessage(locale);
+    if (type.startsWith('rem_sleep_') || type.startsWith('rem_rest_')) return getRestMessage(locale);
+    if (type.startsWith('rem_mov_') || type.startsWith('rem_exercise_')) return getExerciseMessage(locale);
+    if (type.startsWith('rem_meal_') || type.startsWith('rem_food_')) return getMealMessage(locale);
+    if (type.startsWith('rem_glucose_') || type.startsWith('rem_bp_') || type.startsWith('rem_weight_')) {
         return getMedicalTrackingMessage(locale);
     }
-
-    // Wellness family (journal, relaxation, meditation)
-    if (type.includes('journal') || type.includes('relaxation') || type.includes('meditation') || type.includes('respiration') || type.includes('breathing')) {
+    if (type.startsWith('rem_well_') || type.startsWith('rem_journal_') || type.startsWith('rem_relax_')) {
         return getWellnessMessage(locale);
     }
 
-    // Default fallback
-    return getHydrationMessage(locale);
+    // ── Path B: legacy substring matching (kept for backward compat with old custom ids)
+    if (type.includes('hydration') || type.includes('eau') || type.includes('water')) return getHydrationMessage(locale);
+    if (type.includes('vitamin') || type.includes('medication') || type.includes('medicament') || type.includes('fer') || type.includes('iron') || type.includes('folate') || type.includes('acide_folique')) return getVitaminMessage(locale);
+    if (type.includes('rest') || type.includes('sieste') || type.includes('sleep') || type.includes('repos')) return getRestMessage(locale);
+    if (type.includes('exercise') || type.includes('walk') || type.includes('marche') || type.includes('yoga') || type.includes('kegel')) return getExerciseMessage(locale);
+    if (type.includes('meal') || type.includes('snack') || type.includes('repas') || type.includes('collation') || type.includes('petit_dejeuner') || type.includes('dejeuner') || type.includes('diner')) return getMealMessage(locale);
+    if (type.includes('glucose') || type.includes('tension') || type.includes('bp') || type.includes('blood') || type.includes('poids') || type.includes('weight')) return getMedicalTrackingMessage(locale);
+    if (type.includes('journal') || type.includes('relaxation') || type.includes('meditation') || type.includes('respiration') || type.includes('breathing')) return getWellnessMessage(locale);
+
+    // F14 FIX: safer default (was hydration → "drink water!" for ANY unmapped reminder).
+    // Wellness is generic encouragement and won't mislead.
+    return getWellnessMessage(locale);
 };

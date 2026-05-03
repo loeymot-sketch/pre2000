@@ -21,13 +21,17 @@ export const EventCard: React.FC<EventCardProps> = React.memo(({ event, onEdit, 
 
     return (
         <View style={[styles.card, isUserEvent && styles.userEventCard]}>
-            <View style={[styles.priorityIndicator, { backgroundColor: isUserEvent ? '#6B46C1' : event.priorityColor }]} />
+            <View style={[styles.priorityIndicator, { backgroundColor: isUserEvent ? theme.colors.indigoAccent : event.priorityColor }]} />
 
             <TouchableOpacity
                 style={styles.content}
                 onPress={onPress}
                 activeOpacity={0.7}
                 disabled={!onPress}
+                accessibilityRole="button"
+                accessibilityLabel={`${event.title}, ${format(event.date, 'EEEE dd MMM HH:mm', { locale: dateLocale })}`}
+                accessibilityHint={onPress ? t('a11y.openAppointment') : undefined}
+                accessibilityState={{ disabled: !onPress }}
             >
                 {/* Header Row */}
                 <View style={styles.header}>
@@ -93,13 +97,25 @@ export const EventCard: React.FC<EventCardProps> = React.memo(({ event, onEdit, 
             {isUserEvent && (
                 <View style={styles.actionsContainer}>
                     {onEdit && (
-                        <TouchableOpacity style={styles.editButton} onPress={onEdit}>
+                        <TouchableOpacity
+                            style={styles.editButton}
+                            onPress={onEdit}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.editAppointment')}
+                            accessibilityHint={event.title}
+                        >
                             <Text style={styles.actionIcon}>✏️</Text>
                             <Text style={styles.actionLabel}>{t('common.edit')}</Text>
                         </TouchableOpacity>
                     )}
                     {onDelete && (
-                        <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                        <TouchableOpacity
+                            style={styles.deleteButton}
+                            onPress={onDelete}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.deleteAppointment')}
+                            accessibilityHint={event.title}
+                        >
                             <Text style={styles.actionIcon}>🗑️</Text>
                             <Text style={styles.deleteLabel}>{t('common.delete')}</Text>
                         </TouchableOpacity>
@@ -116,12 +132,12 @@ const styles = StyleSheet.create({
         borderRadius: theme.borderRadius.m,
         marginBottom: theme.spacing.m,
         overflow: 'hidden',
-        ...getShadowStyle(2, '#000', 0.1, 2, { width: 0, height: 1 }),
+        ...getShadowStyle(2, theme.colors.black, 0.1, 2, { width: 0, height: 1 }),
     },
     userEventCard: {
         borderWidth: 1,
-        borderColor: '#6B46C120',
-        backgroundColor: '#FAFAFA',
+        borderColor: theme.colors.indigoAccentMuted,
+        backgroundColor: theme.colors.neutral25,
     },
     priorityIndicator: {
         height: 4,
@@ -153,7 +169,7 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     timeBadge: {
-        backgroundColor: '#FF6B9D',
+        backgroundColor: theme.colors.primary,
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 8,
@@ -161,7 +177,7 @@ const styles = StyleSheet.create({
     timeText: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: theme.colors.white,
     },
     dateText: {
         fontSize: 13,
@@ -194,7 +210,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.secondary,
     },
     userTag: {
-        backgroundColor: '#6B46C1' + '20',
+        backgroundColor: theme.colors.indigoAccentMuted,
     },
     tagText: {
         fontSize: 11,
@@ -202,7 +218,7 @@ const styles = StyleSheet.create({
         fontWeight: '500' as const,
     },
     userTagText: {
-        color: '#6B46C1',
+        color: theme.colors.indigoAccent,
     },
     description: {
         fontSize: 13,
@@ -218,7 +234,7 @@ const styles = StyleSheet.create({
     actionsContainer: {
         flexDirection: 'row',
         borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
+        borderTopColor: theme.colors.borderLight,
     },
     editButton: {
         flex: 1,
@@ -228,7 +244,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         gap: 6,
         borderEndWidth: 1,
-        borderRightColor: '#F0F0F0',
+        borderEndColor: theme.colors.borderLight,
     },
     deleteButton: {
         flex: 1,
@@ -243,12 +259,12 @@ const styles = StyleSheet.create({
     },
     actionLabel: {
         fontSize: 12,
-        color: '#6B46C1',
+        color: theme.colors.indigoAccent,
         fontWeight: '500',
     },
     deleteLabel: {
         fontSize: 12,
-        color: '#E53935',
+        color: theme.colors.red600,
         fontWeight: '500',
     },
 });

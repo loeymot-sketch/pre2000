@@ -1,3 +1,4 @@
+import { theme } from '../theme';
 /**
  * @fileoverview Notification Service
  * Handles all local push notifications including:
@@ -68,7 +69,7 @@ export const requestNotificationPermissions = async (): Promise<boolean> => {
                 name: i18n.t('notifications.channelName', { defaultValue: 'Suivi de grossesse' }),
                 importance: Notifications.AndroidImportance.HIGH,
                 vibrationPattern: [0, 250, 250, 250],
-                lightColor: '#FF6B9D',
+                lightColor: theme.colors.primary,
                 sound: 'default',
                 enableVibrate: true,
                 showBadge: true,
@@ -107,6 +108,14 @@ export const scheduleReminderNotification = async (
 ): Promise<string | null> => {
     log.info('Scheduling reminder:', { reminderId, title, hour, minute });
 
+    // F13 FIX: Verify permissions before scheduling. Without this, scheduleNotificationAsync
+    // could silently fail on iOS / log an error that's hard to track in prod.
+    const hasPermission = await requestNotificationPermissions();
+    if (!hasPermission) {
+        log.warn(`Skipping schedule for ${reminderId}: notification permission denied`);
+        return null;
+    }
+
     try {
         const notificationId = await Notifications.scheduleNotificationAsync({
             content: {
@@ -115,6 +124,12 @@ export const scheduleReminderNotification = async (
                 data: {
                     type: 'reminder',
                     reminderId,
+                    // P-FIX (deep-link): payload consumed by global listener in App.tsx (AppInitializer).
+                    // `screen` tells AppInitializer which tab to navigate to; `highlightId` is read
+                    // from route.params by TasksTab to flash the matching item. Without these fields,
+                    // the global listener silently dropped the tap when TasksTab had never been mounted.
+                    screen: 'TasksTab',
+                    highlightId: reminderId,
                 },
                 sound: 'default',
             },
@@ -320,6 +335,9 @@ export const scheduleBabyMessage = async (
                 body: message,
                 data: {
                     type: 'baby_message',
+                    // P-FIX (deep-link): tap on baby-message notif opens the Home tab where the
+                    // baby-message card lives. No highlightId — there is no per-item anchor.
+                    screen: 'Home',
                 },
                 sound: 'default',
             },

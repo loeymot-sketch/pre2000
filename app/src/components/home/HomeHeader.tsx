@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -5,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { addDays } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { getShadowStyle } from '../../utils/styleUtils';
+import { RtlAwareChevron } from '../common/RtlAwareChevron';
 
 interface HomeHeaderProps {
     displayName: string;
@@ -57,10 +59,12 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                     disabled={currentWeekNumber === 1 && displayDay === 1}
                     style={styles.dayNavButton}
                 >
-                    <Text style={[
-                        styles.dayNavText,
-                        (currentWeekNumber === 1 && displayDay === 1) && styles.disabledText
-                    ]}>‹</Text>
+                    <RtlAwareChevron
+                        direction="back"
+                        size={24}
+                        color={theme.colors.white}
+                        style={(currentWeekNumber === 1 && displayDay === 1) ? styles.disabledText : undefined}
+                    />
                 </TouchableOpacity>
 
                 <View style={styles.progressBarWrapper}>
@@ -75,8 +79,8 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                                     day === 1 && styles.roundedLeft,
                                     day === 7 && styles.roundedRight,
                                     day === displayDay && {
-                                        backgroundColor: '#FFFFFF',
-                                        ...getShadowStyle(4, '#FFFFFF', 0.8, 4, { width: 0, height: 0 }),
+                                        backgroundColor: theme.colors.white,
+                                        ...getShadowStyle(4, theme.colors.white, 0.8, 4, { width: 0, height: 0 }),
                                     },
                                 ]}
                             />
@@ -90,10 +94,12 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                     disabled={currentWeekNumber === 40 && displayDay === 7}
                     style={styles.dayNavButton}
                 >
-                    <Text style={[
-                        styles.dayNavText,
-                        (currentWeekNumber === 40 && displayDay === 7) && styles.disabledText
-                    ]}>›</Text>
+                    <RtlAwareChevron
+                        direction="forward"
+                        size={24}
+                        color={theme.colors.white}
+                        style={(currentWeekNumber === 40 && displayDay === 7) ? styles.disabledText : undefined}
+                    />
                 </TouchableOpacity>
             </View>
         </View>
@@ -101,7 +107,7 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
 
     return (
         <LinearGradient
-            colors={['#FF6B9D', '#C2185B', '#880E4F']}
+            colors={[theme.colors.primary, theme.colors.accent, theme.colors.deepPink]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.headerGradient}
@@ -115,7 +121,7 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                         activeOpacity={0.8}
                     >
                         <LinearGradient
-                            colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.1)']}
+                            colors={[theme.colors.whiteAlpha30, theme.colors.whiteAlpha10]}
                             style={styles.profileGradient}
                         >
                             <Text style={styles.profileButtonText}>
@@ -144,9 +150,12 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                             style={styles.navButton}
                             activeOpacity={0.7}
                         >
-                            <Text style={[styles.navButtonText, currentWeekNumber <= 1 && styles.disabledText]}>
-                                ‹
-                            </Text>
+                            <RtlAwareChevron
+                                direction="back"
+                                size={32}
+                                color={theme.colors.white}
+                                style={currentWeekNumber <= 1 ? styles.disabledText : undefined}
+                            />
                         </TouchableOpacity>
                         <View style={styles.weekBadge}>
                             <Text style={styles.weekTitle}>{t('common.week')} {currentWeekNumber}</Text>
@@ -158,9 +167,12 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                             style={styles.navButton}
                             activeOpacity={0.7}
                         >
-                            <Text style={[styles.navButtonText, currentWeekNumber >= 40 && styles.disabledText]}>
-                                ›
-                            </Text>
+                            <RtlAwareChevron
+                                direction="forward"
+                                size={32}
+                                color={theme.colors.white}
+                                style={currentWeekNumber >= 40 ? styles.disabledText : undefined}
+                            />
                         </TouchableOpacity>
                     </View>
 
@@ -208,7 +220,7 @@ const styles = StyleSheet.create({
     profileButtonText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#FFF',
+        color: theme.colors.white,
     },
     centerContent: {
         alignItems: 'center',
@@ -221,12 +233,12 @@ const styles = StyleSheet.create({
     greeting: {
         fontSize: 26,
         fontWeight: '700',
-        color: '#FFF',
+        color: theme.colors.white,
         marginBottom: 4,
     },
     weekInfo: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: theme.colors.whiteAlpha80,
     },
     weekNavContainer: {
         flexDirection: 'row',
@@ -237,11 +249,6 @@ const styles = StyleSheet.create({
     navButton: {
         padding: 12,
     },
-    navButtonText: {
-        fontSize: 32,
-        color: '#FFF',
-        fontWeight: '300',
-    },
     weekBadge: {
         alignItems: 'center',
         paddingHorizontal: 24,
@@ -249,16 +256,16 @@ const styles = StyleSheet.create({
     weekTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#FFF',
+        color: theme.colors.white,
     },
     trimesterBadge: {
         fontSize: 13,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         marginTop: 2,
     },
     weekSubtitle: {
         fontSize: 18,
-        color: '#FFF',
+        color: theme.colors.white,
         marginBottom: 20,
         textAlign: 'center',
     },
@@ -272,11 +279,11 @@ const styles = StyleSheet.create({
     },
     quickLink: {
         fontSize: 13,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         fontWeight: '500',
     },
     linkDivider: {
-        color: 'rgba(255, 255, 255, 0.5)',
+        color: theme.colors.whiteAlpha50,
         fontSize: 12,
     },
     disabledText: {
@@ -294,11 +301,6 @@ const styles = StyleSheet.create({
     dayNavButton: {
         padding: 10,
     },
-    dayNavText: {
-        fontSize: 24,
-        color: '#FFF',
-        fontWeight: '300',
-    },
     progressBarWrapper: {
         flex: 1,
         alignItems: 'center',
@@ -314,10 +316,10 @@ const styles = StyleSheet.create({
         height: 8,
     },
     progressSegmentActive: {
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: theme.colors.whiteAlpha70,
     },
     progressSegmentInactive: {
-        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        backgroundColor: theme.colors.whiteAlpha25,
     },
     roundedLeft: {
         borderTopStartRadius: 4,
@@ -329,7 +331,7 @@ const styles = StyleSheet.create({
     },
     progressText: {
         fontSize: 12,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: theme.colors.whiteAlpha80,
         marginTop: 6,
     },
 });

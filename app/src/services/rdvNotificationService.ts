@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import { createDateAtTimeInTimezone, getTimezoneFromCountry } from './timezoneService';
 import { getRDVMessage, getHydrationMessage, getTaskMessage } from '../utils/notificationMessages';
+import i18n from '../i18n'; // F3: pass current locale to notif messages so AR/EN/TN users don't get FR fallback
 // P2 FIX: Import shared permission helper from notificationService (single source of truth)
 import { requestNotificationPermissions } from './notificationService';
 
@@ -97,7 +98,7 @@ export const scheduleRDVReminders = async (
             log.error('[rdvNotificationService] Invalid J-1 date, skipping');
         } else if (j1Date > new Date()) {
             try {
-                const msg = getRDVMessage('J-1', eventTitle);
+                const msg = getRDVMessage('J-1', eventTitle, i18n.language);
                 log.debug(`[Audit] Scheduling J-1 reminder for ${eventTitle} at ${j1Date.toISOString()}`);
                 const notificationId = await Notifications.scheduleNotificationAsync({
                     content: {
@@ -136,7 +137,7 @@ export const scheduleRDVReminders = async (
             log.error('[rdvNotificationService] Invalid J date, skipping');
         } else if (jDate > new Date()) {
             try {
-                const msg = getRDVMessage('J', eventTitle);
+                const msg = getRDVMessage('J', eventTitle, i18n.language);
                 log.debug(`[Audit] Scheduling J reminder for ${eventTitle} at ${jDate.toISOString()}`);
                 const notificationId = await Notifications.scheduleNotificationAsync({
                     content: {
@@ -164,17 +165,26 @@ export const scheduleRDVReminders = async (
     }
 
     // H-2 Reminder (2 hours before or custom)
+    // P3.2 FIX: Was using setHours on local JS Date (host machine timezone)
+    // Now consistent with J-1 / J: build the event time in the USER's timezone first,
+    // then subtract hoursBefore. The result is still a Date (absolute instant).
     if (options.reminderH2 || options.customReminderTime) {
         const hoursBefore = options.customReminderTime || 2;
-        const h2Date = new Date(eventDate);
-        h2Date.setHours(h2Date.getHours() - hoursBefore);
+        // Anchor the eventDate's HH:MM in the user's timezone (matches J-1/J behavior)
+        const eventInTz = createDateAtTimeInTimezone(
+            eventDate,
+            eventDate.getHours(),
+            eventDate.getMinutes(),
+            timezone
+        );
+        const h2Date = new Date(eventInTz.getTime() - hoursBefore * 60 * 60 * 1000);
 
         // Validate date before scheduling
         if (isNaN(h2Date.getTime())) {
             log.error('[rdvNotificationService] Invalid H-2 date, skipping');
         } else if (h2Date > new Date()) {
             try {
-                const msg = getRDVMessage('H-2', eventTitle);
+                const msg = getRDVMessage('H-2', eventTitle, i18n.language);
                 log.debug(`[Audit] Scheduling H-${hoursBefore} reminder for ${eventTitle} at ${h2Date.toISOString()}`);
                 const notificationId = await Notifications.scheduleNotificationAsync({
                     content: {
@@ -355,9 +365,8 @@ export const sendTestNotification = async (): Promise<boolean> => {
         // 1. RDV Notification (in 3 seconds) - Uses varied message
         const rdvDate = new Date();
         rdvDate.setSeconds(rdvDate.getSeconds() + 3);
-        // Use i18n for test event title
-        const i18n = require('../i18n').default;
-        const rdvMsg = getRDVMessage('J-1', i18n.t('notifications:test.rdv'));
+        // U-FIX-12 + F3: dot-path lookup + pass current locale
+        const rdvMsg = getRDVMessage('J-1', i18n.t('notifications.test.rdv'), i18n.language);
 
         await Notifications.scheduleNotificationAsync({
             content: {
@@ -372,7 +381,7 @@ export const sendTestNotification = async (): Promise<boolean> => {
         // 2. Task Notification (in 6 seconds) - Uses varied message
         const taskDate = new Date();
         taskDate.setSeconds(taskDate.getSeconds() + 6);
-        const taskMsg = getTaskMessage(i18n.t('notifications:test.task'));
+        const taskMsg = getTaskMessage(i18n.t('notifications.test.task'), i18n.language);
 
         await Notifications.scheduleNotificationAsync({
             content: {
@@ -387,7 +396,7 @@ export const sendTestNotification = async (): Promise<boolean> => {
         // 3. Reminder Notification (in 9 seconds) - Uses varied message
         const reminderDate = new Date();
         reminderDate.setSeconds(reminderDate.getSeconds() + 9);
-        const hydrationMsg = getHydrationMessage();
+        const hydrationMsg = getHydrationMessage(i18n.language);
 
         await Notifications.scheduleNotificationAsync({
             content: {

@@ -19,7 +19,7 @@ export const AuthChoiceScreen = () => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <LinearGradient
-                colors={['#FFF0F5', '#FFFFFF']}
+                colors={[theme.colors.lavenderBlush, theme.colors.white]}
                 style={styles.container}
             >
                 {/* Language Selector - top corner */}
@@ -50,7 +50,7 @@ export const AuthChoiceScreen = () => {
                         activeOpacity={0.85}
                     >
                         <LinearGradient
-                            colors={['#FF6B9D', '#C2185B']}
+                            colors={[theme.colors.primary, theme.colors.accent]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.primaryGradient}
@@ -103,7 +103,7 @@ export const AuthChoiceScreen = () => {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
     },
     container: {
         flex: 1,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     buttonSubtext: {
-        color: 'rgba(255,255,255,0.85)',
+        color: theme.colors.whiteAlpha85,
         fontSize: 13,
         marginTop: 3,
     },
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     },
     termsText: {
         fontSize: 11,
-        color: '#aaa',
+        color: theme.colors.neutral400,
         textAlign: 'center',
         textDecorationLine: 'underline',
         lineHeight: 16,

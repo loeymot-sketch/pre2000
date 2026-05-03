@@ -1,3 +1,4 @@
+import { theme } from '../theme';
 /**
  * @fileoverview Calendar Service
  * Handles all calendar-related operations including:
@@ -42,23 +43,23 @@ export interface GeneratedEvent {
 // Firestore 'importance' field may be a number (1-4) or a string in any language
 const PRIORITY_COLORS: Record<string, string> = {
     // Numeric levels (1=critical, 2=high, 3=moderate, 4=low/info)
-    '1': '#EF4444',
-    '2': '#F59E0B',
-    '3': '#3B82F6',
-    '4': '#10B981',
+    '1': theme.colors.calendarPriorityCritical,
+    '2': theme.colors.calendarPriorityHigh,
+    '3': theme.colors.calendarPriorityModerate,
+    '4': theme.colors.teal500,
     // English string labels
-    'critical': '#EF4444',
-    'high': '#F59E0B',
-    'moderate': '#3B82F6',
-    'medium': '#3B82F6',
-    'low': '#10B981',
-    'info': '#6B7280',
-    'information': '#6B7280',
+    critical: theme.colors.calendarPriorityCritical,
+    high: theme.colors.calendarPriorityHigh,
+    moderate: theme.colors.calendarPriorityModerate,
+    medium: theme.colors.calendarPriorityModerate,
+    low: theme.colors.teal500,
+    info: theme.colors.calendarPriorityInfo,
+    information: theme.colors.calendarPriorityInfo,
     // French string labels (legacy support)
-    'critique': '#EF4444',
-    'élevé': '#F59E0B',
-    'modéré': '#3B82F6',
-    'faible': '#10B981',
+    critique: theme.colors.calendarPriorityCritical,
+    élevé: theme.colors.calendarPriorityHigh,
+    modéré: theme.colors.calendarPriorityModerate,
+    faible: theme.colors.teal500,
 };
 
 const getPriorityColor = (importance: string): string => {
@@ -398,7 +399,7 @@ export const getCombinedEventsForWeek = (
             type: ue.type,
             source: 'user',
             notes: ue.notes,
-            priorityColor: '#6B46C1', // Purple for user events
+            priorityColor: theme.colors.indigoAccent, // Purple for user events
         });
     });
 

@@ -53,10 +53,10 @@ const categories = [
 ];
 
 const severityColors = {
-    critical: '#D32F2F',
-    high: '#F57C00',
-    medium: '#FFA726',
-    low: '#66BB6A',
+    critical: theme.colors.red700,
+    high: theme.colors.accentOrangeDeep,
+    medium: theme.colors.orange400,
+    low: theme.colors.green400,
 };
 
 // Removed hardcoded severityLabels, will use t() directly
@@ -121,7 +121,7 @@ export const ForbiddenFoodsScreen = () => {
                     placeholder={t('common.searchFoodPlaceholder')}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    placeholderTextColor="#999"
+                    placeholderTextColor={theme.colors.neutral400}
                 />
             </View>
 
@@ -183,7 +183,7 @@ export const ForbiddenFoodsScreen = () => {
                             key={food.id}
                             style={[
                                 styles.foodCard,
-                                { borderLeftColor: severityColors[food.severity] }
+                                { borderStartColor: severityColors[food.severity] }
                             ]}
                             onPress={() => toggleExpand(food.id)}
                             activeOpacity={0.7}
@@ -241,7 +241,7 @@ export const ForbiddenFoodsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.surface,
     },
     content: {
         padding: 16,
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.text,
     },
     subtitle: {
         fontSize: 15,
@@ -311,8 +311,8 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.white,
         borderRadius: 12,
         padding: 16,
-        borderLeftWidth: 4,
-        ...getShadowStyle(2, '#000', 0.05, 4, { width: 0, height: 1 }),
+        borderStartWidth: 4,
+        ...getShadowStyle(2, theme.colors.black, 0.05, 4, { width: 0, height: 1 }),
     },
     foodHeader: {
         flexDirection: 'row',
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     foodName: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 4,
     },
     severityBadge: {
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     },
     expandIcon: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
         marginStart: 8,
     },
     foodDetails: {
@@ -363,11 +363,11 @@ const styles = StyleSheet.create({
     },
     detailText: {
         fontSize: 14,
-        color: '#333',
+        color: theme.colors.neutral900,
         lineHeight: 20,
     },
     alternativeRow: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.surfaceGreenTint,
         padding: 12,
         borderRadius: 8,
         marginBottom: 0,
@@ -375,15 +375,15 @@ const styles = StyleSheet.create({
     alternativeLabel: {
         fontSize: 13,
         fontWeight: '600',
-        color: '#2E7D32',
+        color: theme.colors.green800,
         marginBottom: 4,
     },
     alternativeText: {
         fontSize: 14,
-        color: '#2E7D32',
+        color: theme.colors.green800,
         lineHeight: 20,
     },
-    safeArea: { flex: 1, backgroundColor: '#F5F5F5' },
+    safeArea: { flex: 1, backgroundColor: theme.colors.neutral100 },
     emptyState: {
         alignItems: 'center',
         paddingVertical: 48,
@@ -391,20 +391,20 @@ const styles = StyleSheet.create({
     emptyStateEmoji: { fontSize: 48, marginBottom: 12 },
     emptyStateText: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         textAlign: 'center',
     },
     disclaimer: {
-        backgroundColor: '#FFF8E1',
+        backgroundColor: theme.colors.surfaceAmberTint,
         borderRadius: 12,
         padding: 12,
         marginTop: 20,
         borderWidth: 1,
-        borderColor: '#FFE082',
+        borderColor: theme.colors.amberBorder,
     },
     disclaimerText: {
         fontSize: 12,
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         lineHeight: 18,
     },
 });

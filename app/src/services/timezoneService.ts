@@ -108,42 +108,113 @@ export const formatDateInTimezone = (
 };
 
 /**
- * Create a Date object at a specific time in a given timezone
- * This function is simplified to work with local device time for notifications
+ * Create a Date object representing a wall-clock time (HH:mm) on a given day in a
+ * specific IANA timezone, regardless of the device's local timezone.
+ *
+ * Calendar day (Y/M/D) is taken from `baseDate` interpreted in **device-local time**
+ * — this preserves the existing call-site contract where callers build dates with
+ * `new Date(y, m, d)` or `setDate(...)` and expect those local-day values to anchor
+ * the result. Hours / minutes are then anchored in the target IANA timezone.
+ *
+ * The returned Date is the absolute UTC instant such that, when displayed in
+ * `timezone`, the wall clock reads exactly `hours:minutes:00`.
+ *
+ * Algorithm: build a "fake UTC" instant matching the desired wall clock, ask
+ * `Intl.DateTimeFormat` what it would display in `timezone`, derive the offset
+ * from the difference, and shift the instant by that offset. Handles DST.
+ *
+ * @example
+ *   // June 15 2026, 08:00 in Europe/Paris (CEST = UTC+2)
+ *   const d = createDateAtTimeInTimezone(new Date(2026, 5, 15), 8, 0, 'Europe/Paris');
+ *   // Verification:
+ *   //   d.toLocaleString('fr-FR', { timeZone: 'Europe/Paris',
+ *   //     dateStyle: 'short', timeStyle: 'medium' })
+ *   //   → "15/06/2026 08:00:00"
+ *
+ * If `Intl.DateTimeFormat` with `timeZone` support is unavailable (very old JS
+ * runtime), falls back to the legacy device-local `setHours` behavior and logs
+ * a warning so the regression is visible.
  */
 export const createDateAtTimeInTimezone = (
     baseDate: Date,
     hours: number,
     minutes: number,
-    timezone: string // timezone parameter is kept for consistency but not actively used in simplified logic
+    timezone: string
 ): Date => {
+    let safeDate = baseDate;
+    if (!safeDate || isNaN(safeDate.getTime())) {
+        log.warn('Invalid baseDate, using current date');
+        safeDate = new Date();
+    }
+
+    const year = safeDate.getFullYear();
+    const month = safeDate.getMonth(); // 0-indexed
+    const day = safeDate.getDate();
+
     try {
-        // Validate input date
-        if (!baseDate || isNaN(baseDate.getTime())) {
-            log.warn('Invalid baseDate, using current date');
-            baseDate = new Date();
+        // Step 1: pretend the desired wall-clock IS UTC. This anchors the calendar
+        // day from the input and the requested HH:mm into a concrete instant.
+        const fakeUtc = Date.UTC(year, month, day, hours, minutes, 0, 0);
+
+        // Step 2: ask Intl what that instant would display as in `timezone`.
+        const dtf = new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false,
+        });
+
+        const parts = dtf.formatToParts(new Date(fakeUtc));
+        const get = (type: string): number => {
+            const found = parts.find(p => p.type === type);
+            return found ? parseInt(found.value, 10) : NaN;
+        };
+
+        const tzYear = get('year');
+        const tzMonth = get('month');
+        const tzDay = get('day');
+        let tzHour = get('hour');
+        const tzMinute = get('minute');
+        const tzSecond = get('second');
+
+        if ([tzYear, tzMonth, tzDay, tzHour, tzMinute, tzSecond].some(Number.isNaN)) {
+            throw new Error('Intl.DateTimeFormat returned invalid parts');
         }
 
-        // SIMPLIFIED APPROACH: Create date at the specified time directly
-        // The previous timezone offset calculation was causing NaN issues
-        // Since we're targeting local notifications, the device's local time is what matters
-        const result = new Date(baseDate);
-        result.setHours(hours, minutes, 0, 0);
+        // Some Intl backends (notably en-US, hour12:false) report midnight as "24"
+        // instead of "0". Normalize so Date.UTC stays in range.
+        if (tzHour === 24) tzHour = 0;
 
-        // Validate the result
+        // Step 3: derive the timezone's offset at this instant from the discrepancy
+        // between what was "shown" and the fake UTC instant we plugged in.
+        const tzShown = Date.UTC(tzYear, tzMonth - 1, tzDay, tzHour, tzMinute, tzSecond);
+        const offsetMs = tzShown - fakeUtc;
+
+        // Step 4: shift the fake UTC by the offset to produce the real instant
+        // that will display as the requested wall-clock in `timezone`.
+        const result = new Date(fakeUtc - offsetMs);
+
         if (isNaN(result.getTime())) {
-            log.warn('Date validation failed, using current date');
-            const fallback = new Date();
-            fallback.setHours(hours, minutes, 0, 0);
-            return fallback;
+            throw new Error('Computed Date is NaN');
         }
 
         return result;
     } catch (error) {
-        log.warn('Error in createDateAtTimeInTimezone:', error);
-        // Return a simple fallback
-        const fallback = new Date();
+        log.warn(
+            `createDateAtTimeInTimezone: Intl.DateTimeFormat unavailable or failed for timezone="${timezone}". Falling back to device-local time. Notifications may fire at the wrong moment for users whose device timezone differs from their country.`,
+            error
+        );
+        const fallback = new Date(safeDate);
         fallback.setHours(hours, minutes, 0, 0);
+        if (isNaN(fallback.getTime())) {
+            const last = new Date();
+            last.setHours(hours, minutes, 0, 0);
+            return last;
+        }
         return fallback;
     }
 };

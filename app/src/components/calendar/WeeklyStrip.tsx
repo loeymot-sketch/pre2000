@@ -44,6 +44,8 @@ export const WeeklyStrip: React.FC<WeeklyStripProps> = React.memo(({
         const dayName = format(date, 'EEE', { locale: dateLocale }).replace('.', '');
         const formattedDayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
 
+        const a11yLabel = format(date, 'EEEE dd MMMM', { locale: dateLocale });
+
         return (
             <TouchableOpacity
                 key={dayIndex}
@@ -53,6 +55,10 @@ export const WeeklyStrip: React.FC<WeeklyStripProps> = React.memo(({
                     isToday && !isSelected && styles.todayContainer,
                 ]}
                 onPress={() => onDateSelect(date)}
+                accessibilityRole="button"
+                accessibilityLabel={a11yLabel}
+                accessibilityState={{ selected: isSelected }}
+                accessibilityHint={hasRDV ? t('a11y.openAppointment') : undefined}
             >
                 <Text style={[styles.dayName, isSelected && styles.selectedText]}>
                     {formattedDayName}
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
         ...getShadowStyle(4, theme.colors.primary, 0.3, 4, { width: 0, height: 2 }),
     },
     todayContainer: {
-        backgroundColor: '#F0F9FF', // Light blue for today
+        backgroundColor: theme.colors.sky50, // today highlight
         borderWidth: 1,
         borderColor: theme.colors.primary,
     },
@@ -136,13 +142,13 @@ const styles = StyleSheet.create({
     rdvHeader: {
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
+        borderBottomColor: theme.colors.borderLight,
     },
     rdvHeaderText: {
         fontSize: 13,
-        color: '#666',
+        color: theme.colors.textSecondary,
         textAlign: 'center',
         fontWeight: '500',
     },

@@ -4,6 +4,7 @@ import { UserTask, RecurrenceRule } from '../types';
 import { scheduleOneTimeNotification, cancelReminderNotifications } from './notificationService';
 import { getTaskMessage } from '../utils/notificationMessages';
 import { createLogger } from '../utils/logger';
+import i18n from '../i18n'; // F3: pass current locale to notif messages
 
 const log = createLogger('taskService');
 
@@ -42,7 +43,7 @@ export const createTask = async (
         // Schedule notification if reminder time is set
         if (reminderTime) {
             log.debug('⏰ Scheduling notification for new task:', taskId);
-            const taskMsg = getTaskMessage(title.trim());
+            const taskMsg = getTaskMessage(title.trim(), i18n.language);
             await scheduleOneTimeNotification(
                 taskId,
                 taskMsg.title,
@@ -202,7 +203,7 @@ export const updateTask = async (
 
         // 2. Schedule new if needed
         if (reminderTime) {
-            const taskMsg = getTaskMessage(title.trim());
+            const taskMsg = getTaskMessage(title.trim(), i18n.language);
             await scheduleOneTimeNotification(
                 taskId,
                 taskMsg.title,

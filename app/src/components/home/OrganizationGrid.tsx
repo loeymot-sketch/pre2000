@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,7 +20,7 @@ export const OrganizationGrid: React.FC = () => {
                     onPress={() => navigation.navigate('Rappels')}
                 >
                     <LinearGradient
-                        colors={['#E3F2FD', '#BBDEFB']}
+                        colors={[theme.colors.surfaceBlueTint, theme.colors.blue100]}
                         style={styles.toolIconContainer}
                     >
                         <Text style={styles.toolEmoji}>🔔</Text>
@@ -34,7 +35,7 @@ export const OrganizationGrid: React.FC = () => {
                     onPress={() => navigation.navigate('Calendrier')}
                 >
                     <LinearGradient
-                        colors={['#E8F5E9', '#C8E6C9']}
+                        colors={[theme.colors.surfaceGreenTint, theme.colors.green100]}
                         style={styles.toolIconContainer}
                     >
                         <Text style={styles.toolEmoji}>📅</Text>
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     sectionTitleMain: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
         marginStart: 4,
     },
@@ -65,11 +66,11 @@ const styles = StyleSheet.create({
     },
     toolCard: {
         flex: 1,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 16,
         padding: 16,
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.06,
         shadowRadius: 8,
@@ -89,11 +90,11 @@ const styles = StyleSheet.create({
     toolTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 4,
     },
     toolSubtitle: {
         fontSize: 12,
-        color: '#888',
+        color: theme.colors.neutral350,
     },
 });

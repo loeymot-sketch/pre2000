@@ -1,9 +1,11 @@
+import { theme } from '../../theme';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { UserEvent, UserTask } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { isToday, isTomorrow, isThisWeek, parseISO } from 'date-fns';
 import { LinearGradient } from 'expo-linear-gradient';
+import { RtlAwareChevron } from '../common/RtlAwareChevron';
 
 interface SmartRemindersBannerProps {
     appointments: UserEvent[];
@@ -70,27 +72,27 @@ export const SmartRemindersBanner: React.FC<SmartRemindersBannerProps> = ({
     }
 
     const renderAppointmentLine = (message: string, priority: 'high' | 'medium' | 'low', onPress: () => void) => {
-        const color = '#FFFFFF'; // High contrast white
+        const color = theme.colors.white; // High contrast white
         const icon = priority === 'high' ? '📅' : (priority === 'medium' ? '🔔' : '📆');
 
         return (
             <TouchableOpacity onPress={onPress} activeOpacity={0.6} style={styles.line}>
                 <Text style={styles.icon}>{icon}</Text>
                 <Text style={[styles.text, { color }]}>{message}</Text>
-                <Text style={[styles.arrow, { color }]}>›</Text>
+                <RtlAwareChevron direction="forward" size={18} color={color} style={{ marginStart: 6, opacity: 0.9 }} />
             </TouchableOpacity>
         );
     };
 
     const renderTaskLine = (message: string, priority: 'high' | 'medium' | 'low', onPress: () => void) => {
-        const color = priority === 'high' ? '#FFE5EC' : '#FFFFFF'; // Light pink or white
+        const color = priority === 'high' ? theme.colors.surfaceBlush : theme.colors.white; // Light pink or white
         const icon = priority === 'high' ? '⚠️' : '✓';
 
         return (
             <TouchableOpacity onPress={onPress} activeOpacity={0.6} style={styles.line}>
                 <Text style={styles.icon}>{icon}</Text>
                 <Text style={[styles.text, { color }]}>{message}</Text>
-                <Text style={[styles.arrow, { color }]}>›</Text>
+                <RtlAwareChevron direction="forward" size={18} color={color} style={{ marginStart: 6, opacity: 0.9 }} />
             </TouchableOpacity>
         );
     };
@@ -116,12 +118,12 @@ const styles = StyleSheet.create({
     line: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // Very subtle glass effect
+        backgroundColor: theme.colors.whiteAlpha15, // Very subtle glass effect
         paddingVertical: 6,
         paddingHorizontal: 16,
         borderRadius: 20, // Rounded pill shape
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.3)',
+        borderColor: theme.colors.whiteAlpha30,
     },
     icon: {
         fontSize: 16,
@@ -132,9 +134,4 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         letterSpacing: 0.2, // Slightly more spaced for readability
     },
-    arrow: {
-        fontSize: 16,
-        marginLeft: 6,
-        opacity: 0.7, // Higher opacity so the white arrow is visible
-    }
 });

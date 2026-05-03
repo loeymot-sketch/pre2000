@@ -28,6 +28,9 @@ import { theme } from '../theme';
 import { getShadowStyle, getTextShadowStyle } from '../utils/styleUtils';
 import { Card } from '../components/common/Card';
 import { SectionHeader } from '../components/common/SectionHeader';
+import { Skeleton } from '../components/common/Skeleton'; // D4
+import { EmptyState } from '../components/common/EmptyState'; // D5
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { getArticlesByIds, getSupplementsByIds } from '../services/contentService';
 import { getUpcomingAppointments } from '../services/calendarService';
@@ -216,22 +219,27 @@ export const HomeScreen = () => {
 
 
     if (loading) {
+        // D4: Skeleton-based loading replaces opaque ActivityIndicator. Mimics the
+        // structure of the ready-state hero card → user perceives the screen as fast.
         return (
-            <View style={styles.centerContainer}>
-                <ActivityIndicator size="large" color="#FF6B9D" />
-                <Text style={[theme.typography.body, { marginTop: 16, color: theme.colors.textLight }]}>
-                    {t('home.loadingData')}
-                </Text>
-            </View>
+            <ScrollView style={styles.container} contentContainerStyle={{ paddingTop: 24, paddingHorizontal: 16 }}>
+                <Skeleton.Title width="60%" />
+                <Skeleton width="40%" height={14} style={{ marginTop: 8, marginBottom: 24 }} />
+                <Skeleton.Card style={{ height: 200, marginBottom: 16 }} />
+                <Skeleton.Card style={{ height: 120, marginBottom: 16 }} />
+                <Skeleton width="50%" height={18} style={{ marginTop: 8, marginBottom: 12 }} />
+                <Skeleton.Card style={{ height: 80, marginBottom: 8 }} />
+                <Skeleton.Card style={{ height: 80 }} />
+            </ScrollView>
         );
     }
 
     if (error || !weekData) {
         return (
-            <View style={styles.centerContainer}>
-                <Text style={styles.errorEmoji}>😔</Text>
-                <Text style={theme.typography.body}>{error ? t(error) : t('common.noDataAvailable')}</Text>
-            </View>
+            <EmptyState
+                icon="😔"
+                title={error ? t(error) : t('common.noDataAvailable')}
+            />
         );
     }
 
@@ -260,10 +268,13 @@ export const HomeScreen = () => {
                         navigation.navigate('SupplementDetail', { supplementId: (item as Supplement).supplement_id });
                     }
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={`${title}, ${subtitle}`}
+                accessibilityHint={isArticle ? t('a11y.readArticle') : t('a11y.openSupplement')}
             >
                 <View style={styles.recommendationCard}>
                     <LinearGradient
-                        colors={isArticle ? ['#FFE5F1', '#FFF0F7'] : ['#E3F2FD', '#F0F7FF']}
+                        colors={isArticle ? [theme.colors.gradientPinkStart, theme.colors.gradientPinkEnd] : [theme.colors.surfaceBlueTint, theme.colors.surfaceBluePale]}
                         style={styles.recommendationGradient}
                     >
                         <View style={styles.recHeader}>
@@ -283,7 +294,7 @@ export const HomeScreen = () => {
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             {/* Gradient Header */}
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.accent, '#880E4F']}
+                colors={[theme.colors.primary, theme.colors.accent, theme.colors.deepPink]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.headerGradient}
@@ -299,7 +310,7 @@ export const HomeScreen = () => {
                             accessibilityRole="button"
                         >
                             <LinearGradient
-                                colors={['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.1)']}
+                                colors={[theme.colors.whiteAlpha30, theme.colors.whiteAlpha10]}
                                 style={styles.profileGradient}
                             >
                                 <Text style={styles.profileButtonText}>
@@ -317,36 +328,46 @@ export const HomeScreen = () => {
                             </Text>
                         </View>
                         {/* Week Navigation */}
-                        <View style={styles.weekNavContainer}>
-                            <TouchableOpacity
-                                onPress={handlePrevWeek}
-                                disabled={currentWeekNumber <= 1}
-                                style={styles.navButton}
-                                activeOpacity={0.7}
-                                accessibilityLabel={t('a11y.previousWeek')}
-                                accessibilityRole="button"
-                            >
-                                <Text style={[styles.navButtonText, currentWeekNumber <= 1 && styles.disabledText]}>
-                                    ‹
-                                </Text>
-                            </TouchableOpacity>
-                            <View style={styles.weekBadge}>
-                                <Text style={styles.weekTitle}>{t('common.week')} {currentWeekNumber}</Text>
-                                <Text style={styles.trimesterBadge}>{trimesterText}</Text>
+                        {/* MA7-FIX: hide pregnancy week badge + navigation for TTC users.
+                            They are not pregnant, so showing "Semaine X" is medically wrong. */}
+                        {!user?.isTTC && (
+                            <View style={styles.weekNavContainer}>
+                                <TouchableOpacity
+                                    onPress={handlePrevWeek}
+                                    disabled={currentWeekNumber <= 1}
+                                    style={styles.navButton}
+                                    activeOpacity={0.7}
+                                    accessibilityLabel={t('a11y.previousWeek')}
+                                    accessibilityRole="button"
+                                >
+                                    <RtlAwareChevron
+                                        direction="back"
+                                        size={36}
+                                        color={currentWeekNumber <= 1 ? theme.colors.whiteAlpha30 : theme.colors.white}
+                                        style={{ fontWeight: 'bold' }}
+                                    />
+                                </TouchableOpacity>
+                                <View style={styles.weekBadge}>
+                                    <Text style={styles.weekTitle}>{t('common.week')} {currentWeekNumber}</Text>
+                                    <Text style={styles.trimesterBadge}>{trimesterText}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={handleNextWeek}
+                                    disabled={currentWeekNumber >= 40}
+                                    style={styles.navButton}
+                                    activeOpacity={0.7}
+                                    accessibilityLabel={t('a11y.nextWeek')}
+                                    accessibilityRole="button"
+                                >
+                                    <RtlAwareChevron
+                                        direction="forward"
+                                        size={36}
+                                        color={currentWeekNumber >= 40 ? theme.colors.whiteAlpha30 : theme.colors.white}
+                                        style={{ fontWeight: 'bold' }}
+                                    />
+                                </TouchableOpacity>
                             </View>
-                            <TouchableOpacity
-                                onPress={handleNextWeek}
-                                disabled={currentWeekNumber >= 40}
-                                style={styles.navButton}
-                                activeOpacity={0.7}
-                                accessibilityLabel={t('a11y.nextWeek')}
-                                accessibilityRole="button"
-                            >
-                                <Text style={[styles.navButtonText, currentWeekNumber >= 40 && styles.disabledText]}>
-                                    ›
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                        )}
 
                         {/* Week Title (without repeating 'Semaine X') */}
                         <Text style={styles.weekSubtitle}>
@@ -405,6 +426,8 @@ export const HomeScreen = () => {
                             <TouchableOpacity 
                                 style={styles.postpartumButton}
                                 onPress={() => navigation.navigate('Profile')}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('home.updateStatus', 'Mettre à jour le statut')}
                             >
                                 <Text style={styles.postpartumButtonText}>Mettre à jour le statut</Text>
                             </TouchableOpacity>
@@ -413,10 +436,16 @@ export const HomeScreen = () => {
                 )}
 
                 {/* HERO CARD #1: Baby Growth 3D (NEW) */}
-                <BabyGrowthCard
-                    currentWeek={currentWeekNumber}
-                    weekData={weekData}
-                />
+                {/* U-FIX-6: pass currentDay so the displayed "day of pregnancy" is exact
+                    (was ~7 days too high before because it used currentWeek * 7).
+                    MA7-FIX: skip baby-growth card for TTC users — they are not pregnant. */}
+                {!user?.isTTC && (
+                    <BabyGrowthCard
+                        currentWeek={currentWeekNumber}
+                        currentDay={currentDay}
+                        weekData={weekData}
+                    />
+                )}
 
                 {/* SECTION 1: HERO CARD PREMIUM (Phase 1) */}
                 {weekData && (
@@ -425,7 +454,7 @@ export const HomeScreen = () => {
                         <Text style={styles.sectionTitleMain}>🍼 {t('common.heroTitle')}</Text>
 
                         <LinearGradient
-                            colors={['#FFEEE8', '#FFE8F0']}
+                            colors={[theme.colors.gradientPeachStart, theme.colors.gradientPeachEnd]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                             style={styles.heroCardGradient}
@@ -487,7 +516,7 @@ export const HomeScreen = () => {
                     )}
                     {dailyTip && (
                         <LinearGradient
-                            colors={['#FFF8E1', '#FFFDE7']} // Light Amber/Cream gradient
+                            colors={[theme.colors.gradientAmberStart, theme.colors.gradientAmberEnd]} // Light Amber/Cream gradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                             style={styles.tipCardGradient}
@@ -515,10 +544,14 @@ export const HomeScreen = () => {
                                 activeOpacity={0.8}
                                 onPress={() => setShowFullBodyText(!showFullBodyText)}
                                 style={styles.infoCardHeader}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('common.yourBody')}
+                                accessibilityHint={showFullBodyText ? t('a11y.collapseSection') : t('a11y.expandSection')}
+                                accessibilityState={{ expanded: showFullBodyText }}
                             >
                                 <Text style={styles.infoCardEmoji}>🤰</Text>
                                 <Text style={styles.infoCardTitle}>{t('common.yourBody')}</Text>
-                                <Text style={{ marginStart: 'auto', fontSize: 12, color: '#9C27B0', fontWeight: '600' }}>
+                                <Text style={{ marginStart: 'auto', fontSize: 12, color: theme.colors.accentPurple, fontWeight: '600' }}>
                                     {showFullBodyText ? t('common.seeLess') : t('common.seeMore')}
                                 </Text>
                             </TouchableOpacity>
@@ -531,7 +564,7 @@ export const HomeScreen = () => {
                         </View>
 
                         {/* Warnings / Medical Info - Redesigned List */}
-                        <View style={[styles.infoCardPremium, { marginTop: 16, borderLeftColor: '#F44336', backgroundColor: theme.colors.white, borderWidth: 1, borderColor: '#FFEBEE' }]}>
+                        <View style={[styles.infoCardPremium, styles.infoCardPremiumAlert, { marginTop: 16 }]}>
                             <View style={styles.infoCardHeader}>
                                 <Text style={styles.infoCardEmoji}>⚠️</Text>
                                 <Text style={styles.infoCardTitle}>{t('common.toMonitor')}</Text>
@@ -555,8 +588,8 @@ export const HomeScreen = () => {
                                     if (trimmed.startsWith('*') || trimmed.startsWith('•') || trimmed.startsWith('-')) {
                                         return (
                                             <View key={index} style={{ flexDirection: 'row', marginBottom: 6, paddingStart: 8 }}>
-                                                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#F44336', marginTop: 8, marginEnd: 10 }} />
-                                                <Text style={{ flex: 1, fontSize: 14, color: '#444', lineHeight: 22 }}>
+                                                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: theme.colors.critical, marginTop: 8, marginEnd: 10 }} />
+                                                <Text style={{ flex: 1, fontSize: 14, color: theme.colors.neutral800, lineHeight: 22 }}>
                                                     {trimmed.replace(/^[\*\•\-]\s*/, '')}
                                                 </Text>
                                             </View>
@@ -565,7 +598,7 @@ export const HomeScreen = () => {
 
                                     // Normal text
                                     return (
-                                        <Text key={index} style={{ fontSize: 14, color: '#444', lineHeight: 22, marginBottom: 4 }}>
+                                        <Text key={index} style={{ fontSize: 14, color: theme.colors.neutral800, lineHeight: 22, marginBottom: 4 }}>
                                             {trimmed}
                                         </Text>
                                     );
@@ -588,7 +621,7 @@ export const HomeScreen = () => {
                             accessibilityRole="button"
                         >
                             <LinearGradient
-                                colors={['#E3F2FD', '#BBDEFB']}
+                                colors={[theme.colors.surfaceBlueTint, theme.colors.blue100]}
                                 style={styles.toolIconContainer}
                             >
                                 <Text style={styles.toolEmoji}>🔔</Text>
@@ -605,7 +638,7 @@ export const HomeScreen = () => {
                             accessibilityRole="button"
                         >
                             <LinearGradient
-                                colors={['#E8F5E9', '#C8E6C9']}
+                                colors={[theme.colors.gradientGreenStart, theme.colors.gradientGreenEnd]}
                                 style={styles.toolIconContainer}
                             >
                                 <Text style={styles.toolEmoji}>📅</Text>
@@ -622,7 +655,7 @@ export const HomeScreen = () => {
                             accessibilityRole="button"
                         >
                             <LinearGradient
-                                colors={['#FCE4EC', '#F8BBD9']}
+                                colors={[theme.colors.gradientRoseStart, theme.colors.gradientRoseEnd]}
                                 style={styles.toolIconContainer}
                             >
                                 <Text style={styles.toolEmoji}>⚖️</Text>
@@ -639,7 +672,7 @@ export const HomeScreen = () => {
                             accessibilityRole="button"
                         >
                             <LinearGradient
-                                colors={['#FFF3E0', '#FFE0B2']}
+                                colors={[theme.colors.gradientOrangeStart, theme.colors.gradientOrangeEnd]}
                                 style={styles.toolIconContainer}
                             >
                                 <Text style={styles.toolEmoji}>🍽️</Text>
@@ -663,6 +696,9 @@ export const HomeScreen = () => {
                                 key={app.event_id}
                                 style={styles.unifiedCard}
                                 onPress={() => navigation.navigate('Calendrier')}
+                                accessibilityRole="button"
+                                accessibilityLabel={`${app.title}, ${format(new Date(app.date), 'dd MMMM, HH:mm', { locale: dateLocale })}`}
+                                accessibilityHint={t('a11y.openAppointment')}
                             >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', padding: 12, backgroundColor: theme.colors.surface, borderRadius: theme.borderRadius.m }}>
                                     <View style={{ width: 4, height: 40, backgroundColor: theme.colors.success, borderRadius: 2, marginEnd: 12 }} />
@@ -717,7 +753,7 @@ const styles = StyleSheet.create({
         padding: 20,
         marginBottom: 24,
         marginHorizontal: 16,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
@@ -742,20 +778,20 @@ const styles = StyleSheet.create({
         marginVertical: 16,
     },
     warningContainer: {
-        backgroundColor: '#FFF8F8',
+        backgroundColor: theme.colors.surfaceWashPink,
         borderRadius: theme.borderRadius.m,
         padding: 12,
         marginTop: 8,
     },
     postpartumBanner: {
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
         borderRadius: 24,
         padding: 20,
         marginHorizontal: 16,
         marginBottom: 24,
         flexDirection: 'row',
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
@@ -771,25 +807,25 @@ const styles = StyleSheet.create({
     postpartumTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#E65100',
+        color: theme.colors.orange900,
         marginBottom: 4,
     },
     postpartumDesc: {
         fontSize: 13,
-        color: '#E65100',
+        color: theme.colors.orange900,
         opacity: 0.9,
         lineHeight: 18,
         marginBottom: 12,
     },
     postpartumButton: {
-        backgroundColor: '#FF9800',
+        backgroundColor: theme.colors.orange500,
         paddingVertical: 8,
         paddingHorizontal: 16,
         borderRadius: 20,
         alignSelf: 'flex-start',
     },
     postpartumButtonText: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontSize: 13,
         fontWeight: 'bold',
     },
@@ -815,7 +851,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -831,7 +867,7 @@ const styles = StyleSheet.create({
     },
     weekInfo: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         fontWeight: '500',
         marginTop: 4,
     },
@@ -846,7 +882,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
         overflow: 'hidden',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -857,7 +893,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 3,
-        borderColor: 'rgba(255, 255, 255, 0.5)',
+        borderColor: theme.colors.whiteAlpha50,
         borderRadius: 28,
     },
     profileButtonText: {
@@ -886,14 +922,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 4,
     },
-    navButtonText: {
-        fontSize: 36,
-        color: theme.colors.white,
-        fontWeight: 'bold',
-    },
-    disabledText: {
-        color: 'rgba(255, 255, 255, 0.3)',
-    },
     weekBadge: {
         alignItems: 'center',
         marginHorizontal: 16,
@@ -906,10 +934,10 @@ const styles = StyleSheet.create({
     },
     trimesterBadge: {
         fontSize: 12,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: theme.colors.whiteAlpha80,
         fontWeight: '600',
         marginTop: 4,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         paddingHorizontal: 8,
         paddingVertical: 2,
         borderRadius: 10,
@@ -952,7 +980,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 10,
         width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         borderRadius: 5,
         overflow: 'hidden',
     },
@@ -964,7 +992,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.white,
     },
     progressSegmentInactive: {
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: theme.colors.whiteAlpha30,
     },
     roundedLeft: {
         borderTopLeftRadius: 5,
@@ -976,13 +1004,13 @@ const styles = StyleSheet.create({
     },
     progressText: {
         fontSize: 13,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         marginTop: 8,
         fontWeight: '600',
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: theme.colors.blackAlpha60,
         justifyContent: 'flex-end',
     },
     personalDataModal: {
@@ -990,7 +1018,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         maxHeight: '85%',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -1008,11 +1036,11 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: theme.colors.whiteAlpha30,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 4,
-        borderColor: 'rgba(255, 255, 255, 0.5)',
+        borderColor: theme.colors.whiteAlpha50,
         marginBottom: 16,
     },
     modalProfileText: {
@@ -1028,7 +1056,7 @@ const styles = StyleSheet.create({
     },
     modalEmail: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
     },
     modalContent: {
         maxHeight: 400,
@@ -1091,7 +1119,7 @@ const styles = StyleSheet.create({
         color: theme.colors.text,
     },
     logoutButton: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
     },
     logoutText: {
         color: theme.colors.error,
@@ -1110,13 +1138,13 @@ const styles = StyleSheet.create({
     quickNavButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        backgroundColor: theme.colors.whiteAlpha25,
         borderRadius: theme.borderRadius.s,
         paddingVertical: 6,
         paddingHorizontal: 12,
         gap: 4,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.4)',
+        borderColor: theme.colors.whiteAlpha40,
     },
     quickNavIcon: {
         fontSize: 12,
@@ -1162,7 +1190,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 14,
         gap: 6,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOpacity: 0.15,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
@@ -1181,16 +1209,16 @@ const styles = StyleSheet.create({
         borderRadius: theme.borderRadius.xl,
         padding: 20,
         marginBottom: 16,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 3,
     },
     quickFactsCard: {
-        backgroundColor: '#F0F7FF',
+        backgroundColor: theme.colors.surfaceBluePale,
         borderWidth: 1,
-        borderColor: '#BBDEFB',
+        borderColor: theme.colors.blue100,
     },
     factsSection: {
         marginTop: 4,
@@ -1204,7 +1232,7 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: theme.borderRadius.l,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: theme.colors.whiteAlpha80,
         justifyContent: 'center',
         alignItems: 'center',
         marginEnd: 12,
@@ -1226,13 +1254,13 @@ const styles = StyleSheet.create({
     },
     cardDescription: {
         fontSize: 15,
-        color: '#4A4A4A',
+        color: theme.colors.neutral850,
         lineHeight: 22,
     },
     babyCard: {
-        backgroundColor: '#FFF0F7',
+        backgroundColor: theme.colors.lavenderBlush,
         borderWidth: 1,
-        borderColor: '#FFD6E8',
+        borderColor: theme.colors.borderPinkPastel,
     },
     babyHeader: {
         flexDirection: 'row',
@@ -1249,7 +1277,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     statItem: {
-        backgroundColor: 'rgba(255, 107, 157, 0.15)',
+        backgroundColor: theme.colors.primaryAlpha15,
         paddingHorizontal: 14,
         paddingVertical: 10,
         borderRadius: theme.borderRadius.m,
@@ -1294,14 +1322,14 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
     warningCard: {
-        backgroundColor: '#FFF8E1',
+        backgroundColor: theme.colors.surfaceAmberTint,
         borderWidth: 1,
-        borderColor: '#FFE082',
+        borderColor: theme.colors.amberBorder,
     },
     warningTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         marginBottom: 12,
     },
     appointmentItem: {
@@ -1312,7 +1340,7 @@ const styles = StyleSheet.create({
         borderBottomColor: theme.colors.borderLight,
     },
     appointmentDate: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         borderRadius: 14,
         padding: 14,
         alignItems: 'center',
@@ -1354,7 +1382,7 @@ const styles = StyleSheet.create({
         height: 140,
         borderRadius: theme.borderRadius.l,
         overflow: 'hidden',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.15,
         shadowRadius: 6,
@@ -1384,7 +1412,7 @@ const styles = StyleSheet.create({
         marginTop: 6,
     },
     recBadge: {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)', // Increased opacity for better contrast
+        backgroundColor: theme.colors.whiteAlpha60,
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: theme.borderRadius.m,
@@ -1401,9 +1429,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         marginBottom: 16,
         padding: 16,
-        backgroundColor: '#FFF9E6',
-        borderLeftWidth: 4,
-        borderLeftColor: '#FFC107',
+        backgroundColor: theme.colors.surfaceTip,
+        borderStartWidth: 4,
+        borderStartColor: theme.colors.accentAmber,
     },
     tipHeader: {
         flexDirection: 'row',
@@ -1441,7 +1469,7 @@ const styles = StyleSheet.create({
     },
     tipCategoryText: {
         fontSize: 12,
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         fontWeight: '600',
     },
 
@@ -1452,7 +1480,7 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         padding: 24,
         marginTop: 12,
-        shadowColor: '#FF9E9E',
+        shadowColor: theme.colors.shadowHeroPink,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.15,
         shadowRadius: 16,
@@ -1465,11 +1493,11 @@ const styles = StyleSheet.create({
     heroEmoji: {
         fontSize: 64,
         marginBottom: 8,
-        ...getTextShadowStyle('rgba(0,0,0,0.1)', 1, 8, { width: 0, height: 4 }),
+        ...getTextShadowStyle(theme.colors.black, 0.1, 8, { width: 0, height: 4 }),
     },
     heroWeekText: {
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.textSecondary,
         fontWeight: '500',
         letterSpacing: 0.5,
         textTransform: 'uppercase',
@@ -1486,7 +1514,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         width: '48%',
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 4,
@@ -1495,26 +1523,26 @@ const styles = StyleSheet.create({
     heroStatValue: {
         fontSize: 22,
         fontWeight: '800',
-        color: '#FF7F50', // Coral
+        color: theme.colors.coral,
         marginBottom: 4,
     },
     heroStatLabel: {
         fontSize: 13,
-        color: '#999',
+        color: theme.colors.textSecondary,
         fontWeight: '500',
     },
     heroComparisonBox: {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent white
+        backgroundColor: theme.colors.whiteAlpha60,
         borderRadius: theme.borderRadius.l,
         padding: 16,
         alignItems: 'center',
         marginBottom: 20,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.8)',
+        borderColor: theme.colors.whiteAlpha80,
     },
     heroComparisonLabel: {
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.textSecondary,
         marginBottom: 4,
     },
     heroComparisonValue: {
@@ -1525,7 +1553,7 @@ const styles = StyleSheet.create({
     },
     heroDevText: {
         fontSize: 15,
-        color: '#555',
+        color: theme.colors.textSecondary,
         lineHeight: 24,
         textAlign: 'center',
         paddingHorizontal: 8,
@@ -1533,9 +1561,9 @@ const styles = StyleSheet.create({
     tipCardGradient: {
         borderRadius: theme.borderRadius.l,
         padding: 20,
-        borderLeftWidth: 4,
-        borderLeftColor: '#FFA000', // Amber accent
-        shadowColor: '#FFA000',
+        borderStartWidth: 4,
+        borderStartColor: theme.colors.accentAmberDark,
+        shadowColor: theme.colors.accentAmberDark,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 8,
@@ -1546,14 +1574,20 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.white,
         borderRadius: theme.borderRadius.l,
         padding: 16,
-        borderLeftWidth: 4,
-        borderLeftColor: '#9C27B0', // Purple accent default
-        shadowColor: '#000',
+        borderStartWidth: 4,
+        borderStartColor: theme.colors.accentPurple,
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
         elevation: 2,
         marginBottom: 8,
+    },
+    /** Variante liste rouge à surveiller — bordure début logique (RTL-safe) */
+    infoCardPremiumAlert: {
+        borderStartColor: theme.colors.critical,
+        borderWidth: 1,
+        borderColor: theme.colors.surfaceRose,
     },
     infoCardHeader: {
         flexDirection: 'row',
@@ -1587,7 +1621,7 @@ const styles = StyleSheet.create({
         borderRadius: theme.borderRadius.l,
         padding: 16,
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
@@ -1613,7 +1647,7 @@ const styles = StyleSheet.create({
     },
     toolSubtitle: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
         textAlign: 'center',
     },
 
@@ -1635,17 +1669,17 @@ const styles = StyleSheet.create({
     },
     babySizeLabelPro: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         marginBottom: 8,
         fontWeight: '400',
     },
     babySizeValuePro: {
         fontSize: 36,
         fontWeight: 'bold',
-        color: '#FF7F50', // Orange vif comme screenshot
+        color: theme.colors.coral, // Orange vif comme screenshot
     },
     babyComparisonContainerPro: {
-        backgroundColor: '#FFE8F0',
+        backgroundColor: theme.colors.surfacePinkWash,
         paddingVertical: 24,
         paddingHorizontal: 20,
         borderRadius: theme.borderRadius.m,
@@ -1659,13 +1693,13 @@ const styles = StyleSheet.create({
     },
     babyComparisonLabelPro: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         marginBottom: 8,
     },
     babyComparisonValuePro: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#FF7F50', // Orange vif
+        color: theme.colors.coral, // Orange vif
         textAlign: 'center',
     },
     babyDevTextPro: {
@@ -1698,7 +1732,7 @@ const styles = StyleSheet.create({
         color: theme.colors.primary,
     },
     babyComparisonContainer: {
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
         padding: theme.spacing.m,
         borderRadius: theme.borderRadius.m,
         alignItems: 'center',

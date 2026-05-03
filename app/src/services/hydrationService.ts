@@ -111,7 +111,8 @@ export const scheduleHydrationReminders = async (data: HydrationData) => {
         const triggerMinute = Math.floor((hour - triggerHour) * 60);
 
         // Pick a random hydration message from the localized array
-        const hydrationMessages = i18n.t('notifications:hydration', { returnObjects: true }) as Array<{ title: string; body: string }>;
+        // U-FIX-12: dot-path (no `notifications:` namespace registered)
+        const hydrationMessages = i18n.t('notifications.hydration', { returnObjects: true }) as Array<{ title: string; body: string }>;
         const msg = Array.isArray(hydrationMessages) && hydrationMessages.length > 0
             ? hydrationMessages[Math.floor(Math.random() * hydrationMessages.length)]
             : { title: '💧 Hydration reminder', body: 'Drink a glass of water for you and baby! 👶' };

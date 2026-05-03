@@ -22,18 +22,27 @@ describe('Validation Utils', () => {
     });
 
     describe('validatePassword', () => {
-        it('should return valid for passwords >= 6 chars', () => {
-            expect(validatePassword('123456').valid).toBe(true);
-            expect(validatePassword('password').valid).toBe(true);
+        // Policy: min 8 chars, max 100, at least 1 digit
+        it('should return valid for passwords >= 8 chars containing a digit', () => {
+            expect(validatePassword('password1').valid).toBe(true);
+            expect(validatePassword('Abcdefg9').valid).toBe(true);
         });
 
-        it('should return invalid for passwords < 6 chars', () => {
-            expect(validatePassword('12345').valid).toBe(false);
+        it('should return invalid for passwords < 8 chars', () => {
+            expect(validatePassword('1234567').valid).toBe(false);
             expect(validatePassword('').valid).toBe(false);
         });
 
-        it('should return correct error message', () => {
+        it('should return invalid for passwords without any digit', () => {
+            expect(validatePassword('password').valid).toBe(false);
+        });
+
+        it('should return correct error message for too-short passwords', () => {
             expect(validatePassword('123').error).toBe("errors.passwordLength");
+        });
+
+        it('should return correct error message for missing-digit passwords', () => {
+            expect(validatePassword('password').error).toBe("errors.passwordComplexity");
         });
     });
 

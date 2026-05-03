@@ -87,51 +87,51 @@ export const CalendarScreen = () => {
         }
     }, [user?.pregnancyStartDate]);
 
-    // Load initial data
-    useEffect(() => {
-        const loadData = async () => {
-            // FIX: Stop loading if data is missing
-            if (!user?.pregnancyStartDate) {
-                log.warn('Missing pregnancyStartDate, stopping load');
+    // P3.3 FIX: Extract loadData as useCallback so the retry button can re-trigger it
+    // (was previously closure-only inside useEffect — retry only flipped loading=true).
+    const loadData = useCallback(async () => {
+        if (!user?.pregnancyStartDate) {
+            log.warn('Missing pregnancyStartDate, stopping load');
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        try {
+            const effectiveUid = user?.uid;
+
+            if (!effectiveUid) {
+                log.warn('[CalendarScreen] No user UID available, skipping load');
                 setLoading(false);
                 return;
             }
 
-            setLoading(true);
-            setError(null);
-            try {
-                // FIX: Use user.uid from AuthContext (restored from AsyncStorage)
-                const effectiveUid = user?.uid;
+            log.info(`Loading calendar data for user: ${effectiveUid ? 'found' : 'missing'} (week ${user?.currentWeek})`);
 
-                if (!effectiveUid) {
-                    log.warn('[CalendarScreen] No user UID available, skipping load');
-                    setLoading(false);
-                    return;
-                }
+            const [templates, uEvents] = await Promise.all([
+                loadCalendarTemplates(),
+                // Only load user events if authenticated (not guest)
+                (!user.isGuest && effectiveUid) ? loadUserEvents(effectiveUid) : Promise.resolve([])
+            ]);
 
-                log.info(`Loading calendar data for user: ${effectiveUid ? 'found' : 'missing'} (week ${user?.currentWeek})`);
+            log.info(`Loaded ${templates.length} templates and ${uEvents.length} user events`);
 
-                const [templates, uEvents] = await Promise.all([
-                    loadCalendarTemplates(),
-                    // Only load user events if authenticated (not guest)
-                    (!user.isGuest && effectiveUid) ? loadUserEvents(effectiveUid) : Promise.resolve([])
-                ]);
+            const generatedEvents = generateAllEvents(templates, new Date(user.pregnancyStartDate));
+            setAllTemplateEvents(generatedEvents);
+            setUserEvents(uEvents);
+        } catch (err) {
+            log.error('Error loading calendar data:', err);
+            setError(t('common.errorLoadingData'));
+        } finally {
+            setLoading(false);
+        }
+    }, [user?.pregnancyStartDate, user?.uid, user?.isGuest, user?.currentWeek, t]);
 
-                log.info(`Loaded ${templates.length} templates and ${uEvents.length} user events`);
-
-                const generatedEvents = generateAllEvents(templates, new Date(user.pregnancyStartDate));
-                setAllTemplateEvents(generatedEvents);
-                setUserEvents(uEvents);
-            } catch (err) {
-                log.error('Error loading calendar data:', err);
-                setError(t('common.errorLoadingData'));
-            } finally {
-                setLoading(false);
-            }
-        };
-
+    // Load initial data + reload when deps change
+    useEffect(() => {
         loadData();
-    }, [user?.pregnancyStartDate, user?.uid]);
+    }, [loadData]);
 
     // Refresh user events when screen focuses
     useEffect(() => {
@@ -423,6 +423,10 @@ export const CalendarScreen = () => {
                 ]}
                 onPress={() => setSelectedDate(day)}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={format(day, 'EEEE d MMMM yyyy', { locale: dateLocale })}
+                accessibilityState={{ selected: isSelected }}
+                accessibilityHint={userEventCount > 0 ? t('calendar.suggestionsCount', { count: userEventCount }) : undefined}
             >
                 <Text
                     style={[
@@ -451,7 +455,7 @@ export const CalendarScreen = () => {
 
         return (
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.accent, '#880E4F']}
+                colors={[theme.colors.primary, theme.colors.accent, theme.colors.deepPink]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -463,7 +467,7 @@ export const CalendarScreen = () => {
                         accessibilityLabel={t('a11y.previousWeek')}
                         accessibilityRole="button"
                     >
-                        <Ionicons name={prevIcon as any} size={24} color="#FFF" />
+                        <Ionicons name={prevIcon as any} size={24} color={theme.colors.white} />
                     </TouchableOpacity>
 
                     <View style={styles.headerTitleContainer}>
@@ -479,7 +483,7 @@ export const CalendarScreen = () => {
                         accessibilityLabel={t('a11y.nextWeek')}
                         accessibilityRole="button"
                     >
-                        <Ionicons name={nextIcon as any} size={24} color="#FFF" />
+                        <Ionicons name={nextIcon as any} size={24} color={theme.colors.white} />
                     </TouchableOpacity>
                 </View>
 
@@ -488,6 +492,9 @@ export const CalendarScreen = () => {
                         <TouchableOpacity
                             style={[styles.selectorButton, calendarView === 'week' && styles.selectorButtonActive]}
                             onPress={() => setCalendarView('week')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('calendar.week')}
+                            accessibilityState={{ selected: calendarView === 'week' }}
                         >
                             <Text style={[styles.selectorText, calendarView === 'week' && styles.selectorTextActive]}>
                                 {t('calendar.week')}
@@ -496,6 +503,9 @@ export const CalendarScreen = () => {
                         <TouchableOpacity
                             style={[styles.selectorButton, calendarView === 'month' && styles.selectorButtonActive]}
                             onPress={() => setCalendarView('month')}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('calendar.month')}
+                            accessibilityState={{ selected: calendarView === 'month' }}
                         >
                             <Text style={[styles.selectorText, calendarView === 'month' && styles.selectorTextActive]}>
                                 {t('calendar.month')}
@@ -507,8 +517,10 @@ export const CalendarScreen = () => {
                         style={styles.suggestionBadge}
                         onPress={() => setShowSuggestions(prev => !prev)}
                         accessibilityRole="button"
+                        accessibilityLabel={t('calendar.suggestions')}
+                        accessibilityState={{ expanded: showSuggestions }}
                     >
-                        <Ionicons name="bulb" size={16} color="#FFF" style={{ marginEnd: 4 }} />
+                        <Ionicons name="bulb" size={16} color={theme.colors.white} style={{ marginEnd: 4 }} />
                         <Text style={styles.suggestionText}>
                             {calendarView === 'month'
                                 ? (suggestionsThisMonthCount > 0 ? t('calendar.suggestionsCount', { count: suggestionsThisMonthCount }) : t('calendar.suggestions'))
@@ -528,6 +540,7 @@ export const CalendarScreen = () => {
                         }
                     }}
                     accessibilityRole="button"
+                    accessibilityLabel={t('calendar.today')}
                 >
                     <Text style={styles.todayButtonText}>{t('calendar.today')}</Text>
                 </TouchableOpacity>
@@ -565,10 +578,9 @@ export const CalendarScreen = () => {
                 <Text style={styles.loadingText}>{error}</Text>
                 <TouchableOpacity
                     style={{ marginTop: 16, padding: 14, backgroundColor: theme.colors.primary, borderRadius: theme.borderRadius.m }}
-                    onPress={() => {
-                        setError(null);
-                        setLoading(true);
-                    }}
+                    onPress={() => loadData()}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.retry')}
                 >
                     <Text style={{ color: theme.colors.white, fontWeight: '600' }}>{t('common.retry')}</Text>
                 </TouchableOpacity>
@@ -624,7 +636,11 @@ export const CalendarScreen = () => {
                                             <Text style={styles.suggestionsSectionTitle}>
                                                 💡 {calendarView === 'week' ? t('calendar.suggestionsForWeek') : t('calendar.suggestionsForMonth')}
                                             </Text>
-                                            <TouchableOpacity onPress={() => setShowSuggestions(false)}>
+                                            <TouchableOpacity
+                                                onPress={() => setShowSuggestions(false)}
+                                                accessibilityRole="button"
+                                                accessibilityLabel={t('a11y.close')}
+                                            >
                                                 <Text style={styles.suggestionsSectionClose}>✕</Text>
                                             </TouchableOpacity>
                                         </View>
@@ -661,6 +677,9 @@ export const CalendarScreen = () => {
                             <TouchableOpacity
                                 style={[styles.todayButton, { marginTop: 16, backgroundColor: theme.colors.primary, paddingHorizontal: 24 }]}
                                 onPress={() => navigation.navigate('AddAppointment', { selectedDate: selectedDate.toISOString() })}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('a11y.addAppointment')}
+                                accessibilityHint={t('a11y.addAppointmentHint')}
                             >
                                 <Text style={[styles.todayButtonText, { fontSize: 14 }]}>{t('calendar.addAppointment')}</Text>
                             </TouchableOpacity>
@@ -672,6 +691,9 @@ export const CalendarScreen = () => {
             <TouchableOpacity
                 style={styles.fab}
                 onPress={() => navigation.navigate('AddAppointment', { selectedDate: selectedDate.toISOString() })}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.addAppointment')}
+                accessibilityHint={t('a11y.addAppointmentHint')}
             >
                 <LinearGradient
                     colors={[theme.colors.primary, theme.colors.accent]}
@@ -704,7 +726,7 @@ const styles = StyleSheet.create({
         paddingTop: 60,
         paddingBottom: 20,
         paddingHorizontal: 16,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,
@@ -735,13 +757,13 @@ const styles = StyleSheet.create({
     },
     weekText: {
         fontSize: 13,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         fontWeight: '600',
         marginTop: 4,
     },
     rdvInfoText: {
         fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.95)',
+        color: theme.colors.whiteAlpha95,
         fontWeight: '500',
         textAlign: 'center',
         marginBottom: 4,
@@ -764,7 +786,7 @@ const styles = StyleSheet.create({
         paddingBottom: 12,
     },
     rdvCountBadge: {
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: theme.colors.whiteAlpha30,
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: theme.borderRadius.m,
@@ -779,16 +801,16 @@ const styles = StyleSheet.create({
     },
     rdvCountLabel: {
         fontSize: 11,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         fontWeight: '500',
     },
     weekBadge: {
-        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        backgroundColor: theme.colors.whiteAlpha25,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: theme.borderRadius.xl,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.4)',
+        borderColor: theme.colors.whiteAlpha40,
     },
     weekBadgeText: {
         color: theme.colors.white,
@@ -796,7 +818,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     suggestionsButton: {
-        backgroundColor: 'rgba(255, 193, 7, 0.9)',
+        backgroundColor: theme.colors.amber500Alpha90,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: theme.borderRadius.xl,
@@ -807,13 +829,13 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     suggestionsSection: {
-        backgroundColor: '#FFF8E1',
+        backgroundColor: theme.colors.surfaceAmberTint,
         marginHorizontal: 16,
         marginVertical: 8,
         borderRadius: theme.borderRadius.m,
         padding: 12,
         borderWidth: 1,
-        borderColor: '#FFE082',
+        borderColor: theme.colors.amberBorder,
     },
     suggestionsSectionHeader: {
         flexDirection: 'row',
@@ -824,7 +846,7 @@ const styles = StyleSheet.create({
     suggestionsSectionTitle: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
     },
     suggestionsSectionClose: {
         fontSize: 18,
@@ -847,7 +869,7 @@ const styles = StyleSheet.create({
         right: 0,
         paddingVertical: 4,
         paddingHorizontal: 8,
-        backgroundColor: 'rgba(255, 193, 7, 0.85)',
+        backgroundColor: theme.colors.amber500Alpha85,
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         alignItems: 'center',
@@ -855,7 +877,7 @@ const styles = StyleSheet.create({
     scrollIndicatorText: {
         fontSize: 9,
         fontWeight: '600',
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         textAlign: 'center',
     },
     suggestionItem: {
@@ -863,8 +885,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: theme.borderRadius.s,
         marginBottom: 6,
-        borderLeftWidth: 3,
-        borderLeftColor: '#FFC107',
+        borderStartWidth: 3,
+        borderStartColor: theme.colors.accentAmber,
     },
     suggestionItemTitle: {
         fontSize: 13,
@@ -878,17 +900,17 @@ const styles = StyleSheet.create({
     },
     suggestionItemDate: {
         fontSize: 10,
-        color: '#999',
+        color: theme.colors.neutral400,
         marginTop: 4,
         fontStyle: 'italic',
     },
     todayButton: {
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: theme.colors.whiteAlpha30,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: theme.borderRadius.xl,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.5)',
+        borderColor: theme.colors.whiteAlpha50,
     },
     todayButtonText: {
         color: theme.colors.white,
@@ -897,7 +919,7 @@ const styles = StyleSheet.create({
     },
     viewToggleContainer: {
         flexDirection: 'row',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         borderRadius: theme.borderRadius.xl,
         padding: 2,
     },
@@ -912,7 +934,7 @@ const styles = StyleSheet.create({
     viewToggleText: {
         fontSize: 12,
         fontWeight: '600',
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
     },
     viewToggleTextActive: {
         color: theme.colors.accent,
@@ -924,7 +946,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         padding: 16,
         borderRadius: theme.borderRadius.l,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
@@ -959,7 +981,7 @@ const styles = StyleSheet.create({
         marginVertical: 12,
         borderRadius: theme.borderRadius.l,
         padding: 12,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
@@ -994,10 +1016,10 @@ const styles = StyleSheet.create({
     monthDaySelected: {
         borderWidth: 2,
         borderColor: theme.colors.primary,
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
     },
     monthDayToday: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
     },
     monthDayText: {
         fontSize: 14,
@@ -1013,7 +1035,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     monthDayTextDisabled: {
-        color: '#CCCCCC',
+        color: theme.colors.neutral300,
     },
     monthDayEmpty: {
         width: '14.28%',
@@ -1117,7 +1139,7 @@ const styles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        ...getShadowStyle(8, '#000', 0.3, 8, { width: 0, height: 4 }),
+        ...getShadowStyle(8, theme.colors.black, 0.3, 8, { width: 0, height: 4 }),
     },
     fabGradient: {
         width: 56,
@@ -1148,7 +1170,7 @@ const styles = StyleSheet.create({
     },
     headerSubtitle: {
         fontSize: 12,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
         marginTop: 2,
     },
     viewSelector: {
@@ -1159,7 +1181,7 @@ const styles = StyleSheet.create({
     },
     selectorGroup: {
         flexDirection: 'row',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: theme.colors.whiteAlpha20,
         borderRadius: theme.borderRadius.xl,
         padding: 2,
     },
@@ -1174,7 +1196,7 @@ const styles = StyleSheet.create({
     selectorText: {
         fontSize: 12,
         fontWeight: '600',
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: theme.colors.whiteAlpha90,
     },
     selectorTextActive: {
         color: theme.colors.accent,
@@ -1182,7 +1204,7 @@ const styles = StyleSheet.create({
     suggestionBadge: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 193, 7, 0.9)',
+        backgroundColor: theme.colors.amber500Alpha90,
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: theme.borderRadius.l,

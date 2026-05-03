@@ -78,6 +78,9 @@
     "deleteAccountError": "حدث خطأ أثناء حذف الحساب.",
     "height": "الطول (سم)",
     "prePregnancyWeight": "الوزن قبل الحمل (كغ)",
+    "heightPlaceholder": "مثال: 165",
+    "weightPlaceholderShort": "مثال: 60",
+    "deleteContactConfirm": "هذا الإجراء لا يمكن التراجع عنه.",
     "physicalData": "البيانات الجسدية",
     "errorInvalidDate": "تاريخ بداية الحمل يبدو غير صحيح. يرجى التحقق والمحاولة مجدداً."
 }

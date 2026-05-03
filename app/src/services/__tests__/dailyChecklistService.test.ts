@@ -6,6 +6,7 @@
 
 import { generateDailyChecklist } from '../dailyChecklistService';
 import { UserEvent } from '../../types';
+import { format } from 'date-fns';
 
 // Mock the remindersV2Service
 // Mock the remindersV2Service
@@ -91,7 +92,10 @@ describe('generateDailyChecklist', () => {
     });
 
     test('should include today appointments', async () => {
-        const today = new Date().toISOString().split('T')[0];
+        // FIX: Use LOCAL date (date-fns format) instead of UTC (toISOString) to align
+        // with the service which uses format(today, 'yyyy-MM-dd') in LOCAL time.
+        // Previous code broke between local midnight and UTC midnight.
+        const today = format(new Date(), 'yyyy-MM-dd');
         const todayEvent = createTestEvent({
             event_id: 'apt-1',
             title: 'RDV médecin',
@@ -105,7 +109,8 @@ describe('generateDailyChecklist', () => {
     });
 
     test('should not include appointments from other days', async () => {
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        // FIX: same as above — use LOCAL date for parity with service.
+        const yesterday = format(new Date(Date.now() - 86400000), 'yyyy-MM-dd');
         const yesterdayEvent = createTestEvent({
             event_id: 'apt-old',
             title: 'Ancien RDV',

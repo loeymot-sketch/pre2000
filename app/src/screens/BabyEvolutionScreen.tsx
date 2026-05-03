@@ -22,9 +22,10 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useIsFocused } from '@react-navigation/native';
-import { getAllBabyGrowthData, BabyGrowthMonth } from '../config/babyGrowthData';
+import { getAllBabyGrowthData, getBabyGrowthForWeek, BabyGrowthMonth } from '../config/babyGrowthData';
 import { usePregnancy } from '../context/PregnancyContext';
 import { theme } from '../theme';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
 
 const { width } = Dimensions.get('window');
@@ -39,8 +40,11 @@ export const BabyEvolutionScreen = () => {
     const isRTL = ['ar', 'tn'].includes(i18n.language);
 
 
-    // Calculate current month from week
-    const currentMonth = Math.min(9, Math.ceil(currentWeek / 4.4));
+    // F7 FIX: Calculate current month using the SAME logic as `getBabyGrowthForWeek`
+    // (which uses real weekStart/weekEnd bounds). Previous formula `Math.ceil(currentWeek / 4.4)`
+    // was approximate and shifted by ±1 month around boundaries (e.g. week 13 fell in month 4
+    // instead of month 3). This ensures the highlighted card always matches the data.
+    const currentMonth = getBabyGrowthForWeek(currentWeek).month;
 
     const allMonths = getAllBabyGrowthData();
     const scrollViewRef = useRef<ScrollView>(null);
@@ -70,7 +74,7 @@ export const BabyEvolutionScreen = () => {
         return (
             <View key={monthData.month} style={styles.cardWrapper}>
                 <LinearGradient
-                    colors={isCurrentMonth ? ['#FFE5EC', '#FFF0F5'] : ['#F8F9FA', '#FFFFFF']}
+                    colors={isCurrentMonth ? [theme.colors.surfaceBlush, theme.colors.lavenderBlush] : [theme.colors.surface, theme.colors.white]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={[styles.card, isCurrentMonth && styles.currentCard]}
@@ -94,7 +98,9 @@ export const BabyEvolutionScreen = () => {
                             source={monthData.image}
                             style={styles.babyImage}
                             resizeMode="contain"
-                            accessibilityLabel={t('babyEvolution.developmentOfMonth', { month: monthData.month })}
+                            accessible
+                            accessibilityRole="image"
+                            accessibilityLabel={t('a11y.babyIllustrationMonth', { month: monthData.month })}
                         />
                     </View>
 
@@ -138,10 +144,13 @@ export const BabyEvolutionScreen = () => {
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={styles.backButton}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('a11y.back')}
                 >
-                    <Text style={styles.backText}>
-                        {isRTL ? `${t('common.back')} →` : `← ${t('common.back')}`}
-                    </Text>
+                    <View style={styles.backRow}>
+                        <RtlAwareChevron direction="back" variant="arrow" size={18} color={theme.colors.primary} />
+                        <Text style={styles.backText}>{t('common.back')}</Text>
+                    </View>
                 </TouchableOpacity>
                 <Text style={styles.title}>{t('home.babyEvolution')}</Text>
                 <View style={styles.placeholder} />
@@ -194,7 +203,7 @@ export const BabyEvolutionScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF5F7',
+        backgroundColor: theme.colors.background,
     },
     header: {
         flexDirection: 'row',
@@ -206,6 +215,11 @@ const styles = StyleSheet.create({
     backButton: {
         padding: 8,
     },
+    backRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
     backText: {
         fontSize: 16,
         color: theme.colors.accent,
@@ -214,7 +228,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.text,
     },
     placeholder: {
         width: 60,
@@ -236,7 +250,7 @@ const styles = StyleSheet.create({
         transform: [{ scale: 1.3 }],
     },
     progressDotPassed: {
-        backgroundColor: '#F48FB1',
+        backgroundColor: theme.colors.pink200,
     },
     monthLabel: {
         textAlign: 'center',
@@ -256,7 +270,7 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: 24,
         padding: 20,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 12,
@@ -273,7 +287,7 @@ const styles = StyleSheet.create({
     monthNumber: {
         fontSize: 24,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     weekRange: {
         fontSize: 14,
@@ -320,7 +334,7 @@ const styles = StyleSheet.create({
     comparisonItem: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     comparisonSize: {
         fontSize: 14,
@@ -332,7 +346,7 @@ const styles = StyleSheet.create({
     factsTitle: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
     },
     factRow: {
@@ -355,14 +369,14 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     highlightChip: {
-        backgroundColor: '#F3E5F5',
+        backgroundColor: theme.colors.surfacePurpleTint,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 12,
     },
     highlightText: {
         fontSize: 12,
-        color: '#7B1FA2',
+        color: theme.colors.purple700,
     },
     bottomInfo: {
         padding: 16,
@@ -370,7 +384,7 @@ const styles = StyleSheet.create({
     },
     bottomText: {
         fontSize: 13,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontStyle: 'italic',
     },
 });

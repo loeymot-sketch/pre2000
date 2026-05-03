@@ -112,5 +112,12 @@
         "t3": "3e trimestre : Rétention d'eau fréquente. Reposez-vous et hydratez-vous ! 💧"
     },
     "errorReset": "Impossible de réinitialiser les données.",
-    "weekShort": "S"
+    "weekShort": "S",
+    "bmi": "IMC",
+    "bmiCategory": {
+        "underweight": "Insuffisance pondérale",
+        "normal": "Poids normal",
+        "overweight": "Surpoids",
+        "obese": "Obésité"
+    }
 }

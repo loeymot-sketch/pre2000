@@ -38,5 +38,54 @@
     "symptomHeadache": "Maux de tête",
     "symptomSwelling": "Œdèmes",
     "symptomInsomnia": "Insomnie",
-    "noSymptomsToday": "Aucun symptôme signalé aujourd'hui ✨"
+    "noSymptomsToday": "Aucun symptôme signalé aujourd'hui ✨",
+    "disclaimer": "⚠️ Ces informations sont indicatives et ne remplacent pas un avis médical. En cas de doute, contactez votre professionnel de santé.",
+    "kg": "kg",
+    "mmolL": "mmol/L",
+    "mmHg": "mmHg",
+    "alerts": {
+        "proceed": "Sauvegarder quand même",
+        "cancel": "Annuler",
+        "callEmergency": "Appeler les urgences",
+        "glucoseLow": {
+            "title": "Glycémie basse",
+            "message": "Glycémie basse détectée. Si vous vous sentez mal, prenez du sucre rapide (jus, miel) et contactez votre professionnel de santé."
+        },
+        "glucoseSurveillance": {
+            "title": "Glycémie à surveiller",
+            "message": "Cette valeur est légèrement au-dessus de la normale. Notez-la et mentionnez-la lors de votre prochain rendez-vous."
+        },
+        "glucoseHigh": {
+            "title": "Glycémie élevée",
+            "message": "Glycémie élevée. Mentionnez-le à votre professionnel de santé sans tarder."
+        },
+        "glucoseVeryHigh": {
+            "title": "Glycémie très élevée",
+            "message": "Glycémie très élevée. Contactez votre professionnel de santé rapidement."
+        },
+        "bpPreHyp": {
+            "title": "Tension à surveiller",
+            "message": "Votre tension est légèrement au-dessus de la normale. Notez-la et mentionnez-la lors de votre prochain rendez-vous."
+        },
+        "bpHigh": {
+            "title": "Tension élevée",
+            "message": "Tension élevée. Mentionnez-le à votre professionnel de santé lors de votre prochain rendez-vous."
+        },
+        "bpSevere": {
+            "title": "Tension très élevée",
+            "message": "Tension très élevée. Contactez votre professionnel de santé sans attendre — risque de pré-éclampsie."
+        },
+        "bpLow": {
+            "title": "Tension basse",
+            "message": "Tension basse. Reposez-vous, hydratez-vous, et mentionnez-le à votre médecin si cela persiste."
+        },
+        "weightLossRapid": {
+            "title": "Perte de poids importante",
+            "message": "Perte de poids importante détectée. Contactez votre médecin si vous ne mangez pas bien ou avez des nausées sévères."
+        },
+        "weightVariation": {
+            "title": "Variation de poids importante",
+            "message": "La variation par rapport à votre dernière saisie est importante. Vérifiez la valeur avant de l'enregistrer."
+        }
+    }
 }

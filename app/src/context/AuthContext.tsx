@@ -1,4 +1,4 @@
-import { createLogger } from '../utils/logger';
+import { createLogger, logger } from '../utils/logger';
 const log = createLogger('AuthContext');
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
@@ -14,12 +14,39 @@ import { doc, setDoc, getDoc, deleteDoc, collection, getDocs, writeBatch, query,
 import { db, auth } from '../config/firebase';
 import { UserProfile } from '../types';
 import { calculateCurrentWeek } from '../utils/pregnancyCalculator';
+import { calculateFertileWindow } from '../utils/fertility';
 import { migrateAllGuestDataToAuth } from '../services/reminderPersistence';
 import { clearContentCache } from '../services/contentService';
 import { cancelAllNotifications } from '../services/notificationService';
 
 // NEW-01 & NEW-02 FIX: Single source of truth for ALL private local data keys.
 // Any key added here is automatically purged on logout, resetProfile, and deleteAccount.
+//
+// U-FIX-11: Some services use dynamic key suffixes (e.g. `@weight_entries_${userId}`,
+// `reminders_v2_completions_${userId}`, `@daily_checklist_v2_${date}`). These cannot be
+// listed statically. They are purged via `purgeDynamicPrivateKeys()` below which scans
+// `AsyncStorage.getAllKeys()` for known prefixes.
+const PRIVATE_STORAGE_KEY_PREFIXES = [
+    '@weight_entries_',                  // weightService — guest weight history per uid
+    'reminders_v2_completions_',         // remindersV2Service — per-user streak data
+    '@daily_checklist_v2_',              // dailyChecklistService — per-day progress
+] as const;
+
+const purgeDynamicPrivateKeys = async () => {
+    try {
+        const all = await AsyncStorage.getAllKeys();
+        const toRemove = all.filter(k =>
+            PRIVATE_STORAGE_KEY_PREFIXES.some(prefix => k.startsWith(prefix))
+        );
+        if (toRemove.length > 0) {
+            await AsyncStorage.multiRemove(toRemove);
+            log.debug(`[AuthContext] 🧹 Purged ${toRemove.length} dynamic private keys`);
+        }
+    } catch (e) {
+        log.warn('[AuthContext] Failed to purge dynamic private keys:', e);
+    }
+};
+
 const PRIVATE_STORAGE_KEYS = [
     'user_profile',
     'guestProfile',
@@ -37,7 +64,15 @@ const PRIVATE_STORAGE_KEYS = [
     'in_app_review_actions_count',       // STORAGE-FIX: Review trigger count
     'in_app_review_last_prompt',         // STORAGE-FIX: Last review prompt date
     'in_app_review_install_date',        // STORAGE-FIX: App install date for review
+    'hydration_data_v1',                 // STORAGE-FIX: Hydration tracking (preferences + daily intake)
+    'ttcProfile',                        // TTC-FIX: standalone TTC snapshot (lastPeriodDate, cycleLength, fertile window)
 ] as const;
+
+// Re-export pure helper extracted to ./loginHelpers so it can be unit-tested
+// without loading AuthContext.tsx (whose JSX trips ts-jest under module:"preserve").
+import { resolveLoginProfile } from './loginHelpers';
+export { resolveLoginProfile } from './loginHelpers';
+export type { ResolvedLoginProfile } from './loginHelpers';
 
 interface AuthContextType {
     user: UserProfile | null;
@@ -53,10 +88,20 @@ interface AuthContextType {
         city?: string,
         ageRange?: string,
         isFirstPregnancy?: boolean,
-        authenticatedUser?: FirebaseUser  // NEW: Pass the firebase user directly
+        authenticatedUser?: FirebaseUser,  // NEW: Pass the firebase user directly
+        // TTC-FIX: opt-in TTC mode. When isTTC === true, currentWeek is forced to 0
+        // and the date passed in `pregnancyStartDate` is interpreted as the user's
+        // last period date (LMP-equivalent for cycle tracking, NOT for pregnancy week).
+        ttcOptions?: { isTTC: true; cycleLength: number },
     ) => Promise<void>;
     logout: () => Promise<void>;
-    updateProfile: (data: Partial<UserProfile>) => Promise<void>;
+    // MA6-FIX: updateProfile now reports success/failure explicitly so callers
+    // can surface a warning when cloud sync fails. Local AsyncStorage write is
+    // attempted first; the function never throws (preserves the historical
+    // non-disruptive behavior of profile saves).
+    updateProfile: (
+        data: Partial<UserProfile>,
+    ) => Promise<{ ok: true } | { ok: false, error: string }>;
     setLocale: (locale: string) => Promise<void>;
     resetProfile: () => Promise<void>;
     deleteAccount: () => Promise<void>;
@@ -89,6 +134,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 2. Listen to Firebase auth state (source of truth)
         const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
             setFirebaseUser(fbUser);
+            // Tag (or clear) the Sentry user as soon as Firebase resolves the
+            // session so any crash that happens during cold-start bootstrap
+            // is already attached to the right account.
+            logger.setUser(fbUser ? fbUser.uid : null);
             if (fbUser) {
                 // Load profile from Firestore for authenticated users
                 try {
@@ -118,6 +167,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                         setUser(profile);
                         await AsyncStorage.setItem('user_profile', JSON.stringify(profile));
+                    } else {
+                        // R4 FIX: parité avec login() — si une session Firebase existe
+                        // mais que le doc Firestore est absent (compte orphelin, race
+                        // pendant signup, suppression manuelle), on synthétise le
+                        // profil minimal via resolveLoginProfile pour que MainTabs
+                        // puisse se monter. Sans ça, l'utilisateur reste coincé sur
+                        // AuthStack au cold start malgré une session valide.
+                        const { profile, isMinimal } = resolveLoginProfile(docSnap, fbUser);
+                        setUser(profile);
+                        await AsyncStorage.setItem('user_profile', JSON.stringify(profile));
+                        if (isMinimal) {
+                            log.warn('[AuthContext] ⚠️ Cold-start: Firestore profile missing — bootstrapped minimal profile');
+                            // Note: guest data migration is intentionally NOT triggered here
+                            // (parité avec login(): migration ne tourne que pour profil non-minimal).
+                        }
                     }
                 } catch (error) {
                     log.error('Failed to load user profile:', error);
@@ -149,20 +213,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             setFirebaseUser(userCredential.user);
+            logger.setUser(userCredential.user.uid);
             log.debug('[AuthContext] ✅ User logged in:', userCredential.user.uid);
 
-            // Load profile
+            // Load profile (BUG FIX: Firestore docs don't carry their own id; F4 FIX:
+            // missing doc → minimal placeholder so MainTabs renders. Both branches
+            // funneled through `resolveLoginProfile` for unit-testability.)
             const docSnap = await getDoc(doc(db, 'userProfiles', userCredential.user.uid));
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                // BUG FIX: Firestore docs don't store their own ID — must inject uid from Auth
-                const profile = {
-                    ...data,
-                    uid: userCredential.user.uid,
-                    pregnancyStartDate: data.pregnancyStartDate || data.lmp,
-                } as UserProfile;
-                setUser(profile);
-                await AsyncStorage.setItem('user_profile', JSON.stringify(profile));
+            const { profile, isMinimal } = resolveLoginProfile(docSnap, userCredential.user);
+            setUser(profile);
+            await AsyncStorage.setItem('user_profile', JSON.stringify(profile));
+
+            if (!isMinimal) {
                 log.debug('[AuthContext] ✅ User profile loaded from Firestore');
 
                 // P1 FIX: Auto-migrate any guest data (tasks, reminders) to Firestore
@@ -173,7 +235,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     log.warn('[AuthContext] ⚠️ Guest data migration failed (non-blocking):', migrationError);
                 }
             } else {
-                log.warn('[AuthContext] ⚠️ User profile not found in Firestore');
+                log.warn('[AuthContext] ⚠️ User profile not found in Firestore — bootstrapping minimal profile');
             }
         } catch (error) {
             log.error('[AuthContext] ❌ Login error:', error);
@@ -189,12 +251,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         city?: string,
         ageRange?: string,
         isFirstPregnancy?: boolean,
-        authenticatedUser?: FirebaseUser  // NEW: Pass the firebase user directly (fixes timing issue)
+        authenticatedUser?: FirebaseUser,  // NEW: Pass the firebase user directly (fixes timing issue)
+        ttcOptions?: { isTTC: true; cycleLength: number },
     ) => {
         // Use passed authenticatedUser OR the state firebaseUser
         const effectiveUser = authenticatedUser || firebaseUser;
         const isAuthenticated = !!effectiveUser;
         const uid = effectiveUser?.uid || 'guest_' + Date.now();
+        const isTTC = ttcOptions?.isTTC === true;
 
         log.debug('[AuthContext] 👤 Creating profile:', {
             firstName,
@@ -204,11 +268,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isAuthenticated,
             uid,
             hasAuthenticatedUser: !!authenticatedUser,
-            hasFirebaseUser: !!firebaseUser
+            hasFirebaseUser: !!firebaseUser,
+            isTTC,
         });
 
-        const currentWeek = calculateCurrentWeek(pregnancyStartDate);
+        // TTC-FIX: do NOT compute a pregnancy week for TTC users — they are not
+        // pregnant. The date stored in `pregnancyStartDate` is the cycle start
+        // (last period date). currentWeek is forced to 0 to defuse any UI that
+        // reads it without checking isTTC.
+        const currentWeek = isTTC ? 0 : calculateCurrentWeek(pregnancyStartDate);
         log.debug('[AuthContext] 📅 Calculated current week:', currentWeek);
+
+        // TTC-FIX: precompute fertility window so consumers can read it without
+        // re-deriving from cycleLength + LMP.
+        let ttcFields: Pick<
+            UserProfile,
+            'isTTC' | 'cycleLength' | 'ovulationDate' | 'fertileWindowStart' | 'fertileWindowEnd'
+        > = {};
+        if (isTTC && ttcOptions) {
+            try {
+                const { ovulationDate, fertileWindowStart, fertileWindowEnd } =
+                    calculateFertileWindow(pregnancyStartDate, ttcOptions.cycleLength);
+                ttcFields = {
+                    isTTC: true,
+                    cycleLength: ttcOptions.cycleLength,
+                    ovulationDate: ovulationDate.toISOString(),
+                    fertileWindowStart: fertileWindowStart.toISOString(),
+                    fertileWindowEnd: fertileWindowEnd.toISOString(),
+                };
+            } catch (e) {
+                log.warn('[AuthContext] ⚠️ TTC fertility window calc failed:', e);
+                ttcFields = { isTTC: true, cycleLength: ttcOptions.cycleLength };
+            }
+        }
 
         const newUser: UserProfile = {
             uid,
@@ -223,6 +315,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             ageRange,
             isFirstPregnancy,
             isGuest: !isAuthenticated,
+            ...ttcFields,
         };
 
         try {
@@ -235,17 +328,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     firstName,
                     lmp: pregnancyStartDate.toISOString(),
                     pregnancyStartDate: pregnancyStartDate.toISOString(), // FIX: Explicitly save pregnancyStartDate
-                    dpa: new Date(pregnancyStartDate.getTime() + 280 * 24 * 60 * 60 * 1000).toISOString(), // 280 days
                     country,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                 };
+
+                // TTC-FIX: only persist DPA when the user is actually pregnant.
+                // For TTC users, "DPA = LMP + 280d" is medically meaningless and
+                // would later be misread as a real due date.
+                if (!isTTC) {
+                    profileData.dpa = new Date(
+                        pregnancyStartDate.getTime() + 280 * 24 * 60 * 60 * 1000,
+                    ).toISOString();
+                }
 
                 // Only add optional fields if they are defined
                 if (lastName !== undefined) profileData.lastName = lastName;
                 if (city !== undefined) profileData.city = city;
                 if (ageRange !== undefined) profileData.ageRange = ageRange;
                 if (isFirstPregnancy !== undefined) profileData.isFirstPregnancy = isFirstPregnancy;
+
+                // TTC-FIX: persist TTC fields (Firestore-safe — only defined keys)
+                if (ttcFields.isTTC) profileData.isTTC = true;
+                if (ttcFields.cycleLength !== undefined) profileData.cycleLength = ttcFields.cycleLength;
+                if (ttcFields.ovulationDate) profileData.ovulationDate = ttcFields.ovulationDate;
+                if (ttcFields.fertileWindowStart) profileData.fertileWindowStart = ttcFields.fertileWindowStart;
+                if (ttcFields.fertileWindowEnd) profileData.fertileWindowEnd = ttcFields.fertileWindowEnd;
 
                 await setDoc(doc(db, 'userProfiles', uid), profileData, { merge: true });
                 log.debug('[AuthContext] ✅ Profile saved to Firestore');
@@ -257,6 +365,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             log.debug('[AuthContext] 📅 LMP saved:', pregnancyStartDate.toISOString());
 
             setUser(newUser);
+
+            // MA8-FIX: après inscription depuis l'onboarding, `register()` ne déclenche pas
+            // `migrateAllGuestDataToAuth` (contrairement à `login()`). Les données guest
+            // (rappels, checklist, etc.) restaient locales alors que l'utilisateur est
+            // désormais authentifié. `loginAsGuest` est le seul point d'entrée pour lier
+            // le profil onboarding à un compte — on migre ici, best-effort et idempotent.
+            if (isAuthenticated) {
+                try {
+                    await migrateAllGuestDataToAuth(uid);
+                    log.info('[AuthContext] ✅ Guest → auth migration after onboarding signup');
+                } catch (migrationError) {
+                    log.warn('[AuthContext] ⚠️ Guest migration failed (non-blocking):', migrationError);
+                }
+            }
         } catch (error) {
             log.error('[AuthContext] ❌ Failed to save profile:', error);
             throw error;
@@ -279,22 +401,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // NEW-01 & NEW-02 FIX: Purge ALL private data (shared constant = no key ever missed)
             await AsyncStorage.multiRemove([...PRIVATE_STORAGE_KEYS]);
+            // U-FIX-11: also purge dynamic-suffix keys (per-uid weights, completions, daily checklist)
+            await purgeDynamicPrivateKeys();
             // Clear in-memory Firestore content cache (articles, supplements)
             clearContentCache();
             log.info('[AuthContext] 🧹 All local data purged on logout');
             setUser(null);
             setFirebaseUser(null);
+            logger.setUser(null);
         } catch (error) {
             log.error('Failed to logout:', error);
         }
     };
 
-    const updateProfile = async (data: Partial<UserProfile>) => {
-        if (!user) return;
+    // MA6-FIX: returns an explicit { ok, error } discriminated union instead of
+    // silently swallowing errors. Callers (ProfileScreen, OnboardingScreen) can
+    // now warn the user when cloud sync fails. Function never throws — local
+    // AsyncStorage state is always updated when possible so the in-memory user
+    // stays consistent even on Firestore write failure.
+    const updateProfile = async (
+        data: Partial<UserProfile>,
+    ): Promise<{ ok: true } | { ok: false, error: string }> => {
+        if (!user) return { ok: false, error: 'No authenticated user' };
         const updatedUser = { ...user, ...data };
+
+        let localOk = false;
         try {
             await AsyncStorage.setItem('user_profile', JSON.stringify(updatedUser));
+            localOk = true;
+        } catch (error: any) {
+            log.error('Failed to persist profile to AsyncStorage:', error);
+        }
 
+        try {
             // Only update Firestore if not a guest and authenticated
             if (!user.isGuest && firebaseUser) {
                 // BUG FIX: Only write safe server fields to Firestore.
@@ -310,8 +449,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             setUser(updatedUser);
-        } catch (error) {
-            log.error('Failed to update profile:', error);
+            return { ok: true };
+        } catch (error: any) {
+            log.error('Failed to update profile (cloud sync):', error);
+            // Still update in-memory state so the UI reflects the user's intent;
+            // the next successful sync attempt will reconcile with the server.
+            if (localOk) setUser(updatedUser);
+            const message =
+                typeof error?.message === 'string' && error.message.length > 0
+                    ? error.message
+                    : 'Cloud sync failed';
+            return { ok: false, error: message };
         }
     };
 
@@ -344,6 +492,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // NEW-01 FIX: Purge ALL private keys including reminder/task data
             await AsyncStorage.multiRemove([...PRIVATE_STORAGE_KEYS]);
+            // U-FIX-11: also purge dynamic-suffix keys (per-uid weights, completions, daily checklist)
+            await purgeDynamicPrivateKeys();
+
+            // U-FIX-8: also clear the in-memory content cache (articles, supplements)
+            // so the next session for a different account doesn't see cached docs.
+            clearContentCache();
 
             // Reset states
             setUser(null);
@@ -364,6 +518,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                 // BUG FIX: App stores data in TOP-LEVEL collections, not subcollections.
                 // These must all be queried by user_id and deleted. GDPR compliance.
+                // INVARIANT: Any collection written by client code MUST appear here AND in firestore.rules.
                 const topLevelCollectionsToDelete = [
                     'userTasks',
                     'userEvents',
@@ -372,6 +527,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     'userTaskStatuses',
                     'weight_entries',       // FIX: Added - used by weightService.ts
                     'reminder_settings_v2', // FIX: Added - used by remindersV2Service.ts
+                    'glucoseMetrics',       // P1.2 FIX: Added - used by healthService.saveGlucoseEntry
+                    'symptomsLog',          // P1.2 FIX: Added - used by healthService.saveSymptomEntry
                 ];
 
                 // 1. Delete Firestore Data (User Profile) - Do this first or alongside collections
@@ -444,10 +601,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                 // 3. Clear Local Storage (use shared constant — no key is missed)
                 await AsyncStorage.multiRemove([...PRIVATE_STORAGE_KEYS]);
+                // U-FIX-11: also purge dynamic-suffix keys
+                await purgeDynamicPrivateKeys();
+
+                // U-FIX-8: also clear in-memory content cache (consistency with logout/reset)
+                clearContentCache();
 
                 // 4. Reset State
                 setUser(null);
                 setFirebaseUser(null);
+                logger.setUser(null);
             }
         } catch (error) {
             log.error('Failed to delete account:', error);

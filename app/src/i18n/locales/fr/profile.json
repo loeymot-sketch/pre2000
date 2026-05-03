@@ -78,6 +78,9 @@
     "deleteAccountError": "Erreur lors de la suppression du compte.",
     "height": "Taille (cm)",
     "prePregnancyWeight": "Poids avant grossesse (kg)",
+    "heightPlaceholder": "ex: 165",
+    "weightPlaceholderShort": "ex: 60",
+    "deleteContactConfirm": "Cette action est irréversible.",
     "physicalData": "Données physiques",
     "errorInvalidDate": "La date de début de grossesse semble incorrecte. Vérifiez et réessayez."
 }

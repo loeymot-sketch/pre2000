@@ -12,6 +12,7 @@ import { analyticsService } from '../services/analyticsService';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { theme } from '../theme';
 import { Button } from '../components/common/Button';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { SuccessMessage } from '../components/common/SuccessMessage';
 import { validateEmail, validatePassword } from '../utils/validation';
@@ -113,7 +114,7 @@ export const LoginScreen = () => {
                         accessibilityRole="button"
                         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                     >
-                        <Text style={styles.backArrow}>{isRTL ? '→' : '←'}</Text>
+                        <RtlAwareChevron direction="back" variant="arrow" size={24} color={theme.colors.textSecondary} />
                     </TouchableOpacity>
 
                     <Text style={[styles.title, isRTL && styles.rtlText]}>{t('loginTitle')}</Text>
@@ -226,10 +227,6 @@ const styles = StyleSheet.create({
     backButtonRTL: {
         left: undefined,
         right: theme.spacing.l,
-    },
-    backArrow: {
-        fontSize: 24,
-        color: theme.colors.textSecondary,
     },
     title: {
         fontSize: 28,

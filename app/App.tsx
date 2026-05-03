@@ -57,7 +57,9 @@ import { DiagnosticScreen } from './src/screens/DiagnosticScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { AddAppointmentScreen } from './src/screens/AddAppointmentScreen';
 import { RemindersScreen } from './src/screens/RemindersScreen';
-import { CompletedTasksScreen } from './src/screens/CompletedTasksScreen'; // V1.2 NEW
+// P4 CLEANUP: CompletedTasksScreen import removed — file exists but no Stack.Screen
+// is registered for it and no navigate() call points to it. Re-import + register
+// in a future Stack when product wires up a "Trash" / "History" entrypoint.
 import { SettingsScreen } from './src/screens/SettingsScreen'; // V1.2 NEW
 import { PrivacyPolicyScreen } from './src/screens/PrivacyPolicyScreen'; // Legal
 import { HealthDashboardScreen } from './src/screens/HealthDashboardScreen';
@@ -198,10 +200,12 @@ const AppContent = () => {
   // Re-run when user logs in/out, when pregnancy week advances, or language changes.
   // NOTIF-03 FIX: Guard against week=0 (guest with no profile) to avoid scheduling
   // 40+ blank notifications for every enable/disable toggle on the Reminders tab.
+  // P2.1 FIX: Pass user.uid so loadUserSettings reads Firestore (auth) instead of
+  // falling back to AsyncStorage guest settings (was a silent regression).
   useEffect(() => {
     const week = pregnancyInfo?.week;
     if (user && week && week > 0) {
-      syncRemindersToNotifications(week, i18n.language);
+      syncRemindersToNotifications(week, i18n.language, user.uid);
     }
   }, [user?.uid, pregnancyInfo?.week, i18n.language]); // user?.uid instead of user object to avoid stale-closure re-runs
 

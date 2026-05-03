@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,7 +34,7 @@ export const WeekInfoSection: React.FC<WeekInfoSectionProps> = ({ weekData }) =>
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitleMain}>⚠️ {t('common.toMonitor')}</Text>
                     <LinearGradient
-                        colors={['#FFF3E0', '#FFECB3']}
+                        colors={[theme.colors.surfaceOrangeTint, theme.colors.amber100]}
                         style={styles.alertCard}
                     >
                         <Text style={styles.alertText}>
@@ -57,30 +58,30 @@ const styles = StyleSheet.create({
     sectionTitleMain: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
         marginStart: 4,
     },
     infoCard: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 16,
         padding: 16,
-        ...getShadowStyle(3, '#000', 0.06, 8, { width: 0, height: 2 }),
+        ...getShadowStyle(3, theme.colors.black, 0.06, 8, { width: 0, height: 2 }),
     },
     infoText: {
         fontSize: 15,
-        color: '#444',
+        color: theme.colors.neutral800,
         lineHeight: 24,
     },
     alertCard: {
         borderRadius: 16,
         padding: 16,
         borderWidth: 1,
-        borderColor: '#FFB74D',
+        borderColor: theme.colors.warning,
     },
     alertText: {
         fontSize: 15,
-        color: '#E65100',
+        color: theme.colors.orange900,
         lineHeight: 24,
     },
 });

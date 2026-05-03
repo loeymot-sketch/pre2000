@@ -153,13 +153,47 @@ export const AddAppointmentScreen = () => {
 
     const isTitleValid = title.trim().length > 0;
 
-    // Check for unsaved changes
-    const hasUnsavedChanges = useMemo(() => {
-        const initialTitle = editingEvent?.title || '';
-        const initialNotes = editingEvent?.notes || editingEvent?.description || '';
+    // PERFECT-FIX-3: snapshot the full initial form state at mount so hasUnsavedChanges
+    // covers title, date, location, type, notes AND reminder toggles
+    // (previously only title + notes were compared → users lost silent edits on back).
+    // For edit mode, reminder baselines are reconciled once getRDVPreference resolves.
+    const initialSnapshotRef = React.useRef({
+        title: editingEvent?.title || '',
+        dateMs: date.getTime(),
+        location: editingEvent?.location || '',
+        type: (editingEvent?.type === 'appointment' ? 'medical' : 'other') as 'medical' | 'other',
+        notes: editingEvent?.notes || editingEvent?.description || '',
+        reminderJ1: editingEvent ? false : true,
+        reminderJ: editingEvent ? false : true,
+        reminderH2: false,
+    });
+    const remindersBaselineCapturedRef = React.useRef(!editingEvent);
 
-        return title.trim() !== initialTitle || notes.trim() !== initialNotes;
-    }, [title, notes, editingEvent]);
+    // Reconcile reminder baseline once edit-mode preferences load
+    useEffect(() => {
+        if (!loadingReminders && !remindersBaselineCapturedRef.current) {
+            initialSnapshotRef.current.reminderJ1 = reminderJ1;
+            initialSnapshotRef.current.reminderJ = reminderJ;
+            initialSnapshotRef.current.reminderH2 = reminderH2;
+            remindersBaselineCapturedRef.current = true;
+        }
+    }, [loadingReminders, reminderJ1, reminderJ, reminderH2]);
+
+    // Check for unsaved changes (extended)
+    const hasUnsavedChanges = useMemo(() => {
+        if (!remindersBaselineCapturedRef.current) return false;
+        const snap = initialSnapshotRef.current;
+        return (
+            title.trim() !== snap.title.trim()
+            || date.getTime() !== snap.dateMs
+            || location.trim() !== snap.location.trim()
+            || type !== snap.type
+            || notes.trim() !== snap.notes.trim()
+            || reminderJ1 !== snap.reminderJ1
+            || reminderJ !== snap.reminderJ
+            || reminderH2 !== snap.reminderH2
+        );
+    }, [title, date, location, type, notes, reminderJ1, reminderJ, reminderH2, loadingReminders]);
 
     // Prevent accidental back navigation if changes exist
     useEffect(() => {
@@ -319,7 +353,10 @@ export const AddAppointmentScreen = () => {
                     location: location.trim() || undefined,
                     notes: notes.trim() || undefined,
                 });
-                eventId = (result as any)?.id || `temp_${Date.now()}`;
+                // U-FIX-3: was `(result as any)?.id` but saveUserEvent returns `event_id`,
+                // so eventId always fell back to `temp_*` — notifications were orphaned from
+                // the real Firestore doc. Now reads the correct field.
+                eventId = result?.event_id || `temp_${Date.now()}`;
                 showToast(t('addAppointment.successAdd'), 'success');
                 // Engagement: Track positive action
                 trackPositiveAction('add_rdv');
@@ -332,10 +369,13 @@ export const AddAppointmentScreen = () => {
                 const hasAnyReminder = reminderJ1 || reminderJ || reminderH2;
                 if (hasAnyReminder && eventId) {
                     log.debug('[AddAppointmentScreen] Scheduling reminders for:', eventId);
+                    // P3.1 FIX: pass user.country so notifications fire in user's timezone
+                    // (was defaulting to Africa/Algiers for everyone — wrong for FR/MA/TN/etc.)
                     await scheduleRDVReminders(eventId, title.trim(), date, {
                         reminderJ1: reminderJ1,
                         reminderJ: reminderJ,
                         reminderH2: reminderH2,
+                        countryCode: user?.country,
                     });
                 } else if (editingEvent?.id) {
                     // If no reminders selected, cancel existing ones
@@ -387,12 +427,18 @@ export const AddAppointmentScreen = () => {
                             <TouchableOpacity
                                 style={[styles.typeButton, type === 'medical' && styles.typeButtonActive]}
                                 onPress={() => setType('medical')}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('addAppointment.typeMedical')}
+                                accessibilityState={{ selected: type === 'medical' }}
                             >
                                 <Text style={[styles.typeText, type === 'medical' && styles.typeTextActive]}>{t('addAppointment.typeMedical')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.typeButton, type === 'other' && styles.typeButtonActive]}
                                 onPress={() => setType('other')}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('addAppointment.typeOther')}
+                                accessibilityState={{ selected: type === 'other' }}
                             >
                                 <Text style={[styles.typeText, type === 'other' && styles.typeTextActive]}>{t('addAppointment.typeOther')}</Text>
                             </TouchableOpacity>
@@ -420,6 +466,10 @@ export const AddAppointmentScreen = () => {
                                         setShowDatePicker(true);
                                         setShowTimePicker(false); // Close other picker
                                     }}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`${t('addAppointment.dateLabel')}: ${format(date, 'dd MMMM yyyy', { locale: dateLocale })}`}
+                                    accessibilityHint={t('a11y.selectDate')}
+                                    accessibilityState={{ expanded: showDatePicker }}
                                 >
                                     <Text style={styles.dateText}>
                                         {format(date, 'dd MMMM yyyy', { locale: dateLocale })}
@@ -447,6 +497,10 @@ export const AddAppointmentScreen = () => {
                                         setShowTimePicker(true);
                                         setShowDatePicker(false); // Close other picker
                                     }}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`${t('addAppointment.timeLabel')}: ${format(date, 'HH:mm')}`}
+                                    accessibilityHint={t('a11y.selectTime')}
+                                    accessibilityState={{ expanded: showTimePicker }}
                                 >
                                     <Text style={styles.dateText}>
                                         {format(date, 'HH:mm')}
@@ -522,8 +576,8 @@ export const AddAppointmentScreen = () => {
                             <Switch
                                 value={reminderJ1}
                                 onValueChange={setReminderJ1}
-                                trackColor={{ false: theme.colors.disabled, true: '#FF6B9D50' }}
-                                thumbColor={reminderJ1 ? '#FF6B9D' : '#999'}
+                                trackColor={{ false: theme.colors.disabled, true: theme.colors.primarySoft }}
+                                thumbColor={reminderJ1 ? theme.colors.primary : theme.colors.neutral400}
                             />
                         </View>
 
@@ -536,8 +590,8 @@ export const AddAppointmentScreen = () => {
                             <Switch
                                 value={reminderJ}
                                 onValueChange={setReminderJ}
-                                trackColor={{ false: theme.colors.disabled, true: '#FF6B9D50' }}
-                                thumbColor={reminderJ ? '#FF6B9D' : '#999'}
+                                trackColor={{ false: theme.colors.disabled, true: theme.colors.primarySoft }}
+                                thumbColor={reminderJ ? theme.colors.primary : theme.colors.neutral400}
                             />
                         </View>
 
@@ -550,8 +604,8 @@ export const AddAppointmentScreen = () => {
                             <Switch
                                 value={reminderH2}
                                 onValueChange={setReminderH2}
-                                trackColor={{ false: theme.colors.disabled, true: '#FF6B9D50' }}
-                                thumbColor={reminderH2 ? '#FF6B9D' : '#999'}
+                                trackColor={{ false: theme.colors.disabled, true: theme.colors.primarySoft }}
+                                thumbColor={reminderH2 ? theme.colors.primary : theme.colors.neutral400}
                             />
                         </View>
                     </View>
@@ -562,11 +616,18 @@ export const AddAppointmentScreen = () => {
                             style={[styles.button, styles.cancelButton]}
                             onPress={() => navigation.goBack()}
                             disabled={saving}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.cancel')}
+                            accessibilityState={{ disabled: saving }}
                         >
                             <Text style={styles.cancelButtonText}>{t('addAppointment.cancel')}</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.saveChanges')}
+                            accessibilityHint={t('a11y.saveChangesHint')}
+                            accessibilityState={{ disabled: !isTitleValid || saving, busy: saving }}
                             style={[
                                 styles.button,
                                 styles.saveButton,
@@ -753,17 +814,17 @@ const styles = StyleSheet.create({
         color: theme.colors.white,
     },
     remindersSection: {
-        backgroundColor: '#FFF8E1',
+        backgroundColor: theme.colors.surfaceAmberTint,
         borderRadius: 12,
         padding: theme.spacing.m,
         marginBottom: theme.spacing.l,
         borderWidth: 1,
-        borderColor: '#FFE082',
+        borderColor: theme.colors.amberBorder,
     },
     remindersSectionTitle: {
         fontSize: 15,
         fontWeight: '600' as const,
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         marginBottom: theme.spacing.m,
     },
     reminderRow: {
@@ -787,7 +848,7 @@ const styles = StyleSheet.create({
     },
     iosPickerOverlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: theme.colors.blackAlpha40,
         justifyContent: 'flex-end',
         borderTopStartRadius: 24,
         borderTopEndRadius: 24,
@@ -806,12 +867,12 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         borderBottomWidth: 1,
         borderBottomColor: theme.colors.disabled,
-        backgroundColor: '#FAFAFA',
+        backgroundColor: theme.colors.neutral25,
     },
     iosPickerTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     iosPickerDoneText: {
         fontSize: 16,
@@ -820,7 +881,7 @@ const styles = StyleSheet.create({
     },
     pickerContainer: {
         marginTop: theme.spacing.m,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
         borderRadius: 12,
         overflow: 'hidden',
         borderWidth: 1,
@@ -828,7 +889,7 @@ const styles = StyleSheet.create({
     },
     picker: {
         width: '100%',
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
     },
     closePickerButton: {
         padding: theme.spacing.m,

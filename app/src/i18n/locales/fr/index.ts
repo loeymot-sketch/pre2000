@@ -1,7 +1,6 @@
-import uiFr from './ui.json';
-import babyEvolutionFr from './babyEvolution.json';
-import supportFr from './support.json';
-import articleUfr from './article.json';
+// CLEANUP: ui/babyEvolution/support/article namespaces were duplicated in common.json
+// (which is spread at root). The standalone .json files have been removed — common.json
+// is now the single source of truth.
 import authFr from './auth.json';
 import commonFr from './common.json';
 import profileFr from './profile.json';

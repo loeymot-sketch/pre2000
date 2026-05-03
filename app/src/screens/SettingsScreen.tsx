@@ -1,4 +1,5 @@
 import { createLogger, logger } from '../utils/logger';
+import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 const log = createLogger('SettingsScreen');
 import React, { useState, useEffect } from 'react';
 import { theme } from '../theme';
@@ -26,6 +27,7 @@ import {
     saveBabyMessageHour,
 } from '../services/reminderPersistence';
 import { updateBabyMessageSchedule } from '../services/babyMessageService';
+import { Skeleton } from '../components/common/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { exportUserData } from '../services/dataExportService';
 import { useDateLocale } from '../hooks/useDateLocale';
@@ -47,7 +49,9 @@ export const SettingsScreen = () => {
     const { t, i18n } = useTranslation();
 
     const dateLocale = useDateLocale();
-    const { pregnancyInfo } = usePregnancy();
+    // P3.6 FIX: also pull `profile` (firstName, lmp, country) — was missing,
+    // causing exports to receive `pregnancyInfo` (week+day) where a Profile was expected.
+    const { pregnancyInfo, profile } = usePregnancy();
     const { user } = useAuth();
     const navigation = useNavigation();
     const [babyMessageEnabled, setBabyMessageEnabled] = useState(true);
@@ -123,9 +127,20 @@ export const SettingsScreen = () => {
 
     if (loading) {
         return (
-            <View style={styles.container}>
-                <Text>{t('common.loading')}</Text>
-            </View>
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={styles.skeletonContent}
+                accessibilityLabel={t('common.loading')}
+            >
+                <Skeleton.Title width={240} />
+                <Skeleton.Line width="78%" style={{ marginTop: theme.spacing.m }} />
+                <Skeleton.Line width="62%" style={{ marginTop: theme.spacing.s }} />
+                <View style={{ height: theme.spacing.xl }} />
+                <Skeleton.Line width="40%" />
+                <Skeleton width="100%" height={88} radius={theme.borderRadius.card} style={{ marginTop: theme.spacing.m }} />
+                <Skeleton width="100%" height={88} radius={theme.borderRadius.card} style={{ marginTop: theme.spacing.s }} />
+                <Skeleton width="100%" height={56} radius={theme.borderRadius.m} style={{ marginTop: theme.spacing.l }} />
+            </ScrollView>
         );
     }
 
@@ -152,8 +167,8 @@ export const SettingsScreen = () => {
                     <Switch
                         value={babyMessageEnabled}
                         onValueChange={handleBabyMessageToggle}
-                        trackColor={{ false: '#ccc', true: theme.colors.accent }}
-                        thumbColor={babyMessageEnabled ? '#fff' : '#f4f3f4'}
+                        trackColor={{ false: theme.colors.neutral300, true: theme.colors.accent }}
+                        thumbColor={babyMessageEnabled ? theme.colors.white : theme.colors.iosGroupedBackground}
                         accessibilityLabel={t('common.a11y.toggleBabyMessage')}
                         accessibilityRole="switch"
                     />
@@ -195,6 +210,9 @@ export const SettingsScreen = () => {
                 </View>
                 <TouchableOpacity
                     style={styles.settingRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.requestPermissions')}
+                    accessibilityHint={t('common.requestPermissionsDesc')}
                     onPress={async () => {
                         const granted = await requestNotificationPermissions();
 
@@ -226,12 +244,15 @@ export const SettingsScreen = () => {
                             </Text>
                         </View>
                     </View>
-                    <Text style={styles.menuArrow}>›</Text>
+                    <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                 </TouchableOpacity>
 
                 {/* Test Notification Button */}
                 <TouchableOpacity
                     style={[styles.settingRow, { borderBottomWidth: 0 }]}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.testNotifications')}
+                    accessibilityHint={t('common.testNotificationsDesc')}
                     onPress={async () => {
                         // sendTestNotification, getScheduledNotifications already imported at top
                         const success = await sendTestNotification();
@@ -273,6 +294,10 @@ export const SettingsScreen = () => {
                 {/* PDF Journal Export - ENABLED */}
                 <TouchableOpacity
                     style={styles.settingRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.privacyData.exportPDF')}
+                    accessibilityHint={t('common.privacyData.exportPDFDesc')}
+                    accessibilityState={{ disabled: loading, busy: loading }}
                     onPress={async () => {
                         try {
                             setLoading(true);
@@ -285,8 +310,14 @@ export const SettingsScreen = () => {
                             const weightHistoryData = await getWeightHistory(userId);
                             const appointmentsData = await getAppointments();
 
+                            // P3.6 FIX: pass the real Profile (firstName, lmp, country) — was passing
+                            // pregnancyInfo (just week/day) which produced a structurally invalid PDF profile block.
+                            if (!profile) {
+                                Alert.alert(t('common.error'), t('common.profileRequired') || t('common.error'));
+                                return;
+                            }
                             await generateAndSharePDF({
-                                profile: pregnancyInfo as any,
+                                profile,
                                 weightHistory: weightHistoryData,
                                 appointments: appointmentsData as any,
                                 notes: []
@@ -312,7 +343,11 @@ export const SettingsScreen = () => {
 
                 <TouchableOpacity
                     style={[styles.settingRow, { borderBottomWidth: 0 }]}
-                    onPress={() => exportUserData(user, pregnancyInfo, t)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.privacyData.export')}
+                    accessibilityHint={t('common.privacyData.exportDesc')}
+                    // P3.6 FIX: pass real Profile, not pregnancyInfo (week/day only).
+                    onPress={() => exportUserData(user, profile, t)}
                 >
                     <View style={styles.settingRowLeft}>
                         <Text style={styles.menuIcon}>📤</Text>
@@ -334,24 +369,26 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                     style={styles.legalRow}
                     onPress={() => navigation.navigate('PrivacyPolicy')}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.privacyPolicy')}
                 >
                     <View style={styles.settingRowLeft}>
                         <Text style={styles.menuIcon}>🔒</Text>
                         <Text style={styles.legalText}>{t('common.privacyPolicy')}</Text>
                     </View>
-                    <Text style={styles.legalArrow}>›</Text>
+                    <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                 </TouchableOpacity>
             </View>
 
             {/* Developer Section (Only in DEV) */}
             {__DEV__ && (
-                <View style={[styles.section, { borderColor: '#7B1FA2', borderWidth: 1 }]}>
-                    <View style={[styles.sectionHeader, { backgroundColor: '#F3E5F5' }]}>
-                        <Text style={[styles.sectionTitle, { color: '#7B1FA2' }]}>👨‍💻 Developer Tools</Text>
+                <View style={[styles.section, { borderColor: theme.colors.purple700, borderWidth: 1 }]}>
+                    <View style={[styles.sectionHeader, { backgroundColor: theme.colors.surfacePurpleTint }]}>
+                        <Text style={[styles.sectionTitle, { color: theme.colors.purple700 }]}>👨‍💻 Developer Tools</Text>
                     </View>
 
                     <TouchableOpacity
-                        style={[styles.settingRow, { borderTopWidth: 1, borderTopColor: '#E1BEE7', borderBottomWidth: 0 }]}
+                        style={[styles.settingRow, { borderTopWidth: 1, borderTopColor: theme.colors.purpleBorderLight, borderBottomWidth: 0 }]}
                         onPress={() => navigation.navigate('Diagnostic')}
                     >
                         <View style={styles.settingRowLeft}>
@@ -363,7 +400,7 @@ export const SettingsScreen = () => {
                                 </Text>
                             </View>
                         </View>
-                        <Text style={styles.menuArrow}>›</Text>
+                        <RtlAwareChevron direction="forward" size={20} color={theme.colors.neutral300} />
                     </TouchableOpacity>
                 </View >
             )}
@@ -375,6 +412,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.surface,
+    },
+    skeletonContent: {
+        paddingHorizontal: theme.spacing.l,
+        paddingTop: 56,
+        paddingBottom: theme.spacing.xl,
     },
     header: {
         padding: 20,
@@ -401,7 +443,7 @@ const styles = StyleSheet.create({
     },
     sectionHeader: {
         padding: 16,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
         borderBottomWidth: 1,
         borderBottomColor: theme.colors.disabled,
     },
@@ -431,7 +473,7 @@ const styles = StyleSheet.create({
     },
     menuArrow: {
         fontSize: 20,
-        color: '#CCC',
+        color: theme.colors.neutral300,
         marginStart: 8,
     },
     settingInfo: {
@@ -484,14 +526,14 @@ const styles = StyleSheet.create({
     infoSection: {
         margin: 16,
         padding: 16,
-        backgroundColor: '#FFF9E6',
+        backgroundColor: theme.colors.surfaceTip,
         borderRadius: theme.borderRadius.m,
         borderWidth: 1,
-        borderColor: '#FFE69C',
+        borderColor: theme.colors.amberSurfaceSoft,
     },
     infoText: {
         fontSize: 14,
-        color: '#856404',
+        color: theme.colors.warningTextDark,
         lineHeight: 20,
     },
     legalRow: {
@@ -508,6 +550,6 @@ const styles = StyleSheet.create({
     },
     legalArrow: {
         fontSize: 20,
-        color: '#999',
+        color: theme.colors.neutral400,
     },
 });

@@ -59,4 +59,18 @@ i18n
 
 log.debug('[i18n] ✅ i18n initialized');
 
+// R1 FIX: register the RTL listener here (not in App.tsx) so it is wired up
+// the moment the i18n module is imported — BEFORE App.tsx mounts. This way
+// the async LANGUAGE_DETECTOR can finish reading 'app_locale' from
+// AsyncStorage and the resulting 'initialized' / 'languageChanged' event
+// will trigger setupRTL() with the correct language even on cold start.
+// Done lazily via require() to avoid a circular import (rtl.ts imports i18n).
+try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { registerRTLListener } = require('./rtl');
+    registerRTLListener();
+} catch (e) {
+    log.warn('[i18n] Failed to register RTL listener:', e);
+}
+
 export default i18n;

@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, Linking, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -65,7 +66,7 @@ export const EmergencyContactsSection = () => {
     const handleDelete = (id: string) => {
         Alert.alert(
             t('emergency.deleteConfirm'),
-            "",
+            t('profile.deleteContactConfirm'),
             [
                 { text: t('common.cancel'), style: 'cancel' },
                 {
@@ -98,10 +99,10 @@ export const EmergencyContactsSection = () => {
 
     const getTypeColor = (type: string) => {
         switch (type) {
-            case 'sos': return '#F44336'; // Red
-            case 'doctor': return '#2196F3'; // Blue
-            case 'partner': return '#E91E63'; // Pink
-            default: return '#9E9E9E'; // Grey
+            case 'sos': return theme.colors.critical; // Red
+            case 'doctor': return theme.colors.blue600; // Blue
+            case 'partner': return theme.colors.pinkAccent; // Pink
+            default: return theme.colors.gray500; // Grey
         }
     };
 
@@ -110,7 +111,12 @@ export const EmergencyContactsSection = () => {
             <View style={styles.header}>
                 <Text style={styles.title}>🆘 {t('emergency.title')}</Text>
                 {!isAdding && (
-                    <TouchableOpacity onPress={() => setIsAdding(true)} style={styles.addButton}>
+                    <TouchableOpacity
+                        onPress={() => setIsAdding(true)}
+                        style={styles.addButton}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('emergency.add')}
+                    >
                         <Text style={styles.addButtonText}>+</Text>
                     </TouchableOpacity>
                 )}
@@ -136,12 +142,17 @@ export const EmergencyContactsSection = () => {
                             <TouchableOpacity
                                 onPress={() => handleCall(contact.number)}
                                 style={[styles.actionButton, styles.callButton]}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('a11y.callContact', { name: contact.name })}
+                                accessibilityHint={contact.number}
                             >
                                 <Text style={styles.actionIcon}>📞</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => handleDelete(contact.id)}
                                 style={[styles.actionButton, styles.deleteButton]}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('a11y.deleteContact', { name: contact.name })}
                             >
                                 <Text style={styles.actionIcon}>🗑️</Text>
                             </TouchableOpacity>
@@ -164,10 +175,13 @@ export const EmergencyContactsSection = () => {
                                     styles.typeButton,
                                     newType === type && { backgroundColor: getTypeColor(type), borderColor: getTypeColor(type) }
                                 ]}
+                                accessibilityRole="button"
+                                accessibilityLabel={getTypeLabel(type)}
+                                accessibilityState={{ selected: newType === type }}
                             >
                                 <Text style={[
                                     styles.typeButtonText,
-                                    newType === type && { color: '#FFF' }
+                                    newType === type && { color: theme.colors.white }
                                 ]}>
                                     {getTypeLabel(type)}
                                 </Text>
@@ -193,12 +207,16 @@ export const EmergencyContactsSection = () => {
                         <TouchableOpacity
                             onPress={() => setIsAdding(false)}
                             style={[styles.formButton, styles.cancelFormButton]}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.cancel')}
                         >
                             <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleAdd}
                             style={[styles.formButton, styles.addFormButton]}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.save')}
                         >
                             <Text style={styles.saveButtonText}>{t('common.save')}</Text>
                         </TouchableOpacity>
@@ -211,11 +229,11 @@ export const EmergencyContactsSection = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 16,
         padding: 16,
         marginBottom: 16,
-        shadowColor: "#000",
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -230,10 +248,10 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#D32F2F',
+        color: theme.colors.red700,
     },
     addButton: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
         width: 32,
         height: 32,
         borderRadius: 16,
@@ -242,12 +260,12 @@ const styles = StyleSheet.create({
     },
     addButtonText: {
         fontSize: 20,
-        color: '#D32F2F',
+        color: theme.colors.red700,
         fontWeight: 'bold',
         marginTop: -2,
     },
     emptyText: {
-        color: '#999',
+        color: theme.colors.neutral400,
         fontStyle: 'italic',
         textAlign: 'center',
         marginBottom: 8,
@@ -258,7 +276,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
+        borderBottomColor: theme.colors.borderLight,
     },
     contactInfo: {
         flex: 1,
@@ -266,11 +284,11 @@ const styles = StyleSheet.create({
     contactName: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     contactNumber: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginTop: 2,
     },
     typeBadge: {
@@ -279,7 +297,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
     },
     typeText: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontSize: 10,
         fontWeight: 'bold',
         textTransform: 'uppercase',
@@ -296,10 +314,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     callButton: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.surfaceGreenTint,
     },
     deleteButton: {
-        backgroundColor: '#FFEBEE',
+        backgroundColor: theme.colors.surfaceRose,
     },
     actionIcon: {
         fontSize: 16,
@@ -307,21 +325,21 @@ const styles = StyleSheet.create({
     addForm: {
         marginTop: 8,
         padding: 12,
-        backgroundColor: '#FAFAFA',
+        backgroundColor: theme.colors.neutral25,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#EEEEEE',
+        borderColor: theme.colors.divider,
     },
     formTitle: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
     },
     input: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.disabled,
         borderRadius: 8,
         padding: 10,
         marginBottom: 8,
@@ -337,12 +355,12 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
-        backgroundColor: '#FFF',
+        borderColor: theme.colors.disabled,
+        backgroundColor: theme.colors.white,
     },
     typeButtonText: {
         fontSize: 12,
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     formActions: {
         flexDirection: 'row',
@@ -356,17 +374,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     cancelFormButton: {
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
     },
     addFormButton: {
-        backgroundColor: '#D32F2F',
+        backgroundColor: theme.colors.red700,
     },
     cancelButtonText: {
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '600',
     },
     saveButtonText: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontWeight: '600',
     },
 });

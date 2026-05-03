@@ -477,13 +477,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.neutral900,
         letterSpacing: 0.5,
         marginBottom: 4,
     },
     date: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '600',
         textTransform: 'capitalize',
     },
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     progressBarBg: {
         width: '100%',
         height: 6,
-        backgroundColor: '#F0F0F0',
+        backgroundColor: theme.colors.borderLight,
         borderRadius: 3,
         overflow: 'hidden',
     },
@@ -511,47 +511,47 @@ const styles = StyleSheet.create({
     },
     loadingText: {
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.neutral400,
         textAlign: 'center',
         paddingVertical: 40,
     },
     emptyText: {
         fontSize: 15,
-        color: '#888',
+        color: theme.colors.neutral350,
         textAlign: 'center',
         paddingVertical: 30,
         lineHeight: 24,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: theme.colors.surfaceGrayStripe,
         borderRadius: 16,
         marginHorizontal: 4,
         borderWidth: 1,
-        borderColor: '#EEE',
+        borderColor: theme.colors.neutral150,
         borderStyle: 'dashed',
     },
     listContainer: {
         gap: 12,
     },
     card: {
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
         borderRadius: 16,
         padding: 16,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        ...getShadowStyle(4, '#000', 0.08, 8, { width: 0, height: 2 }),
+        ...getShadowStyle(4, theme.colors.black, 0.08, 8, { width: 0, height: 2 }),
         borderWidth: 1,
         borderColor: 'transparent',
     },
     cardCompleted: {
         opacity: 0.8,
-        backgroundColor: '#FAFAFA',
-        ...getShadowStyle(0, '#000', 0, 0, { width: 0, height: 0 }), // Remove shadow
+        backgroundColor: theme.colors.neutral25,
+        ...getShadowStyle(0, theme.colors.black, 0, 0, { width: 0, height: 0 }), // Remove shadow
         borderWidth: 1,
-        borderColor: '#EEE',
+        borderColor: theme.colors.neutral150,
     },
     cardHighlighted: {
-        backgroundColor: '#FFF8E1', // Premium light gold/orange
-        borderColor: '#FFE0B2',
+        backgroundColor: theme.colors.surfaceAmberTint, // Premium light gold/orange
+        borderColor: theme.colors.surfacePeach,
         transform: [{ scale: 1.02 }],
     },
     cardContent: {
@@ -564,18 +564,18 @@ const styles = StyleSheet.create({
         height: 24,
         borderRadius: 8,
         borderWidth: 2,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.disabled,
         alignItems: 'center',
         justifyContent: 'center',
         marginEnd: 16,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.white,
     },
     checkboxChecked: {
         backgroundColor: theme.colors.primary,
         borderColor: theme.colors.primary,
     },
     checkmark: {
-        color: '#FFF',
+        color: theme.colors.white,
         fontSize: 14,
         fontWeight: 'bold',
     },
@@ -594,26 +594,26 @@ const styles = StyleSheet.create({
     itemTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     itemTitleCompleted: {
         textDecorationLine: 'line-through',
-        color: '#AAA',
+        color: theme.colors.gray500,
     },
     itemSubtitle: {
         fontSize: 13,
-        color: '#888',
+        color: theme.colors.neutral350,
         marginTop: 2,
     },
     actionButton: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderRadius: 12,
         marginStart: 12,
     },
     actionButtonText: {
-        color: '#1976D2',
+        color: theme.colors.info,
         fontSize: 12,
         fontWeight: '700',
     },
@@ -623,7 +623,7 @@ const styles = StyleSheet.create({
     },
     footerText: {
         fontSize: 13,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontWeight: '500',
         fontStyle: 'italic',
     },
@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     timeBadge: {
-        backgroundColor: '#FCE4EC', // Light pink
+        backgroundColor: theme.colors.surfacePinkTint, // Light pink
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 8,
@@ -642,7 +642,7 @@ const styles = StyleSheet.create({
     timeText: {
         fontSize: 12,
         fontWeight: '700',
-        color: '#C2185B',
+        color: theme.colors.accent,
     },
     actionsContainer: {
         flexDirection: 'row',

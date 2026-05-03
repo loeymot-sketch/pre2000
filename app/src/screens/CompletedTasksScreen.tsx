@@ -116,7 +116,7 @@ export const CompletedTasksScreen = () => {
     if (loading) {
         return (
             <View style={styles.centerContainer}>
-                <ActivityIndicator size="large" color="#C2185B" />
+                <ActivityIndicator size="large" color={theme.colors.accent} />
                 <Text style={styles.loadingText}>{t('common.loading')}</Text>
             </View>
         );
@@ -126,7 +126,7 @@ export const CompletedTasksScreen = () => {
         return (
             <View style={styles.container}>
                 <LinearGradient
-                    colors={['#FF6B9D', '#C2185B']}
+                    colors={[theme.colors.primary, theme.colors.accent]}
                     style={styles.headerGradient}
                 >
                     <Text style={styles.headerTitle}>✓ {t('common.completedTasks')}</Text>
@@ -147,7 +147,7 @@ export const CompletedTasksScreen = () => {
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={['#FF6B9D', '#C2185B']}
+                colors={[theme.colors.primary, theme.colors.accent]}
                 style={styles.headerGradient}
             >
                 <Text style={styles.headerTitle}>✓ {t('common.completedTasks')}</Text>
@@ -197,7 +197,7 @@ export const CompletedTasksScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
     },
     headerGradient: {
         paddingTop: 60,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     emptyTitle: {
         fontSize: 20,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
         textAlign: 'center',
     },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
         borderRadius: 12,
         padding: 16,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     taskTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 6,
         textDecorationLine: 'line-through',
         opacity: 0.7,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     },
     completedDate: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontStyle: 'italic',
     },
     taskActions: {
@@ -292,13 +292,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#4CAF50',
+        borderColor: theme.colors.green500,
         alignItems: 'center',
     },
     restoreButtonText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#4CAF50',
+        color: theme.colors.green500,
     },
     deleteButton: {
         flex: 1,
@@ -306,12 +306,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#E53935',
+        borderColor: theme.colors.red600,
         alignItems: 'center',
     },
     deleteButtonText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#E53935',
+        color: theme.colors.red600,
     },
 });

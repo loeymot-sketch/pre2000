@@ -25,7 +25,7 @@ import { format } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
 import { usePregnancy } from '../context/PregnancyContext';
 import { theme } from '../theme';
-import { getShadowStyle } from '../utils/styleUtils';
+import { getShadowStyle, hexToRgba } from '../utils/styleUtils';
 import {
     WeightEntry,
     saveWeightEntry,
@@ -354,13 +354,16 @@ export const WeightTrackerScreen = () => {
         setShowSetup(true);
     };
 
-    // Triple-tap to toggle debug mode
+    // Triple-tap to toggle debug mode (DEV-only feature)
+    // MS6: Alert is debug-only, no need to i18n the lock emoji label.
+    // Wrapped to log only in dev so prod build doesn't show this Alert if user triple-taps.
     const handleTitlePress = () => {
+        if (!__DEV__) return;
         const newCount = tapCount + 1;
         setTapCount(newCount);
         if (newCount >= 3) {
             setShowDebugMode(!showDebugMode);
-            Alert.alert(showDebugMode ? '🔒 OFF' : '🔓 ON');
+            Alert.alert(showDebugMode ? 'Debug OFF' : 'Debug ON');
             setTapCount(0);
         }
         setTimeout(() => setTapCount(0), 1500);
@@ -394,6 +397,19 @@ export const WeightTrackerScreen = () => {
         ? calculateBMICategory(prePregnancyWeight, height)
         : { category: 'normal' as const, minGain: 0, maxGain: 0, weeklyGainT2T3: 0 };
 
+    // PERFECT-FIX-2: derive BMI numeric value + map OMS category → semantic theme color.
+    // bmiCategory was previously computed but never surfaced in the UI; users now
+    // see both their pre-pregnancy BMI and the WHO/OMS classification.
+    const bmiValue = hasValidData
+        ? prePregnancyWeight / Math.pow(height / 100, 2)
+        : null;
+    const BMI_CATEGORY_COLOR: Record<typeof bmiCategory.category, string> = {
+        underweight: theme.colors.warning,
+        normal: theme.colors.success,
+        overweight: theme.colors.warning,
+        obese: theme.colors.error,
+    };
+
     // Intelligence: Detect trend and generate smart suggestions
     const trend = React.useMemo(() => detectTrend(weightHistory), [weightHistory]);
     const suggestions = React.useMemo(() => {
@@ -410,9 +426,9 @@ export const WeightTrackerScreen = () => {
         if (!hasValidData || weightHistory.length < 1) return null;
 
         const trendSeverityColor: Record<string, string> = {
-            normal: '#4CAF50',
-            attention: '#FF9800',
-            warning: '#F44336',
+            normal: theme.colors.green500,
+            attention: theme.colors.orange500,
+            warning: theme.colors.critical,
         };
 
         return (
@@ -483,7 +499,7 @@ export const WeightTrackerScreen = () => {
                         datasets: [
                             {
                                 data: data,
-                                color: (opacity = 1) => `rgba(233, 30, 99, ${opacity})`, // Pink color
+                                color: (opacity = 1) => hexToRgba(theme.colors.pinkAccent, opacity),
                                 strokeWidth: 2
                             },
                             {
@@ -504,8 +520,8 @@ export const WeightTrackerScreen = () => {
                         backgroundGradientFrom: theme.colors.white,
                         backgroundGradientTo: theme.colors.white,
                         decimalPlaces: 1,
-                        color: (opacity = 1) => `rgba(194, 24, 91, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(100, 100, 100, ${opacity})`,
+                        color: (opacity = 1) => hexToRgba(theme.colors.accent, opacity),
+                        labelColor: (opacity = 1) => hexToRgba(theme.colors.textSecondary, opacity),
                         style: {
                             borderRadius: 16
                         },
@@ -551,13 +567,13 @@ export const WeightTrackerScreen = () => {
                     <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
                         <TouchableOpacity
                             onPress={handleEditProfile}
-                            style={{ padding: 8, backgroundColor: '#2196F3', borderRadius: 4 }}
+                            style={{ padding: 8, backgroundColor: theme.colors.blue600, borderRadius: 4 }}
                         >
                             <Text style={{ color: 'white', fontSize: 12 }}>{t('weight.edit')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleResetData}
-                            style={{ padding: 8, backgroundColor: '#f44336', borderRadius: 4 }}
+                            style={{ padding: 8, backgroundColor: theme.colors.critical, borderRadius: 4 }}
                         >
                             <Text style={{ color: 'white', fontSize: 12 }}>{t('weight.reset')}</Text>
                         </TouchableOpacity>
@@ -599,6 +615,9 @@ export const WeightTrackerScreen = () => {
                         style={[styles.setupButton, savingSetup && styles.saveButtonDisabled]}
                         onPress={handleSaveSetup}
                         disabled={savingSetup}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('weight.save')}
+                        accessibilityState={{ disabled: savingSetup, busy: savingSetup }}
                     >
                         <Text style={styles.setupButtonText}>
                             {savingSetup ? t('common.saving') : `✓ ${t('weight.save')}`}
@@ -673,11 +692,39 @@ export const WeightTrackerScreen = () => {
                                     t('weight.howItWorksDesc'),
                                     [{ text: t('weight.understood') }]
                                 )}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('weight.howItWorks')}
                             >
                                 <Text style={styles.infoIcon}>ℹ️</Text>
                             </TouchableOpacity>
                         </View>
-                        <Text style={{ fontSize: 22, fontWeight: '700', color: '#1976D2', marginTop: 8 }}>
+                        {/* PERFECT-FIX-2: surface pre-pregnancy BMI + OMS/WHO category badge */}
+                        {bmiValue !== null && (
+                            <View style={styles.bmiRow}>
+                                <Text style={styles.bmiLabel}>
+                                    {t('weight.bmi')}: <Text style={styles.bmiValue}>{bmiValue.toFixed(1)}</Text>
+                                </Text>
+                                <View
+                                    style={[
+                                        styles.bmiCategoryBadge,
+                                        {
+                                            backgroundColor: BMI_CATEGORY_COLOR[bmiCategory.category] + '22',
+                                            borderColor: BMI_CATEGORY_COLOR[bmiCategory.category],
+                                        },
+                                    ]}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.bmiCategoryText,
+                                            { color: BMI_CATEGORY_COLOR[bmiCategory.category] },
+                                        ]}
+                                    >
+                                        {t(`weight.bmiCategory.${bmiCategory.category}`)}
+                                    </Text>
+                                </View>
+                            </View>
+                        )}
+                        <Text style={{ fontSize: 22, fontWeight: '700', color: theme.colors.info, marginTop: 8 }}>
                             {recommendedRange.min.toFixed(1)} - {recommendedRange.max.toFixed(1)} {t('common.kg')}
                         </Text>
                         <Text style={styles.infoDetail}>
@@ -707,6 +754,8 @@ export const WeightTrackerScreen = () => {
                                 <TouchableOpacity
                                     style={styles.cancelButton}
                                     onPress={() => { setShowAddForm(false); setNewWeight(''); }}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={t('a11y.cancel')}
                                 >
                                     <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
                                 </TouchableOpacity>
@@ -714,6 +763,9 @@ export const WeightTrackerScreen = () => {
                                     style={[styles.saveButton, saving && styles.saveButtonDisabled]}
                                     onPress={handleAddWeight}
                                     disabled={saving}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={t('a11y.save')}
+                                    accessibilityState={{ disabled: saving, busy: saving }}
                                 >
                                     <Text style={styles.saveButtonText}>
                                         {saving ? t('common.saving') : t('weight.save')}
@@ -725,6 +777,8 @@ export const WeightTrackerScreen = () => {
                         <TouchableOpacity
                             style={styles.addButton}
                             onPress={() => setShowAddForm(true)}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('a11y.addWeight')}
                         >
                             <Text style={styles.addButtonText}>{t('weight.addDailyWeight')}</Text>
                         </TouchableOpacity>
@@ -736,7 +790,7 @@ export const WeightTrackerScreen = () => {
                         {weightHistory.length === 0 ? (
                             <View style={{ alignItems: 'center', padding: 32 }}>
                                 <Text style={{ fontSize: 48, marginBottom: 12 }}>📊</Text>
-                                <Text style={{ fontSize: 16, fontWeight: '600', color: '#333', marginBottom: 8 }}>{t('weight.startTracking')}</Text>
+                                <Text style={{ fontSize: 16, fontWeight: '600', color: theme.colors.neutral900, marginBottom: 8 }}>{t('weight.startTracking')}</Text>
                                 <Text style={{ fontSize: 14, color: theme.colors.textSecondary, textAlign: 'center' }}>{t('weight.startTrackingDesc')}</Text>
                             </View>
                         ) : (
@@ -763,7 +817,9 @@ export const WeightTrackerScreen = () => {
                                             <TouchableOpacity
                                                 style={styles.deleteButton}
                                                 onPress={() => handleDeleteEntry(entry.id!)}
-                                                accessibilityLabel={t('weight.delete')}
+                                                accessibilityRole="button"
+                                                accessibilityLabel={t('a11y.deleteWeight')}
+                                                accessibilityHint={`${entry.weight} ${t('common.kg')}, ${format(new Date(entry.date), 'dd MMM yyyy', { locale: dateLocale })}`}
                                             >
                                                 <Text style={styles.deleteButtonText}>🗑️</Text>
                                             </TouchableOpacity>
@@ -781,6 +837,10 @@ export const WeightTrackerScreen = () => {
                     <TouchableOpacity
                         style={styles.educationHeader}
                         onPress={() => setShowEducation(!showEducation)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('weight.whyTrack')}
+                        accessibilityHint={showEducation ? t('a11y.collapseSection') : t('a11y.expandSection')}
+                        accessibilityState={{ expanded: showEducation }}
                     >
                         <Text style={styles.educationHeaderText}>{t('weight.whyTrack')}</Text>
                         <Text style={styles.educationToggle}>{showEducation ? '▲' : '▼'}</Text>
@@ -830,7 +890,7 @@ export const WeightTrackerScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.neutral100,
     },
     content: {
         padding: 16,
@@ -842,16 +902,16 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     subtitle: {
         fontSize: 14,
-        color: '#555', // Improved contrast
+        color: theme.colors.neutral700, // Improved contrast
     },
     currentWeight: {
         fontSize: 48,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     weightGain: {
         fontSize: 16,
@@ -865,21 +925,21 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
     badgeNormal: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.surfaceGreenTint,
     },
     badgeLow: {
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
     },
     badgeHigh: {
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
     },
     badgeWarning: {
-        backgroundColor: '#FFF3E0',
+        backgroundColor: theme.colors.surfaceOrangeTint,
     },
     statusBadgeText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     statusMessage: {
         fontSize: 14,
@@ -889,11 +949,11 @@ const styles = StyleSheet.create({
     },
     noDataText: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontStyle: 'italic',
     },
     infoCard: {
-        backgroundColor: '#E3F2FD',
+        backgroundColor: theme.colors.surfaceBlueTint,
         borderRadius: 16,
         padding: 16,
         marginBottom: 16,
@@ -908,7 +968,7 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         borderRadius: 12,
-        backgroundColor: '#1565C0',
+        backgroundColor: theme.colors.blue800,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -920,15 +980,15 @@ const styles = StyleSheet.create({
     infoTitle: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#1565C0',
+        color: theme.colors.blue800,
     },
     infoText: {
         fontSize: 15,
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     infoBold: {
         fontWeight: '700',
-        color: '#1565C0',
+        color: theme.colors.blue800,
     },
     infoSubtext: {
         fontSize: 13,
@@ -949,17 +1009,45 @@ const styles = StyleSheet.create({
         marginTop: 8,
         fontStyle: 'italic',
     },
+    /* PERFECT-FIX-2: BMI + OMS category row inside infoCard */
+    bmiRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        marginTop: 6,
+        gap: 8,
+    },
+    bmiLabel: {
+        fontSize: 14,
+        color: theme.colors.neutral900,
+        fontWeight: '600',
+    },
+    bmiValue: {
+        fontSize: 14,
+        color: theme.colors.blue800,
+        fontWeight: '800',
+    },
+    bmiCategoryBadge: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 999,
+        borderWidth: 1,
+    },
+    bmiCategoryText: {
+        fontSize: 12,
+        fontWeight: '700',
+    },
     chartContainer: {
         backgroundColor: theme.colors.white,
         borderRadius: 16,
         padding: 16,
         marginBottom: 16,
-        ...getShadowStyle(2, '#000', 0.05, 4, { width: 0, height: 1 }),
+        ...getShadowStyle(2, theme.colors.black, 0.05, 4, { width: 0, height: 1 }),
     },
     chartTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
     },
     chartYAxis: {
@@ -972,7 +1060,7 @@ const styles = StyleSheet.create({
     },
     chartYLabel: {
         fontSize: 10,
-        color: '#999',
+        color: theme.colors.neutral400,
     },
     chartArea: {
         flexDirection: 'row',
@@ -1009,10 +1097,10 @@ const styles = StyleSheet.create({
         color: theme.colors.white,
     },
     dotNormal: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: theme.colors.green500,
     },
     dotWarning: {
-        backgroundColor: '#FF9800',
+        backgroundColor: theme.colors.orange500,
     },
     chartLabel: {
         position: 'absolute',
@@ -1025,7 +1113,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
         paddingTop: 8,
         borderTopWidth: 1,
-        borderTopColor: '#EEE',
+        borderTopColor: theme.colors.neutral150,
     },
     startRefText: {
         fontSize: 12,
@@ -1039,7 +1127,7 @@ const styles = StyleSheet.create({
     },
     legendText: {
         fontSize: 11,
-        color: '#999',
+        color: theme.colors.neutral400,
     },
     addButton: {
         backgroundColor: theme.colors.primary,
@@ -1072,7 +1160,7 @@ const styles = StyleSheet.create({
     hugeWeight: {
         fontSize: 64,
         fontWeight: '900',
-        color: '#1a1a1a',
+        color: theme.colors.textInk,
         marginBottom: 8,
     },
     weightMeta: {
@@ -1081,12 +1169,12 @@ const styles = StyleSheet.create({
     },
     weightGainText: {
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.neutral400,
         marginBottom: 4,
     },
     miniStatus: {
         fontSize: 13,
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         marginTop: 4,
     },
     gaugeContainer: {
@@ -1095,7 +1183,7 @@ const styles = StyleSheet.create({
     },
     gaugeLabel: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
         marginBottom: 8,
         textAlign: 'center',
     },
@@ -1111,7 +1199,7 @@ const styles = StyleSheet.create({
         left: '10%',
         right: '10%',
         height: '100%',
-        backgroundColor: '#4CAF50',
+        backgroundColor: theme.colors.green500,
         borderRadius: 4,
         opacity: 0.3,
     },
@@ -1120,7 +1208,7 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius: 10,
-        backgroundColor: '#2196F3',
+        backgroundColor: theme.colors.blue600,
         top: -6,
         marginStart: -10,
         borderWidth: 3,
@@ -1144,12 +1232,12 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 20,
         marginBottom: 20,
-        ...getShadowStyle(4, '#000', 0.1, 8, { width: 0, height: 2 }),
+        ...getShadowStyle(4, theme.colors.black, 0.1, 8, { width: 0, height: 2 }),
     },
     addFormTitle: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 16,
     },
     inputRow: {
@@ -1182,7 +1270,7 @@ const styles = StyleSheet.create({
         padding: 14,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#DDD',
+        borderColor: theme.colors.neutral200,
         alignItems: 'center',
     },
     cancelButtonText: {
@@ -1211,12 +1299,12 @@ const styles = StyleSheet.create({
     historyTitle: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 12,
     },
     emptyHistory: {
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.neutral400,
         fontStyle: 'italic',
         textAlign: 'center',
         padding: 20,
@@ -1234,7 +1322,7 @@ const styles = StyleSheet.create({
     historyWeight: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     historyDate: {
         fontSize: 13,
@@ -1264,15 +1352,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     disclaimer: {
-        backgroundColor: '#FFF8E1',
+        backgroundColor: theme.colors.surfaceAmberTint,
         borderRadius: 12,
         padding: 12,
         borderWidth: 1,
-        borderColor: '#FFE082',
+        borderColor: theme.colors.amberBorder,
     },
     disclaimerText: {
         fontSize: 12,
-        color: '#F57C00',
+        color: theme.colors.accentOrangeDeep,
         lineHeight: 18,
     },
     // Education section styles
@@ -1288,11 +1376,11 @@ const styles = StyleSheet.create({
     educationHeaderText: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     educationToggle: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.neutral400,
     },
     educationContent: {
         marginBottom: 16,
@@ -1304,24 +1392,24 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     eduCardImportant: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.surfaceGreenTint,
         borderWidth: 1,
-        borderColor: '#A5D6A7',
+        borderColor: theme.colors.surfaceGreenBorder,
     },
     eduCardTitle: {
         fontSize: 15,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
     },
     eduCardText: {
         fontSize: 14,
-        color: '#555',
+        color: theme.colors.neutral700,
         lineHeight: 20,
     },
     eduBold: {
         fontWeight: '700',
-        color: '#E91E63',
+        color: theme.colors.pinkAccent,
     },
     eduTable: {
         marginTop: 8,
@@ -1341,14 +1429,14 @@ const styles = StyleSheet.create({
     eduTableCell: {
         flex: 1,
         fontSize: 13,
-        color: '#333',
+        color: theme.colors.neutral900,
     },
     eduTips: {
         marginTop: 10,
     },
     eduTip: {
         fontSize: 14,
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 4,
     },
     // Setup form styles
@@ -1363,7 +1451,7 @@ const styles = StyleSheet.create({
     setupTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
     },
     setupDescription: {
@@ -1378,7 +1466,7 @@ const styles = StyleSheet.create({
     setupLabel: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 8,
     },
     setupInput: {
@@ -1389,7 +1477,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         textAlign: 'center',
-        backgroundColor: '#F8F8F8',
+        backgroundColor: theme.colors.neutral75,
     },
     setupButton: {
         backgroundColor: theme.colors.primary,
@@ -1420,9 +1508,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     demoButtonActive: {
-        backgroundColor: '#FFE0B2',
+        backgroundColor: theme.colors.surfacePeach,
         borderWidth: 1,
-        borderColor: '#FF9800',
+        borderColor: theme.colors.orange500,
     },
     demoButtonText: {
         fontSize: 14,
@@ -1431,7 +1519,7 @@ const styles = StyleSheet.create({
     },
     demoWarning: {
         fontSize: 12,
-        color: '#FF9800',
+        color: theme.colors.orange500,
         textAlign: 'center',
         marginTop: 8,
         fontStyle: 'italic',
@@ -1442,21 +1530,21 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 16,
         marginBottom: 12,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.07,
         shadowRadius: 6,
         elevation: 2,
     },
     trimesterBanner: {
-        backgroundColor: '#FCE4EC',
+        backgroundColor: theme.colors.surfacePinkTint,
         borderRadius: 10,
         padding: 12,
         marginBottom: 12,
     },
     trimesterBannerText: {
         fontSize: 14,
-        color: '#880E4F',
+        color: theme.colors.deepPink,
         lineHeight: 20,
         fontStyle: 'italic',
     },
@@ -1480,7 +1568,7 @@ const styles = StyleSheet.create({
     suggestionChip: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F3E5F5',
+        backgroundColor: theme.colors.surfacePurpleTint,
         borderRadius: 20,
         paddingHorizontal: 12,
         paddingVertical: 6,
@@ -1491,7 +1579,7 @@ const styles = StyleSheet.create({
     },
     suggestionText: {
         fontSize: 12,
-        color: '#6A1B9A',
+        color: theme.colors.purpleDark,
         fontWeight: '500',
         flexShrink: 1,
     },

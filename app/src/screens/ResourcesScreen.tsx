@@ -14,6 +14,10 @@ export const ResourcesScreen = () => {
     return (
         <Tab.Navigator
             screenOptions={{
+                // PERFECT-FIX-4: lazy-mount tabs so the inactive screen (Articles or Suppléments)
+                // doesn't run its Firestore queries until the user actually visits it.
+                // Saves a duplicate scan on first entry to Resources.
+                lazy: true,
                 tabBarActiveTintColor: theme.colors.primary,
                 tabBarInactiveTintColor: theme.colors.textLight,
                 tabBarIndicatorStyle: { backgroundColor: theme.colors.primary },

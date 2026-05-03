@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import { createLogger } from '../../utils/logger';
 const log = createLogger('ReminderCard');
 import React, { useState, useEffect } from 'react';
@@ -141,8 +142,8 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({ reminder }) => {
                     <Switch
                         value={enabled}
                         onValueChange={handleToggle}
-                        trackColor={{ false: '#ccc', true: '#C2185B' }}
-                        thumbColor={enabled ? '#fff' : '#f4f3f4'}
+                        trackColor={{ false: theme.colors.neutral300, true: theme.colors.accent }}
+                        thumbColor={enabled ? theme.colors.white : theme.colors.iosGroupedBackground}
                     />
                 </View>
                 <Text style={styles.reminderDesc} numberOfLines={2}>
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     reminderCard: {
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
+        borderBottomColor: theme.colors.borderLight,
     },
     reminderHeader: {
         marginBottom: 8,
@@ -204,23 +205,23 @@ const styles = StyleSheet.create({
     reminderTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.neutral900,
         flex: 1,
     },
     reminderDesc: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         lineHeight: 20,
     },
     reminderControls: {
         marginTop: 12,
         paddingTop: 12,
         borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
+        borderTopColor: theme.colors.borderLight,
     },
     controlLabel: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginBottom: 8,
     },
     intensityButtons: {
@@ -233,39 +234,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#C2185B',
-        backgroundColor: '#FFF',
+        borderColor: theme.colors.accent,
+        backgroundColor: theme.colors.white,
         alignItems: 'center',
     },
     intensityButtonActive: {
-        backgroundColor: '#C2185B',
+        backgroundColor: theme.colors.accent,
     },
     intensityButtonText: {
         fontSize: 14,
-        color: '#C2185B',
+        color: theme.colors.accent,
         fontWeight: '600',
     },
     intensityButtonTextActive: {
-        color: '#FFF',
+        color: theme.colors.white,
     },
     scheduleInfo: {
         marginTop: 12,
         paddingTop: 12,
         borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
-        backgroundColor: '#F8F9FA',
+        borderTopColor: theme.colors.borderLight,
+        backgroundColor: theme.colors.surface,
         padding: 12,
         borderRadius: 8,
     },
     scheduleLabel: {
         fontSize: 12,
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginBottom: 4,
         fontWeight: '600',
     },
     scheduleText: {
         fontSize: 14,
-        color: '#333',
+        color: theme.colors.neutral900,
         fontWeight: '500',
     },
 });

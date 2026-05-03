@@ -1,6 +1,6 @@
 [
   {
-    "red_flag_id": "hémorragie",
+    "red_flag_id": "hemorragie_antepartum",
     "label_fr": "sang rouge vif",
     "label_ar": "دم أحمر فاتح",
     "label_en": "Bright red blood",
@@ -243,23 +243,23 @@
   },
   {
     "red_flag_id": "perte de conscience",
-    "label_fr": "évanouissement",
-    "label_ar": "إغماء",
-    "label_en": "Fainting",
-    "keywords_fr": "perte de conscience,évanouissement",
-    "keywords_ar": "فقدان الوعي,إغماء",
-    "keywords_en": "loss of consciousness,fainting",
+    "label_fr": "Convulsions / éclampsie",
+    "label_ar": "تشنجات / تسمم الحمل",
+    "label_en": "Convulsions / eclampsia",
+    "keywords_fr": "convulsions,éclampsie,crise,tremblements,perte de conscience,évanouissement",
+    "keywords_ar": "تشنجات,تسمم الحمل,نوبة,ارتعاش,فقدان الوعي,إغماء",
+    "keywords_en": "convulsions,eclampsia,seizure,fits,loss of consciousness,fainting",
     "severity": "emergency",
-    "standard_message_fr": "Les convulsions peuvent être un signe d'éclampsie (complication de la pré-éclampsie). Appelez immédiatement les services d'urgence.",
-    "standard_message_ar": "قد تكون التشنجات علامة على تسمم الحمل (مضاعفات ما قبل تسمم الحمل). اتصلي بخدمات الطوارئ فوراً.",
-    "standard_message_en": "Convulsions can be a sign of eclampsia (a complication of preeclampsia). Call emergency services immediately.",
+    "standard_message_fr": "Les convulsions ou une perte de conscience peuvent être un signe d'éclampsie (complication grave de la pré-éclampsie). Appelez immédiatement les services d'urgence.",
+    "standard_message_ar": "قد تكون التشنجات أو فقدان الوعي علامة على تسمم الحمل (مضاعفات خطيرة لما قبل تسمم الحمل). اتصلي بخدمات الطوارئ فوراً.",
+    "standard_message_en": "Convulsions or loss of consciousness can be a sign of eclampsia (a serious complication of preeclampsia). Call emergency services immediately.",
     "linked_articles_ids": [
       "a03_examens_médicaux_pendant"
     ],
     "sources": "",
-    "label_tn": "إغماء",
-    "keywords_tn": "فقدان الوعي,إغماء",
-    "standard_message_tn": "قد تكون التشنجات علامة على تسمم الحمل (مضاعفات ما قبل تسمم الحمل). اتصلي بخدمات الطوارئ فوراً."
+    "label_tn": "تشنجات / تسمم الحمل",
+    "keywords_tn": "تشنجات,تسمم الحمل,نوبة,فقدان الوعي,إغماء",
+    "standard_message_tn": "التشنجات ولا الغيمة الفجائية في الحمل ممكن تكون علامة تسمم الحمل (إكلامبسيا). إتصلي بالإسعاف توة."
   },
   {
     "red_flag_id": "douleur foie",
@@ -282,7 +282,7 @@
     "standard_message_tn": "قد تشير هذه العلامات إلى مضاعفات خطيرة مثل متلازمة HELLP أو تسمم الحمل الشديد. استشيري خدمات الطوارئ فوراً."
   },
   {
-    "red_flag_id": "hémorragie",
+    "red_flag_id": "hemorragie_postpartum",
     "label_fr": "perte de sang",
     "label_ar": "فقدان الدم",
     "label_en": "Blood loss",

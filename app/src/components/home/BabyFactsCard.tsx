@@ -1,3 +1,4 @@
+import { theme } from '../../theme';
 import { createLogger } from '../../utils/logger';
 const log = createLogger('BabyFactsCard');
 import React from 'react';
@@ -39,7 +40,7 @@ export const BabyFactsCard = React.memo<BabyFactsCardProps>(({
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={['#FFE5F1', '#FFF5F9', '#FFFFFF']}
+                colors={[theme.colors.gradientPinkStart, theme.colors.surfacePinkSnow, theme.colors.white]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.gradient}
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         borderRadius: 16,
         overflow: 'hidden',
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -98,12 +99,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#C2185B',
+        color: theme.colors.accent,
         flex: 1,
     },
     shortText: {
         fontSize: 15,
-        color: '#4E342E',
+        color: theme.colors.text,
         lineHeight: 22,
         marginBottom: 12,
     },
@@ -117,13 +118,13 @@ const styles = StyleSheet.create({
     },
     bulletDot: {
         fontSize: 16,
-        color: '#FF6B9D',
+        color: theme.colors.primary,
         marginEnd: 8,
         marginTop: 2,
     },
     bulletText: {
         fontSize: 14,
-        color: '#5D4037',
+        color: theme.colors.brownText800,
         lineHeight: 20,
         flex: 1,
     },

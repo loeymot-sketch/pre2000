@@ -485,24 +485,41 @@ export async function getReminderCompletions(
 
 /**
  * Calculate current streak (consecutive days) for a reminder.
+ *
+ * U-FIX-4: previous algorithm `diff === streak` broke after 2 days. The check should
+ * be against the PREVIOUS calendar day relative to the cursor (always 1-day step),
+ * not against the streak length. Streak survives if today OR yesterday is completed
+ * (1-day grace period — common UX pattern, day not yet over for late completions).
  */
 export function calculateStreak(completionDates: string[]): number {
     if (completionDates.length === 0) return 0;
-    const sorted = [...completionDates].sort().reverse();
-    let streak = 0;
-    let checkDate = new Date();
-    checkDate.setHours(0, 0, 0, 0);
 
-    for (const dateStr of sorted) {
+    // Normalize input dates to midnight-day timestamps and dedupe via Set.
+    const dayStamps = new Set<number>();
+    for (const dateStr of completionDates) {
         const d = new Date(dateStr);
+        if (Number.isNaN(d.getTime())) continue;
         d.setHours(0, 0, 0, 0);
-        const diff = Math.round((checkDate.getTime() - d.getTime()) / 86400000);
-        if (diff === 0 || diff === streak) {
-            streak++;
-            checkDate = d;
-        } else {
-            break;
-        }
+        dayStamps.add(d.getTime());
+    }
+    if (dayStamps.size === 0) return 0;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let cursor = today.getTime();
+    const ONE_DAY = 86400000;
+
+    // Streak survives if today is checked, OR if yesterday was the last check (grace).
+    if (!dayStamps.has(cursor)) {
+        const yesterday = cursor - ONE_DAY;
+        if (!dayStamps.has(yesterday)) return 0;
+        cursor = yesterday;
+    }
+
+    let streak = 0;
+    while (dayStamps.has(cursor)) {
+        streak++;
+        cursor -= ONE_DAY;
     }
     return streak;
 }

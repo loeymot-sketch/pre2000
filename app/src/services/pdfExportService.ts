@@ -1,4 +1,6 @@
+import { theme } from '../theme';
 import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 import { shareAsync } from 'expo-sharing';
 import { format } from 'date-fns';
 import { Locale } from 'date-fns';
@@ -38,14 +40,14 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
             @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
 
             :root {
-                --primary: #FF6B9D;
-                --primary-dark: #C2185B;
-                --primary-light: #FFC1E3;
-                --bg: #FFF5F8;
-                --text: #4E342E;
-                --text-light: #8D6E63;
-                --white: #FFFFFF;
-                --shadow: 0 4px 12px rgba(255, 107, 157, 0.15);
+                --primary: ${theme.colors.primary};
+                --primary-dark: ${theme.colors.accent};
+                --primary-light: ${theme.colors.border};
+                --bg: ${theme.colors.background};
+                --text: ${theme.colors.text};
+                --text-light: ${theme.colors.textLight};
+                --white: ${theme.colors.white};
+                --shadow: ${theme.shadows.pdfRoot};
             }
 
             * { box-sizing: border-box; }
@@ -53,7 +55,7 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
             body {
                 font-family: 'Outfit', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
                 color: var(--text);
-                background-color: #FFFFFF;
+                background-color: ${theme.colors.white};
                 margin: 0;
                 padding: 0;
                 line-height: 1.6;
@@ -61,14 +63,14 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
 
             /* Header Section with Gradient */
             .header-banner {
-                background: linear-gradient(135deg, #FF6B9D 0%, #C2185B 100%);
+                background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%);
                 color: white;
                 padding: 40px 40px 60px;
                 border-bottom-left-radius: 40px;
                 border-bottom-right-radius: 40px;
                 text-align: center;
                 margin-bottom: -30px; /* Overlap effect */
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                box-shadow: ${theme.shadows.pdfHeader};
             }
 
             .app-brand {
@@ -105,7 +107,7 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
                 padding: 24px;
                 margin-bottom: 24px;
                 box-shadow: var(--shadow);
-                border: 1px solid rgba(255, 255, 255, 0.5);
+                border: 1px solid ${theme.colors.whiteAlpha50};
             }
 
             /* Section Headers within Content */
@@ -167,14 +169,14 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
             }
             td {
                 padding: 12px;
-                border-bottom: 1px solid #F0F0F0;
+                border-bottom: 1px solid ${theme.colors.borderLight};
                 color: var(--text);
             }
             tr:last-child td {
                 border-bottom: none;
             }
             tr:nth-child(even) td {
-                background: #FFFCFD;
+                background: ${theme.colors.surfaceRowZebra};
             }
             
             /* Notes Section */
@@ -192,10 +194,10 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
             .note-content {
                 font-size: 14px;
                 color: var(--text);
-                background: #FFFEF0; /* Post-it feel */
+                background: ${theme.colors.surfaceStickyNote}; /* Post-it feel */
                 padding: 10px;
                 border-radius: 8px;
-                border-left: 3px solid #FFD54F;
+                border-left: 3px solid ${theme.colors.amber300};
             }
 
             /* Footer */
@@ -203,7 +205,7 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
                 text-align: center;
                 margin-top: 40px;
                 padding-top: 20px;
-                border-top: 1px solid #F0F0F0;
+                border-top: 1px solid ${theme.colors.borderLight};
                 color: var(--text-light);
                 font-size: 12px;
             }
@@ -215,7 +217,7 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
                 color: var(--text-light);
                 text-align: center;
                 padding: 20px;
-                background: #F9F9F9;
+                background: ${theme.colors.surfaceGrayStripe};
                 border-radius: 12px;
             }
         </style>
@@ -293,7 +295,7 @@ const generateHTML = (data: JournalData, t: TFunction, locale: Locale, langCode:
                         <tr>
                             <td>${format(new Date(a.date), 'dd/MM/yyyy HH:mm')}</td>
                             <td><span style="color: var(--primary-dark); font-weight: 500;">${a.title}</span></td>
-                            <td style="font-size: 13px; color: #666;">${a.notes || '-'}</td>
+                            <td style="font-size: 13px; color: ${theme.colors.textSecondary};">${a.notes || '-'}</td>
                         </tr>
                         `).join('')}
                     </tbody>
@@ -335,7 +337,9 @@ export const generateAndSharePDF = async (data: JournalData, t: TFunction, local
 
         log.info('PDF generated at:', uri);
 
-        if (await shareAsync) {
+        // P3.5 FIX: was `if (await shareAsync)` which awaits the function reference (always truthy)
+        // → "sharing not available" branch was dead. Use the SDK availability probe.
+        if (await Sharing.isAvailableAsync()) {
             await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf', dialogTitle: fileName });
         } else {
             log.warn('Sharing is not available on this platform');

@@ -2,10 +2,11 @@ import { createLogger } from '../../utils/logger';
 const log = createLogger('TasksTab');
 import React, { useState, useEffect } from 'react';
 import { theme } from '../../theme';
+import { RtlAwareChevron } from '../../components/common/RtlAwareChevron';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { confirmAction } from '../../utils/uiUtils';
 import { getShadowStyle } from '../../utils/styleUtils';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import { usePregnancy } from '../../context/PregnancyContext';
 import { useToast } from '../../context/ToastContext';
@@ -21,7 +22,6 @@ import { loadUserEvents } from '../../services/calendarService';
 import { UserEvent } from '../../types';
 import { format, isSameDay } from 'date-fns';
 import { useDateLocale } from '../../hooks/useDateLocale';
-import { registerNotificationResponseListener } from '../../services/notificationService';
 import { trackPositiveAction } from '../../services/inAppReviewService';
 import { useScreenAnalytics } from '../../hooks/useScreenAnalytics';
 
@@ -30,6 +30,7 @@ export const TasksTab = () => {
     const { user, firebaseUser } = useAuth();
     const { pregnancyInfo } = usePregnancy();
     const navigation = useNavigation();
+    const route = useRoute();
     const { t } = useTranslation();
     const dateLocale = useDateLocale();
     const [weeklyTasks, setWeeklyTasks] = useState<WeeklyTask[]>([]);
@@ -51,22 +52,25 @@ export const TasksTab = () => {
 
     const [highlightReminderId, setHighlightReminderId] = useState<string | null>(null);
 
+    // P-FIX (deep-link): Notification tap is handled by the global listener in App.tsx
+    // (AppInitializer). It calls navigationRef.navigate('Rappels', { screen: 'TasksTab',
+    // params: { highlightId } }) — even before TasksTab has ever been mounted. We just
+    // read that param here on focus, flash the row, then clear the param so re-focusing
+    // the tab manually doesn't re-trigger the highlight.
+    const highlightIdParam = (route.params as { highlightId?: string } | undefined)?.highlightId;
+
     useFocusEffect(
         React.useCallback(() => {
             loadTasks();
 
-            // Register notification listener
-            const subscription = registerNotificationResponseListener((reminderId: string) => {
-                log.info('Deep link to reminder:', reminderId);
-                setHighlightReminderId(reminderId);
-                // Clear highlight after 3 seconds
-                setTimeout(() => setHighlightReminderId(null), 3000);
-            });
-
-            return () => {
-                subscription.remove();
-            };
-        }, [pregnancyInfo?.week, user])
+            if (highlightIdParam) {
+                log.info('Deep link to reminder:', highlightIdParam);
+                setHighlightReminderId(highlightIdParam);
+                const timer = setTimeout(() => setHighlightReminderId(null), 3000);
+                navigation.setParams({ highlightId: undefined } as never);
+                return () => clearTimeout(timer);
+            }
+        }, [pregnancyInfo?.week, user, highlightIdParam])
     );
 
     const loadTasks = async () => {
@@ -209,6 +213,9 @@ export const TasksTab = () => {
                         setEditingTask(undefined);
                         setShowAddModal(true);
                     }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('tasks.newTask')}
+                    accessibilityHint={t('a11y.addNew')}
                 >
                     <Text style={styles.addTaskButtonText}>{t('tasks.newTask')}</Text>
                 </TouchableOpacity>
@@ -228,6 +235,9 @@ export const TasksTab = () => {
             <TouchableOpacity
                 style={styles.completedTasksLink}
                 onPress={() => navigation.navigate('Statistics')}
+                accessibilityRole="button"
+                accessibilityLabel={t('tasks.viewStats')}
+                accessibilityHint={t('a11y.openItem')}
             >
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, marginEnd: 12 }}>📊</Text>
@@ -235,7 +245,7 @@ export const TasksTab = () => {
                         {t('tasks.viewStats')}
                     </Text>
                 </View>
-                <Text style={styles.completedTasksArrow}>›</Text>
+                <RtlAwareChevron direction="forward" size={22} color={theme.colors.textLight} />
             </TouchableOpacity>
 
             {/* Weekly Tasks */}
@@ -356,7 +366,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontSize: 16,
-        color: '#999',
+        color: theme.colors.neutral400,
         textAlign: 'center',
     },
     completedTasksLink: {
@@ -368,7 +378,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
         padding: 14,
         borderRadius: 10,
-        shadowColor: "#000",
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
@@ -379,10 +389,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: theme.colors.textSecondary,
     },
-    completedTasksArrow: {
-        fontSize: 20,
-        color: theme.colors.textSecondary,
-    },
     taskSection: {
         marginTop: 24,
         marginHorizontal: 16,
@@ -390,7 +396,7 @@ const styles = StyleSheet.create({
     sectionLabel: {
         fontSize: 12,
         fontWeight: '700',
-        color: '#999',
+        color: theme.colors.neutral400,
         letterSpacing: 0.5,
         marginBottom: 12,
     },
@@ -401,16 +407,16 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.white,
         borderRadius: theme.borderRadius.l,
         marginBottom: 12,
-        ...getShadowStyle(4, '#000', 0.08, 8, { width: 0, height: 2 }),
+        ...getShadowStyle(4, theme.colors.black, 0.08, 8, { width: 0, height: 2 }),
         borderWidth: 1,
         borderColor: 'transparent',
     },
     taskCardCompleted: {
         opacity: 0.8,
-        backgroundColor: '#FAFAFA',
-        ...getShadowStyle(0, '#000', 0, 0, { width: 0, height: 0 }),
+        backgroundColor: theme.colors.neutral25,
+        ...getShadowStyle(0, theme.colors.black, 0, 0, { width: 0, height: 0 }),
         borderWidth: 1,
-        borderColor: '#EEE',
+        borderColor: theme.colors.neutral150,
     },
     taskCheckbox: {
         width: 24,
@@ -442,7 +448,7 @@ const styles = StyleSheet.create({
     },
     taskTitleCompleted: {
         textDecorationLine: 'line-through',
-        color: '#AAA',
+        color: theme.colors.gray500,
     },
     taskMeta: {
         fontSize: 13,

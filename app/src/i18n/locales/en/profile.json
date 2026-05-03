@@ -78,6 +78,9 @@
     "deleteAccountError": "Error deleting account.",
     "height": "Height (cm)",
     "prePregnancyWeight": "Pre-pregnancy weight (kg)",
+    "heightPlaceholder": "e.g. 165",
+    "weightPlaceholderShort": "e.g. 60",
+    "deleteContactConfirm": "This action cannot be undone.",
     "physicalData": "Physical data",
     "errorInvalidDate": "The pregnancy start date seems incorrect. Please check and try again."
 }

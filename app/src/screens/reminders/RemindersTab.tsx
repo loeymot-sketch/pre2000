@@ -50,6 +50,7 @@ import { useTranslation } from 'react-i18next';
 import { Trilang } from '../../types/remindersV2';
 import { getLocalizedTrilang } from '../../utils/i18nHelpers';
 import { theme } from '../../theme';
+import { RtlAwareChevron } from '../../components/common/RtlAwareChevron';
 import { syncRemindersToNotifications } from '../../services/remindersScheduler';
 import { useScreenAnalytics } from '../../hooks/useScreenAnalytics';
 
@@ -186,9 +187,13 @@ const EssentialsList: React.FC<EssentialsListProps> = ({
                                 <Switch
                                     value={isEnabled}
                                     onValueChange={(value) => onToggle(reminder, value)}
-                                    trackColor={{ false: theme.colors.disabled, true: '#FF80AB' }}
-                                    thumbColor={'#FFF'}
-                                    ios_backgroundColor="#E0E0E0"
+                                    trackColor={{ false: theme.colors.disabled, true: theme.colors.pinkAccentA100 }}
+                                    thumbColor={theme.colors.white}
+                                    ios_backgroundColor={theme.colors.disabled}
+                                    accessibilityRole="switch"
+                                    accessibilityLabel={getLocalizedContent(reminder.title)}
+                                    accessibilityHint={t('a11y.toggleReminder')}
+                                    accessibilityState={{ checked: isEnabled }}
                                 />
                             </View>
                             {/* Summary row when enabled - same as ReminderCardV2 */}
@@ -197,7 +202,13 @@ const EssentialsList: React.FC<EssentialsListProps> = ({
                                     <Text style={styles.essentialSummaryText}>
                                         📆 {intensity}×/{frequencyLabel} • {formatTimes(times)}
                                     </Text>
-                                    <TouchableOpacity onPress={() => onEdit(reminder)} style={styles.essentialEditButton}>
+                                    <TouchableOpacity
+                                        onPress={() => onEdit(reminder)}
+                                        style={styles.essentialEditButton}
+                                        accessibilityRole="button"
+                                        accessibilityLabel={t('a11y.edit')}
+                                        accessibilityHint={getLocalizedContent(reminder.title)}
+                                    >
                                         <Text style={styles.essentialEditIcon}>⚙️</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -333,8 +344,10 @@ export const RemindersTab = () => {
                 <TouchableOpacity
                     onPress={loadData}
                     style={{ backgroundColor: theme.colors.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 20 }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.retry')}
                 >
-                    <Text style={{ color: '#fff', fontWeight: '700' }}>{t('common.retry')}</Text>
+                    <Text style={{ color: theme.colors.white, fontWeight: '700' }}>{t('common.retry')}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -343,7 +356,7 @@ export const RemindersTab = () => {
     if (loading || !profile) {
         return (
             <View style={styles.centerContainer}>
-                <ActivityIndicator size="large" color="#FF6B9D" />
+                <ActivityIndicator size="large" color={theme.colors.primary} />
                 <Text style={styles.loadingText}>{t('common.loading')}</Text>
             </View>
         );
@@ -391,6 +404,10 @@ export const RemindersTab = () => {
                     style={[styles.sectionHeader, expanded && styles.sectionHeaderExpanded]}
                     onPress={toggleExpanded}
                     activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityLabel={title}
+                    accessibilityHint={expanded ? t('a11y.collapseSection') : t('a11y.expandSection')}
+                    accessibilityState={{ expanded }}
                 >
                     <View style={styles.sectionHeaderLeft}>
                         <View style={styles.sectionIconContainer}>
@@ -403,9 +420,12 @@ export const RemindersTab = () => {
                             </Text>
                         </View>
                     </View>
-                    <Text style={[styles.sectionArrow, expanded && styles.sectionArrowRotated]}>
-                        ›
-                    </Text>
+                    <RtlAwareChevron
+                        direction="forward"
+                        size={24}
+                        color={expanded ? theme.colors.primary : theme.colors.disabled}
+                        style={[styles.sectionArrowBase, expanded ? styles.sectionArrowRotated : styles.sectionArrowCollapsed]}
+                    />
                 </TouchableOpacity>
 
                 {expanded && (
@@ -536,7 +556,7 @@ export const RemindersTab = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA', // Lighter background
+        backgroundColor: theme.colors.neutral25, // Lighter background
     },
     scrollContainer: {
         flex: 1,
@@ -555,12 +575,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     permissionBanner: {
-        backgroundColor: '#FFF3CD',
+        backgroundColor: theme.colors.warningSoftBg,
         padding: 12,
     },
     permissionText: {
         fontSize: 13,
-        color: '#856404',
+        color: theme.colors.warningTextDark,
         textAlign: 'center',
     },
 
@@ -577,7 +597,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 28,
         fontWeight: '800',
-        color: '#333',
+        color: theme.colors.neutral900,
         marginBottom: 4,
     },
     headerSubtitle: {
@@ -594,7 +614,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#424242',
+        color: theme.colors.neutral900,
         marginBottom: 12,
         marginStart: 4,
     },
@@ -603,7 +623,7 @@ const styles = StyleSheet.create({
     essentialsContainer: {
         backgroundColor: theme.colors.white,
         borderRadius: 20,
-        ...getShadowStyle(4, '#000', 0.05, 8, { width: 0, height: 2 }),
+        ...getShadowStyle(4, theme.colors.black, 0.05, 8, { width: 0, height: 2 }),
         overflow: 'hidden',
     },
     essentialCard: {
@@ -611,7 +631,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#F5F5F5',
+        borderBottomColor: theme.colors.divider,
     },
     essentialContent: {
         flexDirection: 'row',
@@ -623,7 +643,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 12,
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
         justifyContent: 'center',
         alignItems: 'center',
         marginEnd: 12,
@@ -638,7 +658,7 @@ const styles = StyleSheet.create({
     essentialName: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.text,
         marginBottom: 2,
     },
     essentialDesc: {
@@ -647,20 +667,20 @@ const styles = StyleSheet.create({
     },
     essentialsNote: {
         fontSize: 12,
-        color: '#AAA',
+        color: theme.colors.gray500,
         textAlign: 'center',
         marginTop: 12,
         fontStyle: 'italic',
     },
     reassuringText: {
         fontSize: 12,
-        color: '#AD1457',
+        color: theme.colors.pinkDark700,
         paddingHorizontal: 16,
         paddingBottom: 12,
         fontStyle: 'italic',
-        backgroundColor: '#FFF0F5',
+        backgroundColor: theme.colors.lavenderBlush,
         borderBottomWidth: 1,
-        borderBottomColor: '#F5F5F5',
+        borderBottomColor: theme.colors.divider,
     },
     // New unified styles to match ReminderCardV2
     essentialMainRow: {
@@ -674,7 +694,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         marginTop: 8,
         borderTopWidth: 1,
-        borderTopColor: '#F5F5F5',
+        borderTopColor: theme.colors.divider,
     },
     essentialSummaryText: {
         fontSize: 13,
@@ -692,7 +712,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.white,
         borderRadius: 16,
         marginBottom: 12,
-        ...getShadowStyle(2, '#000', 0.03, 4, { width: 0, height: 1 }),
+        ...getShadowStyle(2, theme.colors.black, 0.03, 4, { width: 0, height: 1 }),
         overflow: 'hidden',
     },
     sectionHeader: {
@@ -714,7 +734,7 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 10,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.surface,
         justifyContent: 'center',
         alignItems: 'center',
         marginEnd: 12,
@@ -725,31 +745,31 @@ const styles = StyleSheet.create({
     sectionHeaderTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.text,
     },
     sectionCount: {
         fontSize: 12,
-        color: '#999',
+        color: theme.colors.textSecondary,
         marginTop: 2,
     },
-    sectionArrow: {
-        fontSize: 24,
-        color: theme.colors.disabled,
+    /** Base typographie chevron accordion — rotation appliquée via sectionArrowCollapsed / Rotated */
+    sectionArrowBase: {
         fontWeight: '300',
+    },
+    sectionArrowCollapsed: {
         transform: [{ rotate: '90deg' }],
     },
     sectionArrowRotated: {
         transform: [{ rotate: '-90deg' }],
-        color: theme.colors.primary,
     },
     sectionContent: {
         borderTopWidth: 1,
-        borderTopColor: '#F5F5F5',
+        borderTopColor: theme.colors.divider,
     },
 
     // Cap Banner
     capBanner: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.surfaceGreenTint,
         padding: 16,
         marginHorizontal: 16,
         marginBottom: 24,
@@ -758,12 +778,12 @@ const styles = StyleSheet.create({
     },
     capBannerText: {
         fontSize: 14,
-        color: '#2E7D32',
+        color: theme.colors.green800,
         fontWeight: '600',
         marginBottom: 4,
     },
     capBannerSubtext: {
         fontSize: 12,
-        color: '#66BB6A',
+        color: theme.colors.green400,
     },
 });

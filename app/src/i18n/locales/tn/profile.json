@@ -78,6 +78,9 @@
     "deleteAccountError": "فما مشكلة في تفسيخ الكونت.",
     "height": "الطول (سم)",
     "prePregnancyWeight": "الوزن قبل الحمل (كغ)",
+    "heightPlaceholder": "مثال: 165",
+    "weightPlaceholderShort": "مثال: 60",
+    "deleteContactConfirm": "ما رجعتش للورا.",
     "physicalData": "المعطيات الجسدية",
     "errorInvalidDate": "تاريخ بداية الحمل ما صحيحش. راجعي وعاودي."
 }
