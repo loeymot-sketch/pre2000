@@ -37,6 +37,10 @@ jobs:
         working-directory: ./app
         run: npm ci
 
+      - name: Verify (theme SSOT + typecheck + unit tests)
+        working-directory: ./app
+        run: npm run verify
+
       - name: Build on EAS
         working-directory: ./app
         run: eas build --platform all --profile preview --non-interactive
