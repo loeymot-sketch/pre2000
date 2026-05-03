@@ -1,120 +1,137 @@
-# Audit post-commits + plan orchestré — 2026-05-03
+# Audit post-boucle (push fait) + plan de correction — 2026-05-03 (rev 2)
 
-Document de synthèse après les lots **C1/C2** (SSOT couleurs, `verify`, CI), **M2** (découpage commits), et le mega-commit applicatif `6ec5481`.
+État après les boucles **C1 / C2 / M2 / C3 / H1 / I1** + le `git push origin main`
+(commits jusqu'à `cd61d0b`).
 
 ---
 
 ## 1. Verdict global
 
 | Verdict | Détail |
-|--------|--------|
-| **Mergeable (technique)** | Oui — `npm run verify` vert : `lint:colors` + `tsc` + **294** tests Jest. |
-| **Mergeable (produit)** | Conditionnel — revue humaine recommandée sur **Firestore rules**, **auth/export/notifications** (contenu du commit `6ec5481`), et **smoke visuel** (RTL + écrans sensibles). |
-
-**Synthèse :** la base est **cohérente et gardée par la CI** ; les risques restants sont surtout **revue de fond**, **taille de diff**, et **preuve visuelle**, pas des régressions détectées par les tests actuels.
-
----
-
-## 2. Gates machine (preuve)
-
-| Gate | Commande / critère | Résultat |
-|------|-------------------|----------|
-| SSOT hex | `lint:colors` (hors `theme/index.ts` + `__tests__`) | OK |
-| SSOT `rgba(` | idem (hors `theme/index.ts` + `styleUtils.ts`) | OK |
-| Motifs CSS bug | `solid theme.colors` (aiguilles fixes) | **0** occurrence |
-| TypeScript | `tsc --noEmit` | OK |
-| Tests | Jest — 24 suites | **294 / 294** |
-| CI GitHub | `ci.yml` + `eas-build.yml` appellent `npm run verify` | OK (à valider au **premier push** sur `origin`) |
+|---------|--------|
+| **Code mergé `main`** | OUI — push réussi (`4cdc2f2..cd61d0b`). |
+| **CI distante prouve quoi ?** | **RIEN** — voir bug bloquant **B1** ci-dessous. |
+| **Tests / typage / SSOT** | OK local — `npm run verify` vert, **294 / 294** Jest. |
+| **Action immédiate requise** | OUI — corriger B1 avant tout autre cycle. |
 
 ---
 
-## 3. Cohérence repo (git + structure)
+## 2. Gates machine (rappel)
 
-- **8 commits** au-dessus de `origin/main` : découpage logique (CI → theme → docs → common → tests → app massif → `.gitignore` racine).
-- **Point faible connu :** `6ec5481` concentre **117 fichiers** (écrans, services, i18n, assets, `firestore.rules`). C’est **acceptable pour livrer**, mais **coûteux à relire** et à cherry-pick. Les prochains lots devraient rester **< 30 fichiers** quand possible.
-- **Branche :** `main...origin/main [ahead 8]` — **push + PR** (ou push direct) restent à faire côté humain / réseau.
+| Gate | Résultat |
+|------|----------|
+| `lint:colors` (hex + `rgba(` + needles bug) | OK |
+| `tsc --noEmit` | OK |
+| Jest | **24 suites / 294 tests** |
+| `git status` | propre |
+| `main` poussé sur `origin` | OK (`cd61d0b`) |
 
----
-
-## 4. Risques résiduels (raisonnement)
-
-### R1 — Sévérité **haute** (process / sécurité)
-
-- **`firestore.rules`** et **`AuthContext`** ont voyagé dans le même commit massif que l’UI. Les tests (`firestoreRulesParity`, auth) **augmentent la confiance** mais ne remplacent pas une **relecture sécurité** (chemins `match`, `request.auth.uid`, données sensibles).
-
-**Action :** gate humain « security skim » avant prod ; idéalement PR dédiée rules/auth à l’avenir.
-
-### R2 — Sévérité **moyenne** (régressions visuelles)
-
-- Thème **alpha** + **RTL** : les tests ne voient pas les **contrastes** ni les **gradients** cassés.
-- **Action :** smoke manuel court (liste §6).
-
-### R3 — Sévérité **moyenne** (CI réelle)
-
-- Tant que GitHub Actions n’a **pas tourné** sur cette série de commits, reste une incertitude (cache npm, version Node 18 vs politique Expo, chemins `working-directory: ./app`). Probabilité de casse : **faible** (déjà validé en local).
-
-**Action :** ouvrir la PR et vérifier le run vert.
-
-### R4 — ~~Sévérité basse (dette technique)~~ **traité (C3)**
-
-- `buildShadow` (branche **web**) utilise désormais **`hexToRgba(color, opacity)`** ; `hexToRgba` vit dans `src/utils/hexToRgba.ts` (pas de cycle `theme` ↔ `styleUtils`).
-
-### R5 — ~~Hygiène tests~~ **partiellement traité (H1)**
-
-- Sous **`NODE_ENV=test`**, `logger.info` / `success` / `warn` / `debug` ne **loggent plus** en console ; **`logger.error`** reste inchangé.  
-- D’autres `console.*` directs dans des services peuvent encore apparaître — hors scope du logger central.
-
-### R6 — Sévérité **basse** (outillage)
-
-- `lint:colors` sans `rg` en local : fallback `grep` (déjà documenté). CI Ubuntu a souvent `rg` ; sinon le scan hex reste via `grep`.
-
-**Action :** optionnel — `sudo apt-get install ripgrep` dans le job CI.
+Reste hors du thème **couleurs/RTL** : aucun `#hex` ni `rgba(` parasite ; aucun `getShadowStyle('rgba…'` ni `'#…'` (la dette **R4** est bien refermée).
 
 ---
 
-## 5. Plan de correction orchestré (cycles)
+## 3. Bugs / risques détectés en post-push
 
-Convention : **PLAN → EXECUTE → VALIDATE** avec `npm run verify` en fin de lot.
+### 🔴 B1 — Workflows GitHub Actions au mauvais endroit (BLOQUANT)
 
-| ID | Objectif | Fichiers typiques | Gate |
-|----|----------|-------------------|------|
-| **C3** | ~~Corriger `buildShadow` web~~ **fait** | `theme/index.ts`, `utils/hexToRgba.ts`, `styleUtils.ts`, `check-theme-strings.sh` | `verify` |
-| **H1** | ~~Silence logger en Jest~~ **fait** (partiel) | `logger.ts` | `verify` |
-| **I1** | ~~Option CI : installer `rg`~~ **fait** | `ci.yml`, `eas-build.yml` | run GH vert |
-| **V1** | Smoke visuel manuel (FR + AR/TN) | — | checklist humaine |
-| **G1** | Push `main` → `origin` + vérifier Actions | — | humain |
-| **R2** | (Option) Éclater rétroactivement `6ec5481` en 3–5 commits via `git rebase -i` **avant push** si l’équipe exige historique fin | — | **humain** (risque de réécrire l’historique) |
+**Symptôme :** `gh api repos/.../actions/workflows` renvoie liste vide ; `gh workflow list` vide.
 
-**Recommandation :** ne **pas** rebaser `6ec5481` si `main` est déjà poussé partagé ; à la place, **discipline forward** sur les prochains lots.
+**Cause :** GitHub ne lit les workflows **qu'à la racine** du dépôt :
+
+```
+.github/workflows/*.yml        ✅ détecté
+app/.github/workflows/*.yml    ❌ ignoré
+```
+
+Les workflows actuels sont sous `app/.github/workflows/{ci,eas-build}.yml` → **aucun job ne s'exécute** depuis le push. La promesse "verify dans la CI" est cassée côté distant. Le code passe localement mais aucune preuve sur le repo.
+
+**Sévérité :** haute (le filet de sécurité CI n'existe pas tant que ce n'est pas corrigé).
+
+**Fix proposé (cycle B1) :**
+1. `git mv app/.github .github` (déplacer le dossier).
+2. Ajuster les `working-directory: ./app` (déjà bons).
+3. Push → vérifier `gh run list` revient avec des runs.
+
+### 🟠 B2 — `findFirstError` peut perdre l'Error en `error: Error`
+
+**Constat code (`logger.ts:80`) :**
+```ts
+const findFirstError = (args: any[]): Error | undefined => {
+    for (const a of args) if (a instanceof Error) return a;
+    return undefined;
+};
+```
+Combiné à H1 récent : OK pour `info/warn/debug`, **mais** sous Jest les tests qui assertent un `console.error` continueront à voir l'erreur (souhaité). Pas de régression. **Faux positif initial — RAS.**
+
+### 🟡 B3 — Workflow EAS conditionne sur `release/*` uniquement
+
+**Constat (`eas-build.yml`) :** `branches: [release/*]`. Donc même corrigé (B1), `eas-build` ne tournera pas sur `main`. C'est un **choix produit** valide (build EAS = release explicite), mais à documenter.
+
+**Sévérité :** info — pas de bug.
+
+### 🟡 B4 — Ouverture massive de fichiers communs au commit `feat(app)` (117 fichiers)
+
+Déjà signalé. **Pas un bug**, mais le `firestore.rules` et `AuthContext.tsx` voyagent dans le même commit que des écrans UI. Une **PR security skim** humaine est toujours dûe.
+
+### 🟢 B5 — `react-native-web` mappé pour Jest
+
+`jest.config.js` : `'^react-native$': 'react-native-web'`. Cela **fonctionne** (294 tests verts), mais ça veut dire que toute la branche **iOS/Android** de `Platform.OS` n'est testée par personne (les conditionnels `Platform.OS === 'android' | 'ios' | 'web'` ne sont effectivement testés qu'en **web**). Notamment `getShadowStyle` et `buildShadow` : la branche corrigée (web) est exercée, les branches iOS/Android ne le sont pas. **Acceptable** (pas un bug), mais à connaître.
+
+### 🟡 B6 — Tests log noise restant
+
+Le bruit qu'on voit dans `verify` (`Object.<anonymous> (src/services/__tests__/dailyChecklistService.test.ts:7:1)`) provient d'un **import side-effect d'`expo-modules-core`** au démarrage (chargement de Sentry / setUpJsLogger). Ce n'est pas du `logger.info` (qui est silencé), c'est un `console.log` natif d'Expo. Mocker `expo-modules-core` complet est risqué ; une suite plus fine consisterait à mocker `expo-updates` + `Updates` dans Jest.
+
+**Sévérité :** basse (cosmétique).
+
+### 🟡 B7 — Grosseur des écrans (HomeScreen 1756 lignes, OnboardingScreen 1830 lignes)
+
+Dette pré-existante. Hors scope SSOT couleurs.
 
 ---
 
-## 6. Checklist smoke manuel (V1) — 15–20 min
+## 4. Cohérence repo
 
-1. **Home** — header gradient, chevrons semaine, modale profil, `EmptyState` / `Skeleton` si déclenchés.  
-2. **Calendrier** — header, badges, toggle de vue, RTL **ar** ou **tn**.  
-3. **Statistiques** — graphiques (couleurs axes), streak.  
-4. **Export PDF** — une génération : en-tête, ombre cartes (`theme.shadows`).  
-5. **Onboarding** — retour matériel (`BackHandler`) sans boucle.  
+```
+HEAD = cd61d0b   docs: mark I1 done in post-commit audit missions
+       195aeea   chore(ci): install ripgrep on Ubuntu when missing before verify
+       3b8b67e   fix(theme): web buildShadow uses hexToRgba; extract hexToRgba module
+       4a20d73   chore: stop tracking root .DS_Store, add repo .gitignore
+       6ec5481   feat(app): screens, services, i18n, assets, Firestore rules
+       bc73b85   test: streak, Firestore rules parity, health merge, guest migrate, RDV TZ
+       14ce66f   test(context): Auth GDPR/login tests, emergency contacts, Sentry mock
+       7bd10aa   feat(common): RtlAwareChevron, Badge, Skeleton, EmptyState, helpers
+       a34dc88   docs: orchestration loop, hex/RTL plan, changelog, architecture
+       97cf11d   feat(theme): SSOT palette, pdf shadows, lint:colors, hexToRgba guard
+       703443a   chore(ci): run npm run verify on PR and before EAS build
+```
 
-Critère d’échec : texte illisible, chevron du mauvais côté, overlay noir complet, PDF blanc cassé.
-
----
-
-## 7. Missions restantes (ordre suggéré)
-
-1. **`git push origin main`** (ou PR) — débloque la **preuve CI** (R3).  
-2. **V1** — smoke §6 ; noter les écarts dans une issue ou `CHANGELOG` « Known UI ».  
-3. **C3** — alignement ombre web `buildShadow` (dette R4).  
-4. **H1** — silence logs tests (R5).  
-5. **Roadmap produit bloquée** (hors ce doc) — paiement, iCloud, fournisseur externe : prérequis humains déjà décrits dans `ORCHESTRATION_LOOP.md` §4.
+11 commits propres au-dessus du baseline. **Aucun fichier non commité**, aucun `.DS_Store` suivi.
 
 ---
 
-## 8. Conclusion
+## 5. Plan de correction orchestré (ordre exécutable)
 
-- **Côté machine :** tout est **bon** — SSOT couleurs/`rgba`, typage, tests, CI configurée.  
-- **Côté livraison :** il manque la **preuve distante** (Actions), la **revue** du bloc sécurité/rules/auth, et un **smoke visuel** RTL.  
-- **Plan de correction** : cycles **C3**, **H1**, **I1** (option), plus **V1** + **G1** humains.
+| # | ID | Type | Action | Gate |
+|---|----|------|--------|------|
+| 1 | **B1** | 🔴 critique | `git mv app/.github .github` + commit + push | `gh run list` non vide |
+| 2 | **G1** | gate humain | Vérifier que le 1er run CI passe vert sur `cd61d0b+B1` | run vert |
+| 3 | **B6** | 🟡 confort | Mocker `expo-updates` dans Jest pour silence total | `verify` toujours vert |
+| 4 | **V1** | gate humain | Smoke visuel Home / Calendrier / Stats / PDF en `fr` puis `ar`/`tn` | aucun écart bloquant |
+| 5 | **R1** | 🟠 process | PR review humaine **rules + auth** (commit `6ec5481`) | sign-off humain |
+| 6 | **B7** | 🟡 dette | Refacto progressif `HomeScreen` / `OnboardingScreen` en sous-composants | `verify` + diff < 30 fichiers / cycle |
 
-*Dernière boucle : **C3** + **H1** exécutés localement (`verify` vert). Prochaine mise à jour : après premier run GitHub Actions + smoke **V1**.*
+### Hors scope ce cycle (déjà documenté dans `ORCHESTRATION_LOOP.md` §4)
+- Phase A — paiement (RevenueCat / Stripe) : prérequis humains.
+- Phase B — iCloud / CalDAV : prérequis humains.
+- Phase C — fournisseur externe : nom + contrat manquants.
+
+---
+
+## 6. Décision
+
+1. Exécuter **B1 maintenant** (autonome, scope clair, faible risque).
+2. Vérifier la **première exécution CI** (G1) — j'ai accès `gh`, je peux lire les runs.
+3. Optionnel : enchaîner **B6** (confort tests) si tu valides.
+4. **STOP autonome** sur **R1** (relecture sécurité humaine) et **V1** (smoke visuel humain) — pas de gate auto.
+
+**Je continue sur B1 maintenant.**
