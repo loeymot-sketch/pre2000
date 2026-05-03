@@ -1,0 +1,2 @@
+# macOS (repo root — app/.gitignore couvre app/)
+.DS_Store
