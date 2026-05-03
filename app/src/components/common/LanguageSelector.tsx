@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     selectorButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: theme.colors.whiteAlpha50,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 20,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: theme.colors.blackAlpha50,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         padding: 20,
         width: '80%',
         maxWidth: 300,
-        shadowColor: '#000',
+        shadowColor: theme.colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,

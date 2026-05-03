@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { theme } from '../../theme';
 import { getShadowStyle } from '../../utils/styleUtils';
 
 // Enable LayoutAnimation on Android
@@ -26,8 +28,9 @@ export const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
     shortContent,
     bullets = [],
     defaultExpanded = false,
-    accentColor = '#C2185B',
+    accentColor = theme.colors.accent,
 }) => {
+    const { t } = useTranslation();
     const [expanded, setExpanded] = useState(defaultExpanded);
 
     // Parse bullets if it's a string (newline separated)
@@ -62,7 +65,7 @@ export const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
                             </Text>
                             <View style={styles.seeMoreContainer}>
                                 <Text style={[styles.seeMore, { color: accentColor }]}>
-                                    👁️ Voir plus
+                                    👁️ {t('common.seeMore')}
                                 </Text>
                             </View>
                         </View>
@@ -84,9 +87,14 @@ export const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
                         )}
 
                         {/* See less button */}
-                        <TouchableOpacity onPress={toggleExpanded} style={styles.seeLessContainer}>
+                        <TouchableOpacity
+                            onPress={toggleExpanded}
+                            style={styles.seeLessContainer}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('common.seeLess')}
+                        >
                             <Text style={[styles.seeLess, { color: accentColor }]}>
-                                👁️ Voir moins
+                                👁️ {t('common.seeLess')}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -98,20 +106,20 @@ export const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 16,
-        marginVertical: 8,
+        marginHorizontal: theme.spacing.m,
+        marginVertical: theme.spacing.s,
     },
     card: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        padding: 16,
-        ...getShadowStyle(3, '#000', 0.1, 4, { width: 0, height: 2 }),
+        backgroundColor: theme.colors.cardBackground,
+        borderRadius: theme.borderRadius.l,
+        padding: theme.spacing.m,
+        ...getShadowStyle(3, theme.colors.text, 0.1, 4, { width: 0, height: 2 }),
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: theme.spacing.s,
     },
     titleRow: {
         flexDirection: 'row',
@@ -120,7 +128,7 @@ const styles = StyleSheet.create({
     },
     emoji: {
         fontSize: 24,
-        marginEnd: 8,
+        marginEnd: theme.spacing.s,
     },
     title: {
         fontSize: 18,
@@ -129,19 +137,19 @@ const styles = StyleSheet.create({
     },
     chevron: {
         fontSize: 16,
-        color: '#999',
-        marginStart: 8,
+        color: theme.colors.textLight,
+        marginStart: theme.spacing.s,
     },
     preview: {
-        marginTop: 8,
+        marginTop: theme.spacing.s,
     },
     previewText: {
         fontSize: 15,
         lineHeight: 22,
-        color: '#424242',
+        color: theme.colors.text,
     },
     seeMoreContainer: {
-        marginTop: 8,
+        marginTop: theme.spacing.s,
         alignItems: 'flex-end',
     },
     seeMore: {
@@ -149,37 +157,37 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     fullContent: {
-        paddingHorizontal: 16,
-        paddingBottom: 16,
+        paddingHorizontal: theme.spacing.m,
+        paddingBottom: theme.spacing.m,
     },
     shortDescription: {
         fontSize: 15,
         lineHeight: 22,
-        color: '#424242',
-        marginBottom: 12,
+        color: theme.colors.text,
+        marginBottom: theme.spacing.s + 4,
     },
     bulletsContainer: {
-        marginTop: 8,
+        marginTop: theme.spacing.s,
     },
     bulletItem: {
         flexDirection: 'row',
-        marginBottom: 8,
+        marginBottom: theme.spacing.s,
         alignItems: 'flex-start',
     },
     bulletDot: {
         fontSize: 18,
-        color: '#C2185B',
-        marginEnd: 8,
+        color: theme.colors.accent,
+        marginEnd: theme.spacing.s,
         marginTop: 2,
     },
     bulletText: {
         fontSize: 14,
         lineHeight: 20,
-        color: '#616161',
+        color: theme.colors.textSecondary,
         flex: 1,
     },
     seeLessContainer: {
-        marginTop: 12,
+        marginTop: theme.spacing.s + 4,
         alignItems: 'flex-end',
     },
     seeLess: {

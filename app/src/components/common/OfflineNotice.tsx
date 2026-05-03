@@ -44,12 +44,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        color: '#FFFFFF',
+        color: theme.colors.white,
         fontWeight: 'bold',
         fontSize: 14,
     },
     subtext: {
-        color: '#FFFFFF',
+        color: theme.colors.white,
         fontSize: 12,
         marginTop: 2,
         textAlign: 'center',

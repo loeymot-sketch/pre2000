@@ -25,15 +25,17 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fee',
+        backgroundColor: theme.colors.feedbackErrorBg,
+        // RTL FIX: align logical border (Start) with logical color (StartColor) — was mixing
+        // borderStartWidth + borderLeftColor → in RTL the border had no color.
         borderStartWidth: 4,
-        borderLeftColor: '#dc3545',
+        borderStartColor: theme.colors.error,
         padding: theme.spacing.m,
         borderRadius: theme.borderRadius.s,
         marginTop: theme.spacing.m,
     },
     text: {
-        color: '#dc3545',
+        color: theme.colors.error,
         fontSize: 14,
         fontWeight: '500',
     },

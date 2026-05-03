@@ -18,15 +18,16 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#d4edda',
+        backgroundColor: theme.colors.feedbackSuccessBg,
+        // RTL FIX: aligned logical border + color (was Start+Left mismatch)
         borderStartWidth: 4,
-        borderLeftColor: '#28a745',
+        borderStartColor: theme.colors.success,
         padding: theme.spacing.m,
         borderRadius: theme.borderRadius.s,
         marginTop: theme.spacing.m,
     },
     text: {
-        color: '#155724',
+        color: theme.colors.feedbackSuccessText,
         fontSize: 14,
         fontWeight: '500',
     },
