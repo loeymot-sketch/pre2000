@@ -1,3 +1,4 @@
+import { theme } from '../theme';
 import { Platform, ViewStyle, TextStyle } from 'react-native';
 
 /**
@@ -7,14 +8,14 @@ import { Platform, ViewStyle, TextStyle } from 'react-native';
  * - Android: Uses `elevation`
  * 
  * @param elevation - Android elevation level (default: 5)
- * @param color - Shadow color (default: #000)
+ * @param color - Shadow color (default: theme.colors.black)
  * @param opacity - Shadow opacity (default: 0.2)
  * @param radius - Shadow radius (default: 4)
  * @param offset - Shadow offset (default: { width: 0, height: 2 })
  */
 export const getShadowStyle = (
     elevation: number = 5,
-    color: string = '#000000',
+    color: string = theme.colors.black,
     opacity: number = 0.2,
     radius: number = 4,
     offset: { width: number; height: number } = { width: 0, height: 2 }
@@ -48,7 +49,7 @@ export const getShadowStyle = (
  * - iOS/Android: Uses `textShadow*` props
  */
 export const getTextShadowStyle = (
-    color: string = '#000000',
+    color: string = theme.colors.black,
     opacity: number = 0.2,
     radius: number = 4,
     offset: { width: number; height: number } = { width: 0, height: 2 }
@@ -69,11 +70,17 @@ export const getTextShadowStyle = (
     };
 };
 
-// Helper to convert hex to rgba for web box-shadow
-const hexToRgba = (hex: string, opacity: number): string => {
+/** Convert `#RRGGBB` / `#RGB` to `rgba(r,g,b,a)`. Non-hex falls back to black. */
+export const hexToRgba = (hex: string, opacity: number): string => {
+    const h = hex.trim();
+    if (__DEV__ && !/^#([A-Fa-f0-9]{3}){1,2}$/.test(h)) {
+        console.warn(
+            `[hexToRgba] expected #RGB or #RRGGBB, got ${JSON.stringify(hex)} — using black fallback`
+        );
+    }
     let c: any;
-    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-        c = hex.substring(1).split('');
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(h)) {
+        c = h.substring(1).split('');
         if (c.length === 3) {
             c = [c[0], c[0], c[1], c[1], c[2], c[2]];
         }
