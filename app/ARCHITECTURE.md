@@ -154,36 +154,65 @@ export {
 
 ## 🗃️ Modèle de Données
 
-### Collections Firestore
+### Source-of-truth par feature (audited 2026-05)
+
+| Feature | Source réelle | Notes |
+|---|---|---|
+| Auth | Firebase Auth + AsyncStorage `user_profile` | Restauration rapide depuis cache |
+| Profil grossesse | Firestore `userProfiles/{uid}` (auth) ou AsyncStorage `guestProfile` (guest) + PregnancyContext | 3 sources synchronisées |
+| Home daily | Firestore `weeks`, `tips`, `babyMessages`, `articles` (recos), `userEvents`, `userTasks` | Pas de `calendarTemplates` direct |
+| Calendrier | Firestore `userEvents` + `calendarTemplates` | RDV temps réel + templates de suggestions |
+| Articles | Firestore `articles` ∪ `articlesAntigravity` (fusion) | Détail = priorité Antigravity, fallback `articles` |
+| Suppléments | Firestore `supplements` | Cache via `contentService` côté Home |
+| Health Dashboard | Firestore `healthMetrics`, `glucoseMetrics`, `symptomsLog`, `weight_entries`, `userEvents`, `userTaskStatuses` | `getMergedWeightHistory` fusionne `healthMetrics` + `weight_entries` |
+| Weight Tracker | Firestore `weight_entries` (via `weightService`) + AsyncStorage `@weight_entries_${uid}` (guest) | Distinct de `healthMetrics`, helper de fusion dans `healthService` |
+| Rappels V2 | Firestore `reminder_settings_v2` (auth) + AsyncStorage `reminders_v2_settings_guest` (guest) | Completions toujours en AsyncStorage par design |
+| Chatbot | **Local** : `LocalChatbotRepository` + `KeywordEngine` + `VectorEngine` sur `chatbot_data` (JSON embarqué) | Aucun appel LLM externe ; 100% offline ; RGPD-friendly |
+| Évolution Bébé | Statique : `babyGrowthData.ts` + assets `assets/images/baby-3d/month-{1..9}.png` | Lit la semaine via PregnancyContext uniquement |
+| Aliments interdits | Statique : `data/forbidden_foods.json` + i18n (fr/en/ar/tn) | TN partiel, fallback chain TN→AR→EN→FR |
+| Export PDF/JSON | Firestore (collections user) — voir `dataExportService.ts` | Parité requise avec `deleteAccount` (RGPD) |
+| Diagnostic | Firestore `getCountFromServer` sur catalogues publics | Bouton accessible en `__DEV__` uniquement |
+| Analytics | `firebase/analytics` (Web SDK) — **no-op en RN** | Migration vers `@react-native-firebase/analytics` requise |
+| i18n | JSON `src/i18n/locales/{fr,ar,en,tn}/*.json` + Firestore (champs suffixés `_fr`, `_ar`, etc.) | Helpers `getLocalizedContent` + `getLocalizedTrilang` |
+
+### Collections Firestore complètes
 
 ```
 firestore/
-├── users/
-│   └── {userId}/
-│       ├── profile: UserProfile
-│       ├── preferences: {...}
-│       └── ...
+├── users/{userId}                       # legacy, peu utilisé
+├── userProfiles/{userId}                # profil grossesse (auth)
 │
-├── userEvents/
-│   └── {eventId}/
-│       ├── user_id: string
-│       ├── title: string
-│       ├── date: timestamp
-│       └── ...
+├── userEvents/{eventId}                 # RDV (filtré par user_id)
+├── userTasks/{taskId}                   # tâches custom (filtré par user_id)
+├── userTaskStatuses/{statusId}          # complétion des reminders V1
+├── userReminderSettings/{settingId}     # réglages V1 (legacy)
 │
-├── healthMetrics/
-│   └── {metricId}/
-│       ├── user_id: string
-│       ├── type: 'weight' | 'blood_pressure'
-│       ├── value: number | object
-│       └── ...
+├── healthMetrics/{metricId}             # type: 'weight' | 'blood_pressure'
+├── weight_entries/{entryId}             # pipeline weightService (séparé)
+├── glucoseMetrics/{metricId}            # glycémie (P1.1 — rules ajoutées)
+├── symptomsLog/{logId}                  # symptômes du jour (P1.1 — rules ajoutées)
 │
-└── userTasks/
-    └── {taskId}/
-        ├── user_id: string
-        ├── completed: boolean
-        └── ...
+├── reminder_settings_v2/{userId}        # réglages V2 (auth)
+│
+└── [catalogues lecture publique — non liés à un user]
+    ├── weeks/{1..40}
+    ├── articles/{articleId}
+    ├── articlesAntigravity/{articleId}
+    ├── supplements/{supplementId}
+    ├── calendarTemplates/{templateId}
+    ├── reminderTemplates/{templateId}
+    ├── babyMessages/{messageId}
+    ├── tips/{tipId}
+    ├── redFlags/{flagId}
+    └── chatbotSuggestionsAG/{suggestionId}
 ```
+
+### Invariants critiques (vérifiés au build)
+
+1. **INV-2** : Toute collection écrite par le code DOIT avoir un `match` dans `firestore.rules`
+2. **INV-3** : Toute collection user DOIT être purgée par `AuthContext.deleteAccount()` (RGPD)
+3. **INV-5** : `syncRemindersToNotifications` DOIT recevoir `user.uid` (sinon fallback guest erroné)
+4. **INV-9** : Toute notif RDV DOIT utiliser le timezone du `user.country`
 
 ### Types Principaux
 
