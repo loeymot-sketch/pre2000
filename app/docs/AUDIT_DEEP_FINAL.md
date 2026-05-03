@@ -73,13 +73,13 @@ Chaque cycle s'est conclu par `verify` vert avant commit.
 ## 4. Dettes restantes (non-bloquantes)
 
 ### D1 — Fichiers volumineux
-| Fichier | Lignes |
-|---------|--------|
-| `OnboardingScreen.tsx` | 1 830 |
+| Fichier | Lignes (après UI-1) |
+|---------|---------------------|
+| `OnboardingScreen.tsx` | **~1 203** (+ `OnboardingScreen.styles.ts` ~580 + `onboardingConstants.ts` ~61) |
 | `HomeScreen.tsx` | 1 756 |
 | `WeightTrackerScreen.tsx` | 1 586 |
 
-Sévérité : basse (lisibilité, pas correctness). Refacto futur en sous-composants suivant le pattern `home/HomeHeader.tsx`, `home/BabyGrowthCard.tsx`, etc.
+**UI-1 (fait)** : styles + constantes extraits ; prochaine étape possible = sous-composants JSX (`OnboardingStep*`) pour passer **< 800** lignes sur le screen principal.
 
 ### D2 — Mega-commit `6ec5481`
 117 fichiers regroupant écrans / `firestore.rules` / `AuthContext` / i18n. Tests rassurent (Firestore rules parity + auth GDPR), mais une **PR review humaine sécurité** reste due (R1).

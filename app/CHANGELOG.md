@@ -16,6 +16,12 @@ Cette session a transformé le projet d'un MVP fonctionnel mais fragile vers un 
 - **`ci.yml`** : une seule étape `npm run verify` (remplace lint/tsc/jest dupliqués).
 - **`eas-build.yml`** : `npm run verify` avant `eas build` pour éviter un build cloud si les tests / SSOT couleurs cassent.
 
+## ✅ UI-1 — OnboardingScreen split (2026-05-03)
+
+- **`OnboardingScreen.styles.ts`** : tout le `StyleSheet.create` (~577 lignes).
+- **`onboardingConstants.ts`** : `getStepCount`, `WEEK_COMPARISONS`, types `PregnancyStatus` / `DateMethod`.
+- **`OnboardingScreen.tsx`** : réduit d’**~1830 → ~1200** lignes (logique + JSX inchangés).
+
 ## ✅ Boucle C3 + H1 + I1 + B1 + B6 (2026-05-03)
 
 - **C3** : `buildShadow` (web) utilise `hexToRgba(color, opacity)` ; **`hexToRgba`** extrait dans `src/utils/hexToRgba.ts` ; `lint:colors` whitelist ce fichier pour les littéraux `rgba(` internes.
