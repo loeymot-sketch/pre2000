@@ -4,12 +4,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
     View,
     Text,
-    StyleSheet,
     ScrollView,
     TouchableOpacity,
     ActivityIndicator,
-    TextInput,
-    Modal,
     Alert,
     Linking,
 } from 'react-native';
@@ -46,6 +43,10 @@ import {
     getEmergencyNumber,
     type ClinicalAlert,
 } from '../utils/clinicalChecks'; // SAFETY-CRITICAL: clinical alerts on dangerous values
+import { HealthWeightModal } from '../components/health/HealthWeightModal';
+import { HealthBPModal } from '../components/health/HealthBPModal';
+import { HealthGlucoseModal } from '../components/health/HealthGlucoseModal';
+import { styles } from './HealthDashboardScreen.styles';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -671,122 +672,43 @@ export const HealthDashboardScreen = () => {
             </View>
 
             {/* Modal: Add Weight */}
-            <Modal visible={showWeightModal} transparent animationType="slide">
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modal}>
-                        <Text style={styles.modalTitle}>{t('dashboard.addWeight')}</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('dashboard.weightPlaceholder')}
-                            keyboardType="decimal-pad"
-                            value={newWeight}
-                            onChangeText={setNewWeight}
-                        />
-                        <View style={styles.modalActions}>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.modalButtonCancel]}
-                                onPress={() => {
-                                    setShowWeightModal(false);
-                                    setNewWeight('');
-                                }}
-                                accessibilityRole="button"
-                                accessibilityLabel={t('a11y.cancel')}
-                            >
-                                <Text style={styles.modalButtonText}>{t('dashboard.cancel')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.modalButtonSave]}
-                                onPress={handleAddWeight}
-                                accessibilityRole="button"
-                                accessibilityLabel={t('a11y.save')}
-                                accessibilityHint={t('a11y.saveChangesHint')}
-                            >
-                                <Text style={[styles.modalButtonText, { color: theme.colors.white }]}>{t('dashboard.save')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <HealthWeightModal
+                visible={showWeightModal}
+                weightInput={newWeight}
+                onChangeWeight={setNewWeight}
+                onClose={() => {
+                    setShowWeightModal(false);
+                    setNewWeight('');
+                }}
+                onSave={handleAddWeight}
+                t={t}
+            />
 
             {/* Modal: Add Blood Pressure */}
-            <Modal visible={showBPModal} transparent animationType="slide">
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modal}>
-                        <Text style={styles.modalTitle}>{t('dashboard.addBP')}</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('dashboard.systolic')}
-                            keyboardType="number-pad"
-                            value={newBPSystolic}
-                            onChangeText={setNewBPSystolic}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('dashboard.diastolic')}
-                            keyboardType="number-pad"
-                            value={newBPDiastolic}
-                            onChangeText={setNewBPDiastolic}
-                        />
-                        <View style={styles.modalActions}>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.modalButtonCancel]}
-                                onPress={() => {
-                                    setShowBPModal(false);
-                                    setNewBPSystolic('');
-                                    setNewBPDiastolic('');
-                                }}
-                                accessibilityRole="button"
-                                accessibilityLabel={t('a11y.cancel')}
-                            >
-                                <Text style={styles.modalButtonText}>{t('dashboard.cancel')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.modalButtonSave]}
-                                onPress={handleAddBP}
-                                accessibilityRole="button"
-                                accessibilityLabel={t('a11y.save')}
-                                accessibilityHint={t('a11y.saveChangesHint')}
-                            >
-                                <Text style={[styles.modalButtonText, { color: theme.colors.white }]}>{t('dashboard.save')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <HealthBPModal
+                visible={showBPModal}
+                systolicInput={newBPSystolic}
+                diastolicInput={newBPDiastolic}
+                onChangeSystolic={setNewBPSystolic}
+                onChangeDiastolic={setNewBPDiastolic}
+                onClose={() => {
+                    setShowBPModal(false);
+                    setNewBPSystolic('');
+                    setNewBPDiastolic('');
+                }}
+                onSave={handleAddBP}
+                t={t}
+            />
+
             {/* Modal: Add Glucose */}
-            <Modal visible={showGlucoseModal} transparent animationType="slide">
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modal}>
-                        <Text style={styles.modalTitle}>🩸 {t('dashboard.glucose')}</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('dashboard.glucoseTarget', { defaultValue: '3.5 – 7.8 mmol/L' })}
-                            keyboardType="decimal-pad"
-                            value={newGlucose}
-                            onChangeText={setNewGlucose}
-                        />
-                        <View style={styles.modalActions}>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.modalButtonCancel]}
-                                onPress={() => { setShowGlucoseModal(false); setNewGlucose(''); }}
-                                accessibilityRole="button"
-                                accessibilityLabel={t('a11y.cancel')}
-                            >
-                                <Text style={styles.modalButtonText}>{t('dashboard.cancel')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.modalButtonSave]}
-                                onPress={handleAddGlucose}
-                                accessibilityRole="button"
-                                accessibilityLabel={t('a11y.save')}
-                                accessibilityHint={t('a11y.saveChangesHint')}
-                            >
-                                <Text style={[styles.modalButtonText, { color: theme.colors.white }]}>{t('dashboard.save')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <HealthGlucoseModal
+                visible={showGlucoseModal}
+                glucoseInput={newGlucose}
+                onChangeGlucose={setNewGlucose}
+                onClose={() => { setShowGlucoseModal(false); setNewGlucose(''); }}
+                onSave={handleAddGlucose}
+                t={t}
+            />
 
             {/* U-FIX-5: Medical disclaimer — health data shown is indicative only. */}
             <View style={styles.disclaimer}>
@@ -798,292 +720,3 @@ export const HealthDashboardScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.colors.surface,
-    },
-    /* U-FIX-5: medical disclaimer block */
-    disclaimer: {
-        marginHorizontal: 16,
-        marginTop: 8,
-        marginBottom: 24,
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.m,
-        borderStartWidth: 3,
-        borderStartColor: theme.colors.warning,
-    },
-    disclaimerText: {
-        fontSize: 12,
-        color: theme.colors.textLight,
-        lineHeight: 18,
-        textAlign: 'left',
-    },
-    centerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.colors.surface,
-    },
-    loadingText: {
-        marginTop: 16,
-        fontSize: 16,
-        color: theme.colors.textSecondary,
-    },
-    header: {
-        padding: 24,
-        paddingTop: 40,
-        alignItems: 'center',
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-    },
-    headerSubtitle: {
-        fontSize: 16,
-        color: theme.colors.whiteAlpha90,
-        marginTop: 4,
-    },
-    section: {
-        backgroundColor: theme.colors.white,
-        margin: 16,
-        padding: 20,
-        borderRadius: theme.borderRadius.l,
-        shadowColor: theme.colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    sectionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-    },
-    addButton: {
-        backgroundColor: theme.colors.primary,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: theme.borderRadius.m,
-    },
-    addButtonText: {
-        color: theme.colors.white,
-        fontSize: 14,
-        fontWeight: '600',
-    },
-    linkText: {
-        color: theme.colors.primary,
-        fontSize: 14,
-        fontWeight: '600',
-    },
-    statsRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginBottom: 20,
-    },
-    statBox: {
-        alignItems: 'center',
-    },
-    statLabel: {
-        fontSize: 14,
-        color: theme.colors.neutral400,
-        marginBottom: 4,
-    },
-    statValue: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-    },
-    chart: {
-        marginVertical: 8,
-        borderRadius: theme.borderRadius.l,
-    },
-    emptyText: {
-        textAlign: 'center',
-        color: theme.colors.neutral400,
-        fontSize: 14,
-        fontStyle: 'italic',
-        paddingVertical: 20,
-    },
-    bpCard: {
-        backgroundColor: theme.colors.surfacePurpleTint,
-        padding: 16,
-        borderRadius: theme.borderRadius.m,
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    bpLabel: {
-        fontSize: 14,
-        color: theme.colors.textSecondary,
-        marginBottom: 4,
-    },
-    bpValue: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: theme.colors.accentPurple,
-    },
-    bpDate: {
-        fontSize: 12,
-        color: theme.colors.neutral400,
-        marginTop: 4,
-    },
-    bpHistoryItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: theme.colors.borderLight,
-    },
-    bpHistoryValue: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: theme.colors.text,
-    },
-    bpHistoryDate: {
-        fontSize: 14,
-        color: theme.colors.neutral400,
-    },
-    appointmentsRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 12,
-    },
-    appointmentBox: {
-        flex: 1,
-        padding: 20,
-        borderRadius: theme.borderRadius.m,
-        alignItems: 'center',
-    },
-    appointmentNumber: {
-        fontSize: 36,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-    },
-    appointmentLabel: {
-        fontSize: 14,
-        color: theme.colors.textSecondary,
-        marginTop: 4,
-    },
-    progressContainer: {
-        alignItems: 'center',
-    },
-    progressText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: theme.colors.text,
-        marginBottom: 12,
-    },
-    progressBar: {
-        width: '100%',
-        height: 12,
-        backgroundColor: theme.colors.disabled,
-        borderRadius: 6,
-        overflow: 'hidden',
-        marginBottom: 8,
-    },
-    progressFill: {
-        height: '100%',
-        backgroundColor: theme.colors.success,
-    },
-    progressPercentage: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: theme.colors.success,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: theme.colors.blackAlpha50,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modal: {
-        width: '85%',
-        backgroundColor: theme.colors.white,
-        borderRadius: theme.borderRadius.xl,
-        padding: 24,
-        shadowColor: theme.colors.black,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: theme.colors.disabled,
-        borderRadius: theme.borderRadius.m,
-        padding: 12,
-        fontSize: 16,
-        marginBottom: 16,
-    },
-    modalActions: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 12,
-    },
-    modalButton: {
-        flex: 1,
-        padding: 14,
-        borderRadius: theme.borderRadius.m,
-        alignItems: 'center',
-    },
-    modalButtonCancel: {
-        backgroundColor: theme.colors.borderLight,
-    },
-    modalButtonSave: {
-        backgroundColor: theme.colors.primary,
-    },
-    modalButtonText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: theme.colors.text,
-    },
-    symptomsGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 8,
-        marginTop: 12,
-    },
-    symptomChip: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: theme.borderRadius.xl,
-        backgroundColor: theme.colors.surface,
-        borderWidth: 1.5,
-        borderColor: theme.colors.borderLight,
-    },
-    symptomChipActive: {
-        backgroundColor: theme.colors.surfaceBlush,
-        borderColor: theme.colors.primary,
-    },
-    symptomEmoji: {
-        fontSize: 16,
-    },
-    symptomLabel: {
-        fontSize: 13,
-        color: theme.colors.textSecondary,
-        fontWeight: '500',
-    },
-    symptomLabelActive: {
-        color: theme.colors.primary,
-        fontWeight: '600',
-    },
-});
