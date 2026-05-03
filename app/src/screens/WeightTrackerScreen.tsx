@@ -17,7 +17,6 @@ import {
     TextInput,
     Alert,
     RefreshControl,
-    Dimensions,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { format } from 'date-fns';
@@ -25,7 +24,6 @@ import { useAuth } from '../context/AuthContext';
 import { usePregnancy } from '../context/PregnancyContext';
 import { theme } from '../theme';
 import { styles } from './WeightTrackerScreen.styles';
-import { hexToRgba } from '../utils/styleUtils';
 import {
     WeightEntry,
     saveWeightEntry,
@@ -39,12 +37,12 @@ import { detectTrend, getSmartSuggestions, getTrimesterMessage } from '../servic
 import { createLogger } from '../utils/logger';
 import { useDateLocale } from '../hooks/useDateLocale';
 import { useTranslation } from 'react-i18next';
-import { LineChart } from "react-native-chart-kit";
 import { trackPositiveAction } from '../services/inAppReviewService';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+import { WeightIntelligenceCard } from '../components/weight/WeightIntelligenceCard';
+import { WeightMiniChart } from '../components/weight/WeightMiniChart';
 
 const log = createLogger('WeightTrackerScreen');
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export const WeightTrackerScreen = () => {
     useScreenAnalytics('WeightTrackerScreen');
@@ -421,134 +419,6 @@ export const WeightTrackerScreen = () => {
     }, [currentWeek, weightStatus?.status, trend]);
     const trimesterMessage = currentWeek ? getTrimesterMessage(currentWeek) : null;
 
-    // ── Render the IA locale intelligence block (trend + trimesterMessage + suggestions) ──
-    const renderIntelligence = () => {
-        if (!hasValidData || weightHistory.length < 1) return null;
-
-        const trendSeverityColor: Record<string, string> = {
-            normal: theme.colors.green500,
-            attention: theme.colors.orange500,
-            warning: theme.colors.critical,
-        };
-
-        return (
-            <View style={styles.intelligenceCard}>
-                {/* Trimester message */}
-                {trimesterMessage && (
-                    <View style={styles.trimesterBanner}>
-                        <Text style={styles.trimesterBannerText}>
-                            {t(trimesterMessage)}
-                        </Text>
-                    </View>
-                )}
-
-                {/* Trend badge */}
-                {trend && (
-                    <View style={[
-                        styles.trendBadge,
-                        { backgroundColor: trendSeverityColor[trend.severity] + '18', borderColor: trendSeverityColor[trend.severity] + '55' }
-                    ]}>
-                        <Text style={[styles.trendText, { color: trendSeverityColor[trend.severity] }]}>
-                            {t(trend.messageKey, trend.messageParams)}
-                        </Text>
-                    </View>
-                )}
-
-                {/* Smart suggestions from weightIntelligence */}
-                {suggestions.length > 0 && (
-                    <View style={styles.suggestionsGrid}>
-                        {suggestions.map((s, i) => (
-                            <View key={i} style={styles.suggestionChip}>
-                                <Text style={styles.suggestionIcon}>{s.icon}</Text>
-                                <Text style={styles.suggestionText}>{t(s.textKey)}</Text>
-                            </View>
-                        ))}
-                    </View>
-                )}
-            </View>
-        );
-    };
-
-    // Visual chart with weight progression
-    const renderMiniChart = () => {
-        if (weightHistory.length < 1) return null;
-
-        const sortedHistory = [...weightHistory].sort((a, b) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-
-        // Show last 6 entries to keep it readable
-        const entries = sortedHistory.slice(-6);
-
-        // If less than 2 points, chart might look weird, but library handles it.
-        // We need labels (weeks) and data (weights)
-        const labels = entries.map(e => `${t('weight.weekShort')}${e.week_of_pregnancy}`);
-        const data = entries.map(e => e.weight);
-
-        // Calculate min/max for chart scale to avoid flat lines
-        const minWeight = Math.min(...data, prePregnancyWeight) - 2;
-        const maxWeight = Math.max(...data) + 2;
-
-        return (
-            <View style={styles.chartContainer}>
-                <Text style={styles.chartTitle}>{t('weight.evolution')}</Text>
-
-                <LineChart
-                    data={{
-                        labels: labels,
-                        datasets: [
-                            {
-                                data: data,
-                                color: (opacity = 1) => hexToRgba(theme.colors.pinkAccent, opacity),
-                                strokeWidth: 2
-                            },
-                            {
-                                // Baseline (pre-pregnancy) integration if desired, 
-                                // or just let the user see the trend relative to start via text
-                                data: [prePregnancyWeight],
-                                withDots: false,
-                                color: () => 'transparent' // Invisible, just to anchor scale if needed
-                            }
-                        ]
-                    }}
-                    width={SCREEN_WIDTH - 32} // padding 16*2
-                    height={220}
-                    yAxisSuffix={t('common.kg')}
-                    yAxisInterval={1}
-                    chartConfig={{
-                        backgroundColor: theme.colors.white,
-                        backgroundGradientFrom: theme.colors.white,
-                        backgroundGradientTo: theme.colors.white,
-                        decimalPlaces: 1,
-                        color: (opacity = 1) => hexToRgba(theme.colors.accent, opacity),
-                        labelColor: (opacity = 1) => hexToRgba(theme.colors.textSecondary, opacity),
-                        style: {
-                            borderRadius: 16
-                        },
-                        propsForDots: {
-                            r: "4",
-                            strokeWidth: "2",
-                            stroke: theme.colors.accent
-                        }
-                    }}
-                    bezier
-                    style={{
-                        marginVertical: 8,
-                        borderRadius: 16
-                    }}
-                    fromZero={false}
-                    // Force y-axis range via dataset tricks if needed
-                    segments={4}
-                />
-
-                {/* Starting weight reference */}
-                <View style={styles.chartStartRef}>
-                    <Text style={styles.startRefText}>{t('weight.startWeightValue', { weight: prePregnancyWeight })}</Text>
-                </View>
-            </View>
-        );
-    };
-
     return (
         <ScrollView
             style={styles.container}
@@ -733,7 +603,11 @@ export const WeightTrackerScreen = () => {
                     </View>
 
                     {/* Mini Chart */}
-                    {renderMiniChart()}
+                    <WeightMiniChart
+                        weightHistory={weightHistory}
+                        prePregnancyWeight={prePregnancyWeight}
+                        t={t}
+                    />
 
                     {/* Add Weight Button / Form */}
                     {showAddForm ? (
@@ -831,7 +705,14 @@ export const WeightTrackerScreen = () => {
                     </View>
 
                     {/* ── IA Locale: Trimester message + trend + suggestions ── */}
-                    {renderIntelligence()}
+                    <WeightIntelligenceCard
+                        hasValidData={hasValidData}
+                        historyCount={weightHistory.length}
+                        trimesterMessage={trimesterMessage}
+                        trend={trend}
+                        suggestions={suggestions}
+                        t={t}
+                    />
 
                     {/* Educational Section - SIMPLIFIED */}
                     <TouchableOpacity
