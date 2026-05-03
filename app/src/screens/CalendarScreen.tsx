@@ -1,13 +1,12 @@
 import { createLogger } from '../utils/logger';
 const log = createLogger('CalendarScreen');
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert, ScrollView, Animated, Platform } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Alert, ScrollView, Animated, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
 import { auth, db } from '../config/firebase'; // FIX: Import auth and db for direct access
 import { doc, getDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import {
     loadCalendarTemplates,
     generateAllEvents,
@@ -21,10 +20,12 @@ import {
 } from '../services/calendarService';
 import { UserEvent, CombinedEvent } from '../types';
 import { theme } from '../theme';
-import { getShadowStyle } from '../utils/styleUtils';
 import { EventCard } from '../components/calendar/EventCard';
 import { WeeklyStrip } from '../components/calendar/WeeklyStrip';
 import { CalendarSkeleton } from '../components/calendar/CalendarSkeleton';
+import { CalendarHeader } from '../components/calendar/CalendarHeader';
+import { CalendarMonthDay } from '../components/calendar/CalendarMonthDay';
+import { CalendarMonthStats } from '../components/calendar/CalendarMonthStats';
 import { format, addDays, startOfWeek, addWeeks, subWeeks, isSameDay, subMonths, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, parseISO, getDay } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useDateLocale } from '../hooks/useDateLocale';
@@ -33,6 +34,7 @@ import { getLocalizedContent } from '../utils/i18nHelpers';
 import { calculateCurrentWeek } from '../utils/pregnancyCalculator';
 import { CalendarScreenNavigationProp } from '../types/navigation';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
+import { styles } from './CalendarScreen.styles';
 
 type ViewMode = 'suggestions' | 'myEvents' | 'all';
 type CalendarView = 'week' | 'month';
@@ -401,171 +403,21 @@ export const CalendarScreen = () => {
         }
     };
 
-    const renderMonthDay = (day: Date | null) => {
-        // Empty cell for padding
-        if (day === null) {
-            return <View style={styles.monthDayEmpty} />;
+    const isRTL = I18nManager.isRTL;
+    const monthLabel = format(selectedDate, 'MMMM yyyy', { locale: dateLocale });
+    const weekLabel = t('calendar.weekOfPregnancy', { week: currentWeek });
+
+    const handlePressToday = useCallback(() => {
+        const today = new Date();
+        setSelectedDate(today);
+        if (user?.currentWeek) {
+            setCurrentWeek(user.currentWeek);
         }
+    }, [user?.currentWeek]);
 
-        const dateKey = getLocalDateKey(day);
-        const userEventCount = userEventCounts[dateKey] || 0;
-        const isSelected = isSameDay(day, selectedDate);
-        const isToday = isSameDay(day, new Date());
-        const isCurrentMonth = isSameMonth(day, selectedDate);
-
-        return (
-            <TouchableOpacity
-                key={day.toISOString()}
-                style={[
-                    styles.monthDay,
-                    isSelected && styles.monthDaySelected,
-                    isToday && !isSelected && styles.monthDayToday,
-                ]}
-                onPress={() => setSelectedDate(day)}
-                activeOpacity={0.7}
-                accessibilityRole="button"
-                accessibilityLabel={format(day, 'EEEE d MMMM yyyy', { locale: dateLocale })}
-                accessibilityState={{ selected: isSelected }}
-                accessibilityHint={userEventCount > 0 ? t('calendar.suggestionsCount', { count: userEventCount }) : undefined}
-            >
-                <Text
-                    style={[
-                        styles.monthDayText,
-                        !isCurrentMonth && styles.monthDayTextDisabled,
-                        isToday && !isSelected && styles.monthDayTextToday,
-                    ]}
-                >
-                    {format(day, 'd')}
-                </Text>
-                {userEventCount > 0 && (
-                    <View style={styles.eventDotSmall} />
-                )}
-            </TouchableOpacity>
-        );
-    };
-
-    const renderHeader = () => {
-        const isRTL = I18nManager.isRTL;
-        const monthLabel = format(selectedDate, 'MMMM yyyy', { locale: dateLocale });
-        const weekLabel = t('calendar.weekOfPregnancy', { week: currentWeek });
-
-        // RTL: swap chevrons so navigation stays intuitive (prev=right, next=left)
-        const prevIcon = isRTL ? 'chevron-forward' : 'chevron-back';
-        const nextIcon = isRTL ? 'chevron-back' : 'chevron-forward';
-
-        return (
-            <LinearGradient
-                colors={[theme.colors.primary, theme.colors.accent, theme.colors.deepPink]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.header}
-            >
-                <View style={[styles.headerTop, isRTL && { flexDirection: 'row-reverse' }]}>
-                    <TouchableOpacity
-                        onPress={isRTL ? handleNextWeek : handlePrevWeek}
-                        style={styles.navButton}
-                        accessibilityLabel={t('a11y.previousWeek')}
-                        accessibilityRole="button"
-                    >
-                        <Ionicons name={prevIcon as any} size={24} color={theme.colors.white} />
-                    </TouchableOpacity>
-
-                    <View style={styles.headerTitleContainer}>
-                        <Text style={[styles.headerTitle, isRTL && { textAlign: 'center' }]}>
-                            {monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)}
-                        </Text>
-                        <Text style={styles.headerSubtitle}>{weekLabel}</Text>
-                    </View>
-
-                    <TouchableOpacity
-                        onPress={isRTL ? handlePrevWeek : handleNextWeek}
-                        style={styles.navButton}
-                        accessibilityLabel={t('a11y.nextWeek')}
-                        accessibilityRole="button"
-                    >
-                        <Ionicons name={nextIcon as any} size={24} color={theme.colors.white} />
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.viewSelector}>
-                    <View style={styles.selectorGroup}>
-                        <TouchableOpacity
-                            style={[styles.selectorButton, calendarView === 'week' && styles.selectorButtonActive]}
-                            onPress={() => setCalendarView('week')}
-                            accessibilityRole="button"
-                            accessibilityLabel={t('calendar.week')}
-                            accessibilityState={{ selected: calendarView === 'week' }}
-                        >
-                            <Text style={[styles.selectorText, calendarView === 'week' && styles.selectorTextActive]}>
-                                {t('calendar.week')}
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.selectorButton, calendarView === 'month' && styles.selectorButtonActive]}
-                            onPress={() => setCalendarView('month')}
-                            accessibilityRole="button"
-                            accessibilityLabel={t('calendar.month')}
-                            accessibilityState={{ selected: calendarView === 'month' }}
-                        >
-                            <Text style={[styles.selectorText, calendarView === 'month' && styles.selectorTextActive]}>
-                                {t('calendar.month')}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <TouchableOpacity
-                        style={styles.suggestionBadge}
-                        onPress={() => setShowSuggestions(prev => !prev)}
-                        accessibilityRole="button"
-                        accessibilityLabel={t('calendar.suggestions')}
-                        accessibilityState={{ expanded: showSuggestions }}
-                    >
-                        <Ionicons name="bulb" size={16} color={theme.colors.white} style={{ marginEnd: 4 }} />
-                        <Text style={styles.suggestionText}>
-                            {calendarView === 'month'
-                                ? (suggestionsThisMonthCount > 0 ? t('calendar.suggestionsCount', { count: suggestionsThisMonthCount }) : t('calendar.suggestions'))
-                                : (suggestionsThisWeekCount > 0 ? t('calendar.suggestionsCount', { count: suggestionsThisWeekCount }) : t('calendar.suggestions'))
-                            }
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity
-                    style={styles.todayButton}
-                    onPress={() => {
-                        const today = new Date();
-                        setSelectedDate(today);
-                        if (user?.currentWeek) {
-                            setCurrentWeek(user.currentWeek);
-                        }
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('calendar.today')}
-                >
-                    <Text style={styles.todayButtonText}>{t('calendar.today')}</Text>
-                </TouchableOpacity>
-            </LinearGradient>
-        );
-    };
-    const renderMonthStats = () => (
-        <View style={styles.statsCard}>
-            <Text style={styles.statsTitle}>📊 {t('calendar.thisMonth')}</Text>
-            <View style={styles.statsRow}>
-                <View style={styles.statItem}>
-                    <Text style={styles.statValue}>{monthStats.totalEvents}</Text>
-                    <Text style={styles.statLabel}>{t('calendar.total')}</Text>
-                </View>
-                <View style={styles.statItem}>
-                    <Text style={[styles.statValue, { color: theme.colors.primary }]}>{monthStats.userEventCount}</Text>
-                    <Text style={styles.statLabel}>{t('calendar.myAppointments')}</Text>
-                </View>
-                <View style={styles.statItem}>
-                    <Text style={[styles.statValue, { color: theme.colors.info }]}>{monthStats.suggestionCount}</Text>
-                    <Text style={styles.statLabel}>{t('calendar.suggestions')}</Text>
-                </View>
-            </View>
-        </View>
-    );
+    const handleSelectWeekView = useCallback(() => setCalendarView('week'), []);
+    const handleSelectMonthView = useCallback(() => setCalendarView('month'), []);
+    const handleToggleSuggestions = useCallback(() => setShowSuggestions(prev => !prev), []);
 
     if (loading) {
         return <CalendarSkeleton />;
@@ -590,7 +442,22 @@ export const CalendarScreen = () => {
 
     return (
         <View style={styles.container}>
-            {renderHeader()}
+            <CalendarHeader
+                monthLabel={monthLabel}
+                weekLabel={weekLabel}
+                calendarView={calendarView}
+                isRTL={isRTL}
+                showSuggestions={showSuggestions}
+                suggestionsThisWeekCount={suggestionsThisWeekCount}
+                suggestionsThisMonthCount={suggestionsThisMonthCount}
+                onPrevWeek={handlePrevWeek}
+                onNextWeek={handleNextWeek}
+                onSelectWeekView={handleSelectWeekView}
+                onSelectMonthView={handleSelectMonthView}
+                onToggleSuggestions={handleToggleSuggestions}
+                onPressToday={handlePressToday}
+                t={t}
+            />
 
             <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
                 <FlatList
@@ -600,7 +467,12 @@ export const CalendarScreen = () => {
                         <>
                             {calendarView === 'month' ? (
                                 <>
-                                    {renderMonthStats()}
+                                    <CalendarMonthStats
+                                        totalEvents={monthStats.totalEvents}
+                                        userEventCount={monthStats.userEventCount}
+                                        suggestionCount={monthStats.suggestionCount}
+                                        t={t}
+                                    />
                                     <View style={styles.monthGrid}>
                                         <View style={styles.weekDaysHeader}>
                                             {[t('calendar.weekDays.monday'), t('calendar.weekDays.tuesday'), t('calendar.weekDays.wednesday'), t('calendar.weekDays.thursday'), t('calendar.weekDays.friday'), t('calendar.weekDays.saturday'), t('calendar.weekDays.sunday')].map((day, index) => (
@@ -608,11 +480,27 @@ export const CalendarScreen = () => {
                                             ))}
                                         </View>
                                         <View style={styles.monthDaysGrid}>
-                                            {monthDays.map((day, index) =>
-                                                <View key={`month-day-${index}`} style={styles.monthDayWrapper}>
-                                                    {renderMonthDay(day)}
-                                                </View>
-                                            )}
+                                            {monthDays.map((day, index) => {
+                                                const dateKey = day ? getLocalDateKey(day) : '';
+                                                const userEventCount = day ? (userEventCounts[dateKey] || 0) : 0;
+                                                const isSelected = day ? isSameDay(day, selectedDate) : false;
+                                                const isToday = day ? isSameDay(day, new Date()) : false;
+                                                const isCurrentMonth = day ? isSameMonth(day, selectedDate) : false;
+                                                return (
+                                                    <View key={`month-day-${index}`} style={styles.monthDayWrapper}>
+                                                        <CalendarMonthDay
+                                                            day={day}
+                                                            isSelected={isSelected}
+                                                            isToday={isToday}
+                                                            isCurrentMonth={isCurrentMonth}
+                                                            userEventCount={userEventCount}
+                                                            onPress={setSelectedDate}
+                                                            t={t}
+                                                            dateLocale={dateLocale}
+                                                        />
+                                                    </View>
+                                                );
+                                            })}
                                         </View>
                                     </View>
                                 </>
@@ -706,512 +594,3 @@ export const CalendarScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.colors.surface,
-    },
-    centerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.colors.surface,
-    },
-    loadingText: {
-        marginTop: 16,
-        color: theme.colors.textSecondary,
-        fontSize: 15,
-    },
-    header: {
-        paddingTop: 60,
-        paddingBottom: 20,
-        paddingHorizontal: 16,
-        shadowColor: theme.colors.black,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-        elevation: 8,
-    },
-    headerContent: {},
-    monthRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    navButton: {
-        width: 40,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    monthContainer: {
-        alignItems: 'center',
-        flex: 1,
-    },
-    monthText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-        textTransform: 'capitalize',
-    },
-    weekText: {
-        fontSize: 13,
-        color: theme.colors.whiteAlpha90,
-        fontWeight: '600',
-        marginTop: 4,
-    },
-    rdvInfoText: {
-        fontSize: 14,
-        color: theme.colors.whiteAlpha95,
-        fontWeight: '500',
-        textAlign: 'center',
-        marginBottom: 4,
-    },
-    navArrow: {
-        fontSize: 32,
-        color: theme.colors.white,
-        fontWeight: 'bold',
-    },
-    disabledArrow: {
-        opacity: 0.3,
-    },
-    headerActions: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        gap: 8,
-        paddingHorizontal: 16,
-        paddingBottom: 12,
-    },
-    rdvCountBadge: {
-        backgroundColor: theme.colors.whiteAlpha30,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: theme.borderRadius.m,
-        alignItems: 'center',
-        flexDirection: 'row',
-        gap: 4,
-    },
-    rdvCountText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-    },
-    rdvCountLabel: {
-        fontSize: 11,
-        color: theme.colors.whiteAlpha90,
-        fontWeight: '500',
-    },
-    weekBadge: {
-        backgroundColor: theme.colors.whiteAlpha25,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: theme.borderRadius.xl,
-        borderWidth: 1,
-        borderColor: theme.colors.whiteAlpha40,
-    },
-    weekBadgeText: {
-        color: theme.colors.white,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    suggestionsButton: {
-        backgroundColor: theme.colors.amber500Alpha90,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: theme.borderRadius.xl,
-    },
-    suggestionsButtonText: {
-        color: theme.colors.text,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    suggestionsSection: {
-        backgroundColor: theme.colors.surfaceAmberTint,
-        marginHorizontal: 16,
-        marginVertical: 8,
-        borderRadius: theme.borderRadius.m,
-        padding: 12,
-        borderWidth: 1,
-        borderColor: theme.colors.amberBorder,
-    },
-    suggestionsSectionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    suggestionsSectionTitle: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: theme.colors.accentOrangeDeep,
-    },
-    suggestionsSectionClose: {
-        fontSize: 18,
-        color: theme.colors.textLight,
-        padding: 4,
-    },
-    suggestionsContainer: {
-        position: 'relative',
-    },
-    suggestionsScrollView: {
-        maxHeight: 300,
-    },
-    suggestionsScrollContent: {
-        paddingBottom: 30,
-    },
-    scrollIndicator: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        backgroundColor: theme.colors.amber500Alpha85,
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8,
-        alignItems: 'center',
-    },
-    scrollIndicatorText: {
-        fontSize: 9,
-        fontWeight: '600',
-        color: theme.colors.accentOrangeDeep,
-        textAlign: 'center',
-    },
-    suggestionItem: {
-        backgroundColor: theme.colors.white,
-        padding: 10,
-        borderRadius: theme.borderRadius.s,
-        marginBottom: 6,
-        borderStartWidth: 3,
-        borderStartColor: theme.colors.accentAmber,
-    },
-    suggestionItemTitle: {
-        fontSize: 13,
-        fontWeight: '600',
-        color: theme.colors.text,
-    },
-    suggestionItemDesc: {
-        fontSize: 11,
-        color: theme.colors.textSecondary,
-        marginTop: 4,
-    },
-    suggestionItemDate: {
-        fontSize: 10,
-        color: theme.colors.neutral400,
-        marginTop: 4,
-        fontStyle: 'italic',
-    },
-    todayButton: {
-        backgroundColor: theme.colors.whiteAlpha30,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: theme.borderRadius.xl,
-        borderWidth: 1,
-        borderColor: theme.colors.whiteAlpha50,
-    },
-    todayButtonText: {
-        color: theme.colors.white,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    viewToggleContainer: {
-        flexDirection: 'row',
-        backgroundColor: theme.colors.whiteAlpha20,
-        borderRadius: theme.borderRadius.xl,
-        padding: 2,
-    },
-    viewToggle: {
-        paddingHorizontal: 16,
-        paddingVertical: 6,
-        borderRadius: 18,
-    },
-    viewToggleActive: {
-        backgroundColor: theme.colors.white,
-    },
-    viewToggleText: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: theme.colors.whiteAlpha90,
-    },
-    viewToggleTextActive: {
-        color: theme.colors.accent,
-    },
-    statsCard: {
-        backgroundColor: theme.colors.white,
-        marginHorizontal: 16,
-        marginTop: 16,
-        marginBottom: 12,
-        padding: 16,
-        borderRadius: theme.borderRadius.l,
-        shadowColor: theme.colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 3,
-    },
-    statsTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 12,
-    },
-    statsRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-    },
-    statItem: {
-        alignItems: 'center',
-    },
-    statValue: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-    },
-    statLabel: {
-        fontSize: 12,
-        color: theme.colors.textLight,
-        marginTop: 4,
-    },
-    monthGrid: {
-        backgroundColor: theme.colors.white,
-        marginHorizontal: 16,
-        marginVertical: 12,
-        borderRadius: theme.borderRadius.l,
-        padding: 12,
-        shadowColor: theme.colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 3,
-    },
-    weekDaysHeader: {
-        flexDirection: 'row',
-        marginBottom: 8,
-    },
-    weekDayLabel: {
-        flex: 1,
-        textAlign: 'center',
-        fontSize: 12,
-        fontWeight: '600',
-        color: theme.colors.textLight,
-    },
-    monthDaysGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    monthDayWrapper: {
-        width: '14.28%',
-        aspectRatio: 1,
-    },
-    monthDay: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: theme.borderRadius.s,
-    },
-    monthDaySelected: {
-        borderWidth: 2,
-        borderColor: theme.colors.primary,
-        backgroundColor: theme.colors.lavenderBlush,
-    },
-    monthDayToday: {
-        backgroundColor: theme.colors.surfaceBlueTint,
-    },
-    monthDayText: {
-        fontSize: 14,
-        color: theme.colors.text,
-        fontWeight: '500',
-    },
-    monthDayTextSelected: {
-        color: theme.colors.accent,
-        fontWeight: 'bold',
-    },
-    monthDayTextToday: {
-        color: theme.colors.info,
-        fontWeight: 'bold',
-    },
-    monthDayTextDisabled: {
-        color: theme.colors.neutral300,
-    },
-    monthDayEmpty: {
-        width: '14.28%',
-        aspectRatio: 1,
-    },
-    eventDotSmall: {
-        position: 'absolute',
-        bottom: 4,
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: theme.colors.primary,
-    },
-    eventBadge: {
-        position: 'absolute',
-        bottom: 2,
-        backgroundColor: theme.colors.primary,
-        minWidth: 16,
-        height: 16,
-        borderRadius: theme.borderRadius.s,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 4,
-    },
-    eventBadgeSelected: {
-        backgroundColor: theme.colors.white,
-    },
-    eventBadgeText: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-    },
-    eventBadgeTextSelected: {
-        color: theme.colors.primary,
-    },
-    eventDot: {
-        width: 4,
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: theme.colors.primary,
-        position: 'absolute',
-        bottom: 4,
-    },
-    eventDotSelected: {
-        backgroundColor: theme.colors.white,
-    },
-    filterContainer: {
-        flexDirection: 'row',
-        paddingHorizontal: 16,
-        paddingBottom: 12,
-        gap: 8,
-    },
-    filterChip: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: theme.borderRadius.xl,
-        backgroundColor: theme.colors.white,
-        borderWidth: 1,
-        borderColor: theme.colors.disabled,
-    },
-    activeFilterChip: {
-        backgroundColor: theme.colors.primary,
-        borderColor: theme.colors.primary,
-    },
-    filterText: {
-        fontSize: 14,
-        color: theme.colors.textSecondary,
-        fontWeight: '500',
-    },
-    activeFilterText: {
-        color: theme.colors.white,
-        fontWeight: '600',
-    },
-    listContent: {
-        paddingHorizontal: 16,
-        paddingBottom: 120,
-    },
-    emptyState: {
-        alignItems: 'center',
-        marginTop: 40,
-        padding: 24,
-    },
-    emptyEmoji: {
-        fontSize: 48,
-        marginBottom: 16,
-    },
-    emptyStateText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 8,
-    },
-    emptyStateSubtext: {
-        fontSize: 14,
-        color: theme.colors.textLight,
-    },
-    fab: {
-        position: 'absolute',
-        right: 20,
-        bottom: 20,
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        ...getShadowStyle(8, theme.colors.black, 0.3, 8, { width: 0, height: 4 }),
-    },
-    fabGradient: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    fabIcon: {
-        fontSize: 32,
-        color: theme.colors.white,
-        fontWeight: '300',
-    },
-    headerTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    headerTitleContainer: {
-        alignItems: 'center',
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-        textTransform: 'capitalize',
-    },
-    headerSubtitle: {
-        fontSize: 12,
-        color: theme.colors.whiteAlpha90,
-        marginTop: 2,
-    },
-    viewSelector: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    selectorGroup: {
-        flexDirection: 'row',
-        backgroundColor: theme.colors.whiteAlpha20,
-        borderRadius: theme.borderRadius.xl,
-        padding: 2,
-    },
-    selectorButton: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 18,
-    },
-    selectorButtonActive: {
-        backgroundColor: theme.colors.white,
-    },
-    selectorText: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: theme.colors.whiteAlpha90,
-    },
-    selectorTextActive: {
-        color: theme.colors.accent,
-    },
-    suggestionBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: theme.colors.amber500Alpha90,
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: theme.borderRadius.l,
-    },
-    suggestionText: {
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-    },
-});

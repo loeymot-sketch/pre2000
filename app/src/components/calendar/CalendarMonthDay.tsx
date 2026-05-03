@@ -1,0 +1,61 @@
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { format, Locale } from 'date-fns';
+import { styles } from '../../screens/CalendarScreen.styles';
+
+interface CalendarMonthDayProps {
+    day: Date | null;
+    isSelected: boolean;
+    isToday: boolean;
+    isCurrentMonth: boolean;
+    userEventCount: number;
+    onPress: (day: Date) => void;
+    t: (key: string, options?: any) => string;
+    dateLocale: Locale;
+}
+
+export const CalendarMonthDay: React.FC<CalendarMonthDayProps> = ({
+    day,
+    isSelected,
+    isToday,
+    isCurrentMonth,
+    userEventCount,
+    onPress,
+    t,
+    dateLocale,
+}) => {
+    // Empty cell for padding
+    if (day === null) {
+        return <View style={styles.monthDayEmpty} />;
+    }
+
+    return (
+        <TouchableOpacity
+            key={day.toISOString()}
+            style={[
+                styles.monthDay,
+                isSelected && styles.monthDaySelected,
+                isToday && !isSelected && styles.monthDayToday,
+            ]}
+            onPress={() => onPress(day)}
+            activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={format(day, 'EEEE d MMMM yyyy', { locale: dateLocale })}
+            accessibilityState={{ selected: isSelected }}
+            accessibilityHint={userEventCount > 0 ? t('calendar.suggestionsCount', { count: userEventCount }) : undefined}
+        >
+            <Text
+                style={[
+                    styles.monthDayText,
+                    !isCurrentMonth && styles.monthDayTextDisabled,
+                    isToday && !isSelected && styles.monthDayTextToday,
+                ]}
+            >
+                {format(day, 'd')}
+            </Text>
+            {userEventCount > 0 && (
+                <View style={styles.eventDotSmall} />
+            )}
+        </TouchableOpacity>
+    );
+};
