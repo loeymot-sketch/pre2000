@@ -129,9 +129,8 @@ HEAD = cd61d0b   docs: mark I1 done in post-commit audit missions
 
 ## 6. Décision
 
-1. Exécuter **B1 maintenant** (autonome, scope clair, faible risque).
-2. Vérifier la **première exécution CI** (G1) — j'ai accès `gh`, je peux lire les runs.
-3. Optionnel : enchaîner **B6** (confort tests) si tu valides.
-4. **STOP autonome** sur **R1** (relecture sécurité humaine) et **V1** (smoke visuel humain) — pas de gate auto.
-
-**Je continue sur B1 maintenant.**
+1. ~~Exécuter **B1 maintenant**~~ **fait** (commit `2e5133e`, push effectué).
+2. ~~Vérifier la **première exécution CI** (G1)~~ **fait** — run **`25286622383` ✅ verte** en `1m25s` (`Validate Code Quality` : `Verify (theme SSOT + typecheck + unit tests)`).
+3. Annotation GH : `actions/checkout@v4` et `actions/setup-node@v4` tournent sur Node 20 (deprecated juin 2026). Non bloquant — futur upgrade `@v5` quand dispo.
+4. Optionnel : enchaîner **B6** (confort tests) si tu valides.
+5. **STOP autonome** sur **R1** (relecture sécurité humaine) et **V1** (smoke visuel humain) — pas de gate auto.
