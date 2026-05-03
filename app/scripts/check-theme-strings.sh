@@ -81,6 +81,7 @@ scan_rgba_rg() {
     --glob "*.ts" --glob "*.tsx" \
     --glob "!src/theme/index.ts" \
     --glob "!src/utils/styleUtils.ts" \
+    --glob "!src/utils/hexToRgba.ts" \
     --glob "!**/__tests__/**" \
     --glob "!**/*.d.ts" 2>/dev/null | drop_comment_only_lines || true
 }
@@ -89,10 +90,11 @@ scan_rgba_grep() {
   grep -rInE 'rgba\(' src --include='*.ts' --include='*.tsx' --exclude-dir=__tests__ 2>/dev/null \
     | grep -vF 'src/theme/index.ts' \
     | grep -vF 'src/utils/styleUtils.ts' \
+    | grep -vF 'src/utils/hexToRgba.ts' \
     | drop_comment_only_lines || true
 }
 
-echo ":: lint:colors :: scanning src/ for rgba( outside theme SSOT + styleUtils..."
+echo ":: lint:colors :: scanning src/ for rgba( outside theme SSOT + hexToRgba/styleUtils..."
 if command -v rg >/dev/null 2>&1; then
   RGBA_OUT="$(scan_rgba_rg)"
 else
@@ -101,7 +103,7 @@ fi
 
 if [[ -n "${RGBA_OUT// }" ]]; then
   echo "$RGBA_OUT"
-  echo ":: fail :: rgba( literals found outside src/theme/index.ts and src/utils/styleUtils.ts"
+  echo ":: fail :: rgba( literals found outside src/theme/index.ts, src/utils/hexToRgba.ts, and src/utils/styleUtils.ts"
   exit 3
 fi
 

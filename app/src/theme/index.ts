@@ -1,4 +1,5 @@
 import { Platform, ViewStyle } from 'react-native';
+import { hexToRgba } from '../utils/hexToRgba';
 
 /**
  * Palette unique (SSOT couleurs). `theme.typography` et `theme.shadows` y font référence
@@ -307,7 +308,7 @@ function buildShadow({ color, opacity, radius, offset, elevation }: ShadowParams
     if (Platform.OS === 'web') {
         return {
             // @ts-ignore - boxShadow valide sur web mais types RN incomplets
-            boxShadow: `${offset.width}px ${offset.height}px ${radius}px rgba(0,0,0,${opacity})`,
+            boxShadow: `${offset.width}px ${offset.height}px ${radius}px ${hexToRgba(color, opacity)}`,
         };
     }
     return {

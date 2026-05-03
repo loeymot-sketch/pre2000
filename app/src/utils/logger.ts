@@ -35,6 +35,10 @@ import * as Sentry from '@sentry/react-native';
 declare const __DEV__: boolean;
 const isDev = typeof __DEV__ !== 'undefined' ? __DEV__ : process.env.NODE_ENV !== 'production';
 
+/** Jest sets NODE_ENV=test — keep console.error, silence verbose dev logs in test output. */
+const isQuietTestLogger =
+    typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+
 // Color codes for different log types (for terminal/console styling)
 const LogColors = {
     info: '\x1b[36m',    // Cyan
@@ -191,19 +195,19 @@ interface Logger {
  */
 export const logger: Logger = {
     info: (context: string, message: string, ...data: any[]) => {
-        if (isDev) {
+        if (isDev && !isQuietTestLogger) {
             console.log(formatMessage('info', context, message), ...data);
         }
     },
 
     success: (context: string, message: string, ...data: any[]) => {
-        if (isDev) {
+        if (isDev && !isQuietTestLogger) {
             console.log(formatMessage('success', context, message), ...data);
         }
     },
 
     warn: (context: string, message: string, ...data: any[]) => {
-        if (isDev) {
+        if (isDev && !isQuietTestLogger) {
             console.warn(formatMessage('warn', context, message), ...data);
         }
     },
@@ -216,7 +220,7 @@ export const logger: Logger = {
     },
 
     debug: (context: string, message: string, ...data: any[]) => {
-        if (isDev) {
+        if (isDev && !isQuietTestLogger) {
             console.log(formatMessage('debug', context, message), ...data);
         }
     },
