@@ -77,6 +77,7 @@ Ces items sont **dans le repo** et peuvent tourner en boucle plan/audit sans sec
 - [x] **Policy** : aucun `#hex` ni `rgba(` dans les écrans/composants — uniquement `theme.colors.*`, `theme.shadows.*` (PDF), ou `hexToRgba(theme.colors.*Hex, opacity)` pour chart-kit.
 - [x] Gate locale rapide : `npm run verify` (= `lint:colors` + `tsc` + `jest`).
 - [x] **CI GitHub** : `app/.github/workflows/ci.yml` et `eas-build.yml` exécutent `npm run verify` dans `./app` après `npm ci`.
+- [x] **CI** : installation conditionnelle de **ripgrep** sur Ubuntu si absent (accélère / fiabilise `lint:colors`).
 
 ---
 
