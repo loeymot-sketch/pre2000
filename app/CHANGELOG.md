@@ -16,11 +16,13 @@ Cette session a transformé le projet d'un MVP fonctionnel mais fragile vers un 
 - **`ci.yml`** : une seule étape `npm run verify` (remplace lint/tsc/jest dupliqués).
 - **`eas-build.yml`** : `npm run verify` avant `eas build` pour éviter un build cloud si les tests / SSOT couleurs cassent.
 
-## ✅ Boucle C3 + H1 (2026-05-03)
+## ✅ Boucle C3 + H1 + I1 + B1 + B6 (2026-05-03)
 
 - **C3** : `buildShadow` (web) utilise `hexToRgba(color, opacity)` ; **`hexToRgba`** extrait dans `src/utils/hexToRgba.ts` ; `lint:colors` whitelist ce fichier pour les littéraux `rgba(` internes.
 - **H1** : sous Jest (`NODE_ENV=test`), le logger ne spamme plus `info` / `success` / `warn` / `debug` ; les **`error`** restent visibles.
 - **I1** : workflows **CI** et **EAS** installent **ripgrep** sur Ubuntu si absent (avant `verify`).
+- **B1** : workflows déplacés à la **racine** `.github/workflows/` (étaient sous `app/.github` et donc ignorés par GitHub Actions). Bump `actions/checkout@v4` + `setup-node@v4`, Node 20. **Première run CI verte** : `25286622383` en 1m25s.
+- **B6** : mock `expo-updates` dans `app/__mocks__/expo-updates.js` → suppression complète du bruit `ExpoModulesCoreJSLogger` / `EXPO_OS not defined` dans Jest (6 → **0** `console.warn`).
 
 ---
 
