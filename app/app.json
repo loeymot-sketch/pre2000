@@ -1,169 +1,199 @@
 {
-    "expo": {
-        "name": "Mama & Bébé",
-        "slug": "mama-bebe",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "light",
-        "newArchEnabled": true,
-        "description": "Votre compagne de grossesse intelligente — suivi semaine par semaine, rappels, calendrier médical, recettes et conseils personnalisés.",
-        "splash": {
-            "image": "./assets/splash-icon.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#FF6B9D"
-        },
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "com.mamabebe.app",
-            "buildNumber": "4",
-            "entitlements": {
-                "aps-environment": "production"
-            },
-            "infoPlist": {
-                "ITSAppUsesNonExemptEncryption": false,
-                "NSUserNotificationsUsageDescription": "Mama & Bébé vous envoie des rappels bienveillants pour votre bien-être et celui de votre bébé.",
-                "NSMotionUsageDescription": "Utilisé pour détecter l'activité physique."
-            },
-            "privacyManifests": {
-                "NSPrivacyCollectedDataTypes": [
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeName",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeEmailAddress",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeHealth",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeSensitiveInfo",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeOtherUserContent",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCoarseLocation",
-                        "NSPrivacyCollectedDataTypeLinked": false,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeOtherContactInfo",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeUserID",
-                        "NSPrivacyCollectedDataTypeLinked": true,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCrashData",
-                        "NSPrivacyCollectedDataTypeLinked": false,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
-                    },
-                    {
-                        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeProductInteraction",
-                        "NSPrivacyCollectedDataTypeLinked": false,
-                        "NSPrivacyCollectedDataTypeTracking": false,
-                        "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAnalytics"]
-                    }
-                ],
-                "NSPrivacyAccessedAPITypes": [
-                    {
-                        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-                        "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
-                    },
-                    {
-                        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
-                        "NSPrivacyAccessedAPITypeReasons": ["E174.1"]
-                    },
-                    {
-                        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-                        "NSPrivacyAccessedAPITypeReasons": ["C617.1"]
-                    },
-                    {
-                        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
-                        "NSPrivacyAccessedAPITypeReasons": ["35F9.1"]
-                    }
-                ],
-                "NSPrivacyTracking": false,
-                "NSPrivacyTrackingDomains": []
-            }
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#FF6B9D"
-            },
-            "package": "com.mamabebe.app",
-            "googleServicesFile": "./google-services.json",
-            "versionCode": 8,
-            "permissions": [
-                "RECEIVE_BOOT_COMPLETED",
-                "SCHEDULE_EXACT_ALARM",
-                "VIBRATE",
-                "POST_NOTIFICATIONS"
-            ],
-            "blockedPermissions": [
-                "android.permission.RECORD_AUDIO",
-                "android.permission.CAMERA",
-                "android.permission.ACCESS_FINE_LOCATION",
-                "android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE",
-                "android.permission.READ_MEDIA_IMAGES",
-                "android.permission.READ_MEDIA_VIDEO",
-                "android.permission.READ_CONTACTS",
-                "android.permission.READ_PHONE_STATE"
+  "expo": {
+    "name": "Mama & Bébé",
+    "slug": "mama-bebe",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "description": "Votre compagne de grossesse intelligente — suivi semaine par semaine, rappels, calendrier médical, recettes et conseils personnalisés.",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF6B9D"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mamabebe.app",
+      "buildNumber": "4",
+      "entitlements": {
+        "aps-environment": "production"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSUserNotificationsUsageDescription": "Mama & Bébé vous envoie des rappels bienveillants pour votre bien-être et celui de votre bébé.",
+        "NSMotionUsageDescription": "Utilisé pour détecter l'activité physique."
+      },
+      "privacyManifests": {
+        "NSPrivacyCollectedDataTypes": [
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeName",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
             ]
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        },
-        "plugins": [
-            [
-                "expo-notifications",
-                {
-                    "icon": "./assets/icon.png",
-                    "color": "#FF6B9D",
-                    "defaultChannel": "default",
-                    "sounds": []
-                }
-            ],
-            "expo-sqlite"
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeEmailAddress",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeHealth",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeSensitiveInfo",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeOtherUserContent",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCoarseLocation",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeOtherContactInfo",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeUserID",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCrashData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeProductInteraction",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAnalytics"
+            ]
+          }
         ],
-        "extra": {
-            "privacyPolicyUrl": "https://www.mama-et-bebe.com/privacy.html",
-            "marketingUrl": "https://www.mama-et-bebe.com",
-            "eas": {
-                "projectId": "75911d23-9cdf-4b98-833a-ee7807efe4e6"
-            }
-        },
-        "runtimeVersion": {
-            "policy": "appVersion"
-        },
-        "updates": {
-            "url": "https://u.expo.dev/75911d23-9cdf-4b98-833a-ee7807efe4e6"
-        },
-        "owner": "kossko"
-    }
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1"
+            ]
+          }
+        ],
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": []
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FF6B9D"
+      },
+      "package": "com.mamabebe.app",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 8,
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "SCHEDULE_EXACT_ALARM",
+        "VIBRATE",
+        "POST_NOTIFICATIONS"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_CONTACTS",
+        "android.permission.READ_PHONE_STATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#FF6B9D",
+          "defaultChannel": "default",
+          "sounds": []
+        }
+      ],
+      "expo-sqlite",
+      "@react-native-firebase/app",
+      "@react-native-firebase/app-check"
+    ],
+    "extra": {
+      "privacyPolicyUrl": "https://www.mama-et-bebe.com/privacy.html",
+      "marketingUrl": "https://www.mama-et-bebe.com",
+      "eas": {
+        "projectId": "75911d23-9cdf-4b98-833a-ee7807efe4e6"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/75911d23-9cdf-4b98-833a-ee7807efe4e6"
+    },
+    "owner": "kossko"
+  }
 }
