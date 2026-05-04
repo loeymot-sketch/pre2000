@@ -416,6 +416,7 @@
     },
     "deleteConfirm": "Supprimer ce contact ?",
     "callError": "Impossible de passer l'appel",
+    "invalidNumber": "Numéro invalide. Format attendu : chiffres, +, espaces, tirets (4-20 chars).",
     "validationError": "Nom et numéro requis",
     "addError": "Erreur lors de l'ajout",
     "deleteError": "Erreur lors de la suppression"

@@ -7,6 +7,9 @@ import { createLogger } from '../../utils/logger';
 
 const log = createLogger('EmergencyContactsSection');
 
+export { TEL_VALIDATION_REGEX, sanitizeTelNumber } from './EmergencyContactsSection.helpers';
+import { TEL_VALIDATION_REGEX, sanitizeTelNumber } from './EmergencyContactsSection.helpers';
+
 export const EmergencyContactsSection = () => {
     const { t } = useTranslation();
     const { profile, setProfile } = usePregnancy();
@@ -20,7 +23,12 @@ export const EmergencyContactsSection = () => {
     const contacts = profile?.emergencyContacts || [];
 
     const handleCall = (number: string) => {
-        const url = `tel:${number}`;
+        const sanitized = sanitizeTelNumber(number);
+        if (!sanitized) {
+            Alert.alert(t('common.error'), t('emergency.invalidNumber') || t('common.error'));
+            return;
+        }
+        const url = `tel:${sanitized}`;
         Linking.canOpenURL(url)
             .then(supported => {
                 if (!supported) {
@@ -35,6 +43,11 @@ export const EmergencyContactsSection = () => {
     const handleAdd = async () => {
         if (!newName.trim() || !newNumber.trim()) {
             Alert.alert(t('common.error'), t('emergency.validationError'));
+            return;
+        }
+
+        if (!TEL_VALIDATION_REGEX.test(newNumber.trim())) {
+            Alert.alert(t('common.error'), t('emergency.invalidNumber'));
             return;
         }
 

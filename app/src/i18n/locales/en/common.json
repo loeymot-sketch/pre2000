@@ -669,6 +669,7 @@
     },
     "deleteConfirm": "Are you sure you want to delete this contact?",
     "callError": "Could not make the call",
+    "invalidNumber": "Invalid number. Expected format: digits, +, spaces, dashes (4-20 chars).",
     "validationError": "Please fill all fields",
     "addError": "Could not add contact",
     "deleteError": "Could not delete contact"
