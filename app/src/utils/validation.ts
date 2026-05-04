@@ -32,14 +32,14 @@ export const validateEmail = (email: string): ValidationResult => {
 
 /**
  * Validate password strength
- * Rules: min 8 chars, max 100, at least 1 digit
+ * Rules: min 10 chars, max 100, at least 1 digit, at least 1 uppercase letter
  */
 export const validatePassword = (password: string): ValidationResult => {
     if (!password) {
         return { valid: false, error: 'errors.passwordRequired' };
     }
 
-    if (password.length < 8) {
+    if (password.length < 10) {
         return { valid: false, error: 'errors.passwordLength' };
     }
 
@@ -50,6 +50,11 @@ export const validatePassword = (password: string): ValidationResult => {
     // At least 1 digit
     if (!/\d/.test(password)) {
         return { valid: false, error: 'errors.passwordComplexity' };
+    }
+
+    // At least 1 uppercase letter
+    if (!/[A-Z]/.test(password)) {
+        return { valid: false, error: 'errors.passwordUppercase' };
     }
 
     return { valid: true };

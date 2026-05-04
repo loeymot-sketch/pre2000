@@ -22,27 +22,36 @@ describe('Validation Utils', () => {
     });
 
     describe('validatePassword', () => {
-        // Policy: min 8 chars, max 100, at least 1 digit
-        it('should return valid for passwords >= 8 chars containing a digit', () => {
-            expect(validatePassword('password1').valid).toBe(true);
-            expect(validatePassword('Abcdefg9').valid).toBe(true);
+        // Policy: min 10 chars, max 100, at least 1 digit, at least 1 uppercase
+        it('should return valid for passwords >= 10 chars with a digit and an uppercase', () => {
+            expect(validatePassword('Password123').valid).toBe(true);
+            expect(validatePassword('AbcdefgH99').valid).toBe(true);
         });
 
-        it('should return invalid for passwords < 8 chars', () => {
+        it('should return invalid for passwords < 10 chars', () => {
+            expect(validatePassword('Abcdefg9').valid).toBe(false);
             expect(validatePassword('1234567').valid).toBe(false);
             expect(validatePassword('').valid).toBe(false);
         });
 
         it('should return invalid for passwords without any digit', () => {
-            expect(validatePassword('password').valid).toBe(false);
+            expect(validatePassword('Passwordabc').valid).toBe(false);
+        });
+
+        it('should return invalid for passwords without any uppercase letter', () => {
+            expect(validatePassword('password123').valid).toBe(false);
         });
 
         it('should return correct error message for too-short passwords', () => {
-            expect(validatePassword('123').error).toBe("errors.passwordLength");
+            expect(validatePassword('Abc12').error).toBe("errors.passwordLength");
         });
 
         it('should return correct error message for missing-digit passwords', () => {
-            expect(validatePassword('password').error).toBe("errors.passwordComplexity");
+            expect(validatePassword('Passwordabc').error).toBe("errors.passwordComplexity");
+        });
+
+        it('should return correct error message for missing-uppercase passwords', () => {
+            expect(validatePassword('password123').error).toBe("errors.passwordUppercase");
         });
     });
 

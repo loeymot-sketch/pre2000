@@ -19,9 +19,9 @@
  * logger.success('CalendarService', 'Event saved', eventId);
  * logger.error('CalendarService', 'Failed to save', error);
  *
- * // Identify the current user for crash reports (RGPD note: Firebase UID is
- * // already an opaque identifier, but it ties crashes to a single account
- * // — consider hashing if you ever need stricter anonymisation).
+ * // Identify the current user for crash reports. The UID is hashed
+ * // (SHA-256, truncated 16 hex chars) before being sent to Sentry so the
+ * // third party never receives the raw Firebase UID.
  * logger.setUser(uid);
  *
  * // Drop a breadcrumb that will be attached to the next captured event.
@@ -29,6 +29,9 @@
  */
 
 import * as Sentry from '@sentry/react-native';
+// expo-crypto is required lazily inside setUser so test environments
+// (jest with __DEV__=true) never trigger its native-module bindings.
+import type * as CryptoTypes from 'expo-crypto';
 
 // Check if we're in development mode
 // __DEV__ is a global variable set by React Native/Expo
@@ -173,9 +176,12 @@ interface Logger {
      * Identify the current user on Sentry. Pass `null` on logout to detach.
      * No-op in dev (Sentry not initialised) and never throws.
      *
-     * RGPD note: we forward the Firebase UID, which is already opaque to
-     * third parties but still ties crash reports to a single account. If a
-     * future audit demands stricter anonymisation, hash the UID here.
+     * RGPD: the Firebase UID is hashed (SHA-256, truncated to 16 hex chars)
+     * before being sent to Sentry so the third party never receives the raw
+     * identifier. The hash is stable per user — enough to correlate crashes
+     * across sessions — but cannot be reversed to the original UID.
+     * The hashing is async; the public signature stays sync, the work is
+     * fire-and-forget and any failure is swallowed.
      */
     setUser: (uid: string | null) => void;
 
@@ -227,15 +233,25 @@ export const logger: Logger = {
 
     setUser: (uid: string | null) => {
         if (isDev) return;
-        try {
-            if (uid) {
-                Sentry.setUser({ id: uid });
-            } else {
-                Sentry.setUser(null);
+        void (async () => {
+            try {
+                if (uid) {
+                    // Lazy-require so the native module is never loaded in
+                    // test or web-only contexts where it is unavailable.
+                    const Crypto = require('expo-crypto') as typeof CryptoTypes;
+                    const digest = await Crypto.digestStringAsync(
+                        Crypto.CryptoDigestAlgorithm.SHA256,
+                        uid,
+                    );
+                    const hashedId = digest.slice(0, 16);
+                    Sentry.setUser({ id: hashedId });
+                } else {
+                    Sentry.setUser(null);
+                }
+            } catch {
+                // Identity tracking is best-effort; never break the auth flow.
             }
-        } catch {
-            // Identity tracking is best-effort; never break the auth flow.
-        }
+        })();
     },
 
     addBreadcrumb: (category: string, message: string, data?: any) => {
