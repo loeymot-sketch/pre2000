@@ -20,6 +20,12 @@
  * Until then, every method here is intentionally a no-op. In __DEV__ we log a
  * single warning at startup to surface this state, instead of silently dropping
  * thousands of events with no observability.
+ *
+ * @deprecated-as-noop — exists only to keep call sites stable. All public methods
+ * return void / Promise<void> and short-circuit on RN where the underlying
+ * Firebase Analytics instance resolves to null. Do not remove this file: screens,
+ * navigation, and auth flows depend on its surface. Audit-tracked under F29
+ * (cycle C13). See docs/SECURITY_NOTES.md.
  */
 
 import { analytics } from '../config/firebase';

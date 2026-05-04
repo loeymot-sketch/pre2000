@@ -109,3 +109,123 @@ Expo SDK upgrade lands (the SDK upgrade also lifts the `xcode → uuid` chain).
 | U1 | Upgrade Expo SDK 54 → next stable (clears Group A)  | TBD   |
 | U1 | Re-evaluate `react-native-markdown-display` (Grp B) | TBD   |
 | U1 | Drop or bump `@expo/ngrok` dev dep (Group C)        | TBD   |
+
+---
+
+# Cycle C13 — LOW findings audit (2026-05-04)
+
+Bundle de findings hygiène (audit-driven cleanup, aucun changement de
+comportement runtime). Statuts ci-dessous.
+
+## F21 — EAS Build secrets management
+
+**Status: ACTION REQUIRED (operator) — secrets en clair détectés dans `app/eas.json`.**
+
+Les variables d'environnement Firebase doivent être dans EAS Secrets, pas
+dans `eas.json`. Vérification 2026-05-04 :
+
+- [ ] `EXPO_PUBLIC_FIREBASE_API_KEY` → EAS Secret
+- [ ] `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN` → EAS Secret
+- [ ] `EXPO_PUBLIC_FIREBASE_PROJECT_ID` → EAS Secret
+- [ ] `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET` → EAS Secret
+- [ ] `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` → EAS Secret
+- [ ] `EXPO_PUBLIC_FIREBASE_APP_ID` → EAS Secret
+
+Procédure :
+
+```bash
+eas secret:create --scope project --name EXPO_PUBLIC_FIREBASE_API_KEY --value "AIza..." --type string
+# … répéter pour chaque variable.
+```
+
+Pour vérifier l'état : `eas secret:list --scope project`.
+
+État actuel `app/eas.json` (2026-05-04) :
+
+- `build.preview.env` contient les 6 variables `EXPO_PUBLIC_FIREBASE_*` en
+  **valeur littérale** (ex. `"EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSy..."`).
+- `build.development.env` et `build.production.env` ne contiennent **aucun**
+  secret Firebase (uniquement `APP_ENV`).
+- À documenter par l'opérateur lors de la migration vers EAS Secrets : retirer
+  les valeurs littérales du bloc `preview.env` après création des secrets, le
+  tooling `eas build` injecte automatiquement les secrets project-scoped.
+
+> Note C13 : `eas.json` n'a **pas** été modifié dans ce cycle (out of scope —
+> action opérateur dédiée).
+
+## F23 — `chatbot_data.ts`
+
+**Status: USED at runtime.**
+
+Imports détectés (`grep -rn "chatbot_data" app/src`) :
+
+- `app/src/services/chatbot/data/local_data.ts`
+- `app/src/services/chatbot/data/DatabaseService.ts`
+- `app/src/utils/uploadArticles.ts`
+
+Recommendation : migrer vers Firestore static collection ou SQLite (taille
+bundle ~2367 lignes d'objets en mémoire au cold start).
+
+Decision : déféré post-v1.0 (cycle ultérieur — pas d'impact sécurité, juste
+poids du bundle JS). Pas d'annotation `@deprecated` ajoutée puisque le fichier
+est consommé runtime.
+
+## F24 — `babyEvolution.json` (i18n locales)
+
+**Status: PARTIAL.**
+
+Fichiers trouvés (4 locales) :
+
+- `app/src/i18n/locales/en/babyEvolution.json` — 2 lignes
+- `app/src/i18n/locales/fr/babyEvolution.json` — 2 lignes
+- `app/src/i18n/locales/ar/babyEvolution.json` — 2 lignes
+- `app/src/i18n/locales/tn/babyEvolution.json` — 2 lignes
+
+Chaque fichier contient une seule clé (`development`) — couvre 1 entrée sur
+les ~40 semaines attendues. Les données réelles d'évolution semaine par
+semaine vivent dans `app/src/config/babyGrowthData.ts` (consommé par
+`BabyEvolutionScreen.tsx` et `BabyGrowthCard.tsx`), donc le namespace i18n
+`babyEvolution` n'est aujourd'hui qu'un placeholder pour l'éventuelle
+traduction des libellés UI de l'écran.
+
+Action : l'écran qui consomme cette data (`BabyEvolutionScreen.tsx`) doit
+gracefully fallback sur la clé existante ou être masqué pour les semaines
+manquantes — vérification UX humaine à V1-smoke.
+
+Decision : non bloquant pour v1.0. Compléter le namespace i18n quand la
+traduction des labels UI deviendra prioritaire (cycle dédié contenu/i18n).
+
+## F25 — Web date input (LOW, accept)
+
+**Status: ACCEPTED — pas d'action code prévue pour v1.0.**
+
+L'app cible iOS/Android natifs principalement. Le fallback web utilise
+`<input type="date">` standard navigateur, dont l'UX/styling varie par
+navigateur. Decision : pas d'amélioration prévue pour v1.0.
+
+## F26 — Root `.gitignore` — `.DS_Store`
+
+**Status: ACTION TAKEN.**
+
+Le `.gitignore` racine du repo couvrait `.DS_Store` (top-level uniquement).
+Ajouté `**/.DS_Store` pour couvrir explicitement les sous-arbres hors `app/`
+(qui a son propre `.gitignore`).
+
+## F29 — `analyticsService.ts` no-op
+
+**Status: ACTION TAKEN — JSDoc `@deprecated-as-noop` ajouté.**
+
+Le fichier `app/src/services/analyticsService.ts` est un wrapper no-op de
+facto sur React Native (firebase/analytics Web SDK non supporté en Hermes,
+toutes les méthodes short-circuit sur instance null). JSDoc enrichie avec
+le tag `@deprecated-as-noop` pour expliciter le statut. Aucune signature ni
+comportement runtime modifié — les call sites (useScreenAnalytics, App.tsx,
+Login/RegisterScreen) continuent de compiler à l'identique.
+
+## F30 — Snippet de debug `WeightTrackerScreen_debug_handlers.tsx.snippet`
+
+**Status: ACTION TAKEN — fichier supprimé.**
+
+Le fichier `app/src/screens/WeightTrackerScreen_debug_handlers.tsx.snippet`
+était une relique de refacto (extension `.snippet` = jamais compilé/inclus
+dans le bundle Metro). Supprimé.
