@@ -146,9 +146,9 @@
       "package": "com.mamabebe.app",
       "googleServicesFile": "./google-services.json",
       "versionCode": 8,
+      "allowBackup": false,
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
-        "SCHEDULE_EXACT_ALARM",
         "VIBRATE",
         "POST_NOTIFICATIONS"
       ],
