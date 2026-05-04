@@ -558,7 +558,13 @@ export const OnboardingScreen = () => {
 
     // STEP 4: Final Screen with Account Option ✨
     const renderStep4 = () => {
-        const canCreateAccount = email.trim().length > 0 && password.length >= 8 && /\d/.test(password);
+        // C14-FIX: aligned with C9 password policy (10 chars + 1 digit + 1 uppercase).
+        // Was 8 chars only — accepted accounts that the post-C9 validatePassword rejects.
+        const canCreateAccount =
+            email.trim().length > 0 &&
+            password.length >= 10 &&
+            /\d/.test(password) &&
+            /[A-Z]/.test(password);
 
         return (
             <LinearGradient
@@ -822,17 +828,17 @@ export const OnboardingScreen = () => {
 
                         {error ? <ErrorMessage message={error} /> : null}
 
-                        {/* U-FIX-10: enforce 8 chars + 1 digit (same policy as RegisterScreen) */}
+                        {/* C14-FIX: enforce 10 chars + 1 digit + 1 uppercase (post-C9 policy, same as RegisterScreen + handleFinish step 4) */}
                         {/* TTC-FIX: previously called handleFinish (the pregnancy handler), which
                             (a) used `selectedDate` (today) instead of the user's lastPeriodDate, and
                             (b) created a real pregnancy profile. Now wired to handleFinishTTC. */}
                         <TouchableOpacity
                             style={styles.startButton}
                             onPress={() => handleFinishTTC(true)}
-                            disabled={loading || !(email.trim().length > 0 && password.length >= 8 && /\d/.test(password))}
+                            disabled={loading || !(email.trim().length > 0 && password.length >= 10 && /\d/.test(password) && /[A-Z]/.test(password))}
                         >
                             <LinearGradient
-                                colors={loading || !(email.trim().length > 0 && password.length >= 8 && /\d/.test(password))
+                                colors={loading || !(email.trim().length > 0 && password.length >= 10 && /\d/.test(password) && /[A-Z]/.test(password))
                                     ? [theme.colors.neutral300, theme.colors.gray500]
                                     : [theme.colors.primary, theme.colors.accent]}
                                 start={{ x: 0, y: 0 }}
@@ -1006,6 +1012,18 @@ export const OnboardingScreen = () => {
     const handleFinishTTC = async (createAccount: boolean = false) => {
         setError('');
 
+        // C14-FIX: same validateProfile gate as handleFinish (was missing, F18 partial gap).
+        // For TTC the LMP is the user's lastPeriodDate (used to compute the fertility window).
+        const ttcValidation = validateProfile({
+            firstName: firstName || t('onboarding.step4.defaultName'),
+            lmp: lastPeriodDate,
+        });
+        if (!ttcValidation.valid) {
+            const message = ttcValidation.error ? t(ttcValidation.error) : t('common.unknownError');
+            Alert.alert(t('common.error'), message);
+            return;
+        }
+
         log.debug('[Onboarding] 🎯 handleFinishTTC called', { createAccount });
 
         await withLoading(async () => {
@@ -1087,6 +1105,21 @@ export const OnboardingScreen = () => {
 
     const handleFinishCurious = async () => {
         setError('');
+
+        // C14-FIX: validate the explore-week derived LMP before going further (F18 partial gap).
+        // Curious mode uses a synthetic LMP (today − (exploreWeek-1) weeks); name comes from i18n default.
+        const today = new Date();
+        const fakeLmpForValidation = new Date(today);
+        fakeLmpForValidation.setDate(today.getDate() - (exploreWeek - 1) * 7);
+        const curiousValidation = validateProfile({
+            firstName: t('onboarding.curiousDefaultName'),
+            lmp: fakeLmpForValidation,
+        });
+        if (!curiousValidation.valid) {
+            const message = curiousValidation.error ? t(curiousValidation.error) : t('common.unknownError');
+            Alert.alert(t('common.error'), message);
+            return;
+        }
 
         log.debug('[Onboarding] 🎯 handleFinishCurious called');
 

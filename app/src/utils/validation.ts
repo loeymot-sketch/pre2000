@@ -61,6 +61,26 @@ export const validatePassword = (password: string): ValidationResult => {
 };
 
 /**
+ * Permissive password check for LOGIN of pre-existing accounts.
+ *
+ * IMPORTANT: do NOT use `validatePassword` for login — that one enforces the
+ * NEW (post-C9) policy (10+ chars + uppercase + digit). Pre-existing users
+ * who registered with the old 8-char policy would be locked out.
+ *
+ * Login validation only ensures the input is non-empty and within reasonable
+ * bounds; Firebase Auth itself rejects wrong passwords with `auth/wrong-password`.
+ */
+export const validatePasswordForLogin = (password: string): ValidationResult => {
+    if (!password) {
+        return { valid: false, error: 'errors.passwordRequired' };
+    }
+    if (password.length > 100) {
+        return { valid: false, error: 'errors.passwordTooLong' };
+    }
+    return { valid: true };
+};
+
+/**
  * Validate password confirmation
  */
 export const validatePasswordMatch = (password: string, confirmPassword: string): ValidationResult => {

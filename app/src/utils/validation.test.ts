@@ -1,4 +1,4 @@
-import { validateEmail, validatePassword, validatePasswordMatch, validateRequired } from './validation';
+import { validateEmail, validatePassword, validatePasswordForLogin, validatePasswordMatch, validateRequired } from './validation';
 
 describe('Validation Utils', () => {
     describe('validateEmail', () => {
@@ -52,6 +52,31 @@ describe('Validation Utils', () => {
 
         it('should return correct error message for missing-uppercase passwords', () => {
             expect(validatePassword('password123').error).toBe("errors.passwordUppercase");
+        });
+    });
+
+    describe('validatePasswordForLogin (permissive — pre-existing accounts)', () => {
+        it('accepts any non-empty password (no length / complexity gate)', () => {
+            expect(validatePasswordForLogin('a').valid).toBe(true);
+            expect(validatePasswordForLogin('123456').valid).toBe(true); // old 6-char Firebase min
+            expect(validatePasswordForLogin('Abcdefg9').valid).toBe(true); // old 8-char policy
+            expect(validatePasswordForLogin('Password123').valid).toBe(true); // new 10+ policy
+        });
+
+        it('rejects empty', () => {
+            expect(validatePasswordForLogin('').valid).toBe(false);
+            expect(validatePasswordForLogin('').error).toBe('errors.passwordRequired');
+        });
+
+        it('rejects > 100 chars (defense against pathological input)', () => {
+            expect(validatePasswordForLogin('a'.repeat(101)).valid).toBe(false);
+            expect(validatePasswordForLogin('a'.repeat(101)).error).toBe('errors.passwordTooLong');
+        });
+
+        it('does NOT enforce uppercase or digit (login must accept legacy passwords)', () => {
+            expect(validatePasswordForLogin('lowercaseonly').valid).toBe(true);
+            expect(validatePasswordForLogin('NOUPPERLOWER').valid).toBe(true);
+            expect(validatePasswordForLogin('1234567').valid).toBe(true);
         });
     });
 

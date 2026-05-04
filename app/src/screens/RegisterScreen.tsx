@@ -40,19 +40,28 @@ export const RegisterScreen = () => {
     const passwordRef = useRef<TextInput>(null);
     const confirmRef = useRef<TextInput>(null);
 
-    // Password strength: 0=empty, 1=too short, 2=no digit, 3=valid
+    // C14-FIX: aligned with C9 policy (10+ chars, 1 digit, 1 uppercase).
+    // Password strength: 0=empty, 1=too short(<10), 2=no digit, 3=no uppercase, 4=valid
     const passwordStrength = useMemo(() => {
         if (!password) return 0;
-        if (password.length < 8) return 1;
+        if (password.length < 10) return 1;
         if (!/\d/.test(password)) return 2;
-        return 3;
+        if (!/[A-Z]/.test(password)) return 3;
+        return 4;
     }, [password]);
 
-    const strengthColor = ['transparent', theme.colors.redAccentLight, theme.colors.orange500, theme.colors.green500][passwordStrength];
+    const strengthColor = [
+        'transparent',
+        theme.colors.redAccentLight,
+        theme.colors.orange500,
+        theme.colors.orange500,
+        theme.colors.green500,
+    ][passwordStrength];
     const strengthLabel = [
         '',
-        t('errors.passwordLength', { defaultValue: 'Min. 8 caractères' }),
+        t('errors.passwordLength', { defaultValue: 'Min. 10 caractères' }),
         t('errors.passwordComplexity', { defaultValue: 'Ajouter un chiffre' }),
+        t('errors.passwordUppercase', { defaultValue: 'Ajouter une majuscule' }),
         '✓',
     ][passwordStrength];
 

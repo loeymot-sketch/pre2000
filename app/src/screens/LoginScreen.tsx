@@ -15,7 +15,7 @@ import { Button } from '../components/common/Button';
 import { RtlAwareChevron } from '../components/common/RtlAwareChevron';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { SuccessMessage } from '../components/common/SuccessMessage';
-import { validateEmail, validatePassword } from '../utils/validation';
+import { validateEmail, validatePasswordForLogin } from '../utils/validation';
 import { getFirebaseErrorMessage } from '../utils/firebaseErrors';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -49,7 +49,10 @@ export const LoginScreen = () => {
             return;
         }
 
-        const passwordValidation = validatePassword(password);
+        // C14-FIX: use the permissive login validator so users registered
+        // with the pre-C9 policy (8-char min, no uppercase req) can still log in.
+        // Firebase Auth itself rejects wrong passwords; we only check non-empty here.
+        const passwordValidation = validatePasswordForLogin(password);
         if (!passwordValidation.valid) {
             setError(t(passwordValidation.error || 'auth.invalidPassword'));
             return;
