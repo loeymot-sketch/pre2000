@@ -11,6 +11,14 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Static read = authentifié seulement (anti-scraping / cost protection).
+    // NB: les invités Firebase (anonymous auth via loginAsGuest) sont
+    // authentifiés → ils gardent l'accès au contenu statique. Pas de
+    // régression UX, on bloque uniquement le trafic non-auth (scraping/DoS).
+    function isAuthenticatedReader() {
+      return isAuthenticated();
+    }
+
     // Vérifie si l'utilisateur est le propriétaire du document (basé sur l'ID du doc)
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
@@ -26,6 +34,83 @@ service cloud.firestore {
     // Pour la CRÉATION et MISE À JOUR (nouvelle resource)
     function isOwnerOfData() {
       return isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+    }
+
+    // =========================================================
+    // 🛡️ SCHEMA & RANGE VALIDATION
+    // =========================================================
+
+    // Document size guard: limite le nb de champs top-level (anti-bloat / DoS).
+    function hasReasonableSize() {
+      return request.resource.data.size() < 30;
+    }
+
+    // user_id présent et = auth.uid (string).
+    function userIdMatches() {
+      return isAuthenticated()
+          && request.resource.data.user_id is string
+          && request.resource.data.user_id == request.auth.uid;
+    }
+
+    // Validation healthMetrics: type ∈ {weight, blood_pressure}, date string,
+    // value soit number (poids) soit map (BP).
+    function validHealthMetric() {
+      return userIdMatches()
+          && hasReasonableSize()
+          && request.resource.data.type is string
+          && (request.resource.data.type == 'weight' || request.resource.data.type == 'blood_pressure')
+          && request.resource.data.date is string
+          && (
+               // weight: number > 0 && < 500 (kg, défensif)
+               (request.resource.data.type == 'weight'
+                  && request.resource.data.value is number
+                  && request.resource.data.value > 0
+                  && request.resource.data.value < 500)
+               ||
+               // blood_pressure: map {systolic, diastolic} numériques bornés
+               (request.resource.data.type == 'blood_pressure'
+                  && request.resource.data.value is map
+                  && request.resource.data.value.systolic is number
+                  && request.resource.data.value.systolic > 0
+                  && request.resource.data.value.systolic < 300
+                  && request.resource.data.value.diastolic is number
+                  && request.resource.data.value.diastolic > 0
+                  && request.resource.data.value.diastolic < 200)
+             );
+    }
+
+    // Validation glucoseMetrics: value 0-50 mmol/L, meal_context enum.
+    function validGlucose() {
+      return userIdMatches()
+          && hasReasonableSize()
+          && request.resource.data.value is number
+          && request.resource.data.value > 0
+          && request.resource.data.value < 50
+          && request.resource.data.meal_context is string
+          && (
+               request.resource.data.meal_context == 'fasting'
+               || request.resource.data.meal_context == 'post_meal'
+               || request.resource.data.meal_context == 'random'
+             )
+          && request.resource.data.date is string;
+    }
+
+    // Validation weight_entries: weight > 0 et < 500 kg.
+    function validWeightEntry() {
+      return userIdMatches()
+          && hasReasonableSize()
+          && request.resource.data.weight is number
+          && request.resource.data.weight > 0
+          && request.resource.data.weight < 500;
+    }
+
+    // Validation symptomsLog: symptoms est une liste, taille raisonnable.
+    function validSymptoms() {
+      return userIdMatches()
+          && hasReasonableSize()
+          && request.resource.data.symptoms is list
+          && request.resource.data.symptoms.size() < 50
+          && request.resource.data.date is string;
     }
 
     // =========================================================
@@ -61,19 +146,20 @@ service cloud.firestore {
       allow delete: if isOwnerOfResource();
     }
 
-    // Health Metrics (Weight, BP)
+    // Health Metrics (Weight, BP) — C7: schema + range validation
     match /healthMetrics/{metricId} {
       allow read: if isOwnerOfResource();
-      allow create: if isOwnerOfData();
-      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow create: if validHealthMetric();
+      allow update: if isOwnerOfResource() && validHealthMetric();
       allow delete: if isOwnerOfResource();
     }
 
     // Weight Entries (weightService.ts uses 'weight_entries' collection)
+    // C7: schema + range validation (kg bornés)
     match /weight_entries/{entryId} {
       allow read: if isOwnerOfResource();
-      allow create: if isOwnerOfData();
-      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow create: if validWeightEntry();
+      allow update: if isOwnerOfResource() && validWeightEntry();
       allow delete: if isOwnerOfResource();
     }
 
@@ -103,37 +189,42 @@ service cloud.firestore {
 
     // Glucose Metrics (healthService.saveGlucoseEntry / getGlucoseHistory)
     // Added P1.1 — was missing, causing all glycemia writes to fail in prod.
+    // C7: schema + range validation (mmol/L bornés, meal_context enum)
     match /glucoseMetrics/{metricId} {
       allow read: if isOwnerOfResource();
-      allow create: if isOwnerOfData();
-      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow create: if validGlucose();
+      allow update: if isOwnerOfResource() && validGlucose();
       allow delete: if isOwnerOfResource();
     }
 
     // Symptoms Log (healthService.saveSymptomEntry / getDailySymptoms)
     // Added P1.1 — was missing, causing all symptom writes to fail in prod.
+    // C7: schema validation (symptoms is list, size bornée)
     match /symptomsLog/{logId} {
       allow read: if isOwnerOfResource();
-      allow create: if isOwnerOfData();
-      allow update: if isOwnerOfResource() && isOwnerOfData();
+      allow create: if validSymptoms();
+      allow update: if isOwnerOfResource() && validSymptoms();
       allow delete: if isOwnerOfResource();
     }
 
     // =========================================================
     // 📚 STATIC CONTENT (Read-only for users)
+    // C6a: lecture restreinte aux utilisateurs authentifiés
+    // (anti-scraping / cost protection). Les invités Firebase
+    // (anonymous auth) sont autorisés → pas de régression UX.
     // =========================================================
 
-    match /calendarTemplates/{docId} { allow read: if true; allow write: if false; }
-    match /reminderTemplates/{docId} { allow read: if true; allow write: if false; }
-    match /weeklyTasks/{docId} { allow read: if true; allow write: if false; }
-    match /babyMessages/{docId} { allow read: if true; allow write: if false; }
-    match /tips/{docId} { allow read: if true; allow write: if false; }
-    match /articles/{docId} { allow read: if true; allow write: if false; }
-    match /articlesAntigravity/{docId} { allow read: if true; allow write: if false; }
-    match /supplements/{docId} { allow read: if true; allow write: if false; }
-    match /redFlags/{docId} { allow read: if true; allow write: if false; }
-    match /chatbotSuggestionsAG/{docId} { allow read: if true; allow write: if false; }
-    match /weeks/{docId} { allow read: if true; allow write: if false; }
+    match /calendarTemplates/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /reminderTemplates/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /weeklyTasks/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /babyMessages/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /tips/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /articles/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /articlesAntigravity/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /supplements/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /redFlags/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /chatbotSuggestionsAG/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
+    match /weeks/{docId} { allow read: if isAuthenticatedReader(); allow write: if false; }
 
   }
 }
