@@ -51,11 +51,16 @@ export class ErrorBoundary extends Component<Props, State> {
                             {i18n.t('errorBoundary.message')}
                         </Text>
 
-                        {this.state.error && (
+                        {__DEV__ && this.state.error && (
                             <ScrollView style={styles.errorBox}>
                                 <Text style={styles.errorText}>
                                     {this.state.error.toString()}
                                 </Text>
+                                {this.state.error.stack && (
+                                    <Text style={styles.stackTrace}>
+                                        {this.state.error.stack}
+                                    </Text>
+                                )}
                             </ScrollView>
                         )}
 
@@ -117,6 +122,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: theme.colors.red600,
         fontFamily: 'Courier',
+    },
+    stackTrace: {
+        fontSize: 10,
+        color: theme.colors.textSecondary,
+        fontFamily: 'Courier',
+        marginTop: 8,
     },
     button: {
         backgroundColor: theme.colors.primary,
