@@ -217,6 +217,16 @@ export const checkWeightChange = (
 /**
  * Country (ISO-2 or common name uppercased) → local medical emergency number.
  *
+ * SAFETY-VERIFIED 2026-05-04 against official sources:
+ * - Tunisia (190): SAMU — verified via U.S. Embassy in Tunis emergency services page
+ *   and SAMU Tunis directory (allo-docteur.com.tn). 197 = POLICE, NOT medical.
+ * - Morocco (141): SAMU — verified via Portail de la Santé Marocaine (srh4all.ma)
+ *   and ministère de la santé. 150 covers rural areas (kept simple: 141 only).
+ * - Algeria (16): SAMU — verified via French embassy in Algeria (dz.diplomatie.gouv.fr).
+ *   14 = Protection Civile (firefighters/ambulance ground service); 16 routes to
+ *   medical decision authority — preferred for our medical-emergency context
+ *   (consistent with FR=15 SAMU, TN=190 SAMU, MA=141 SAMU pattern).
+ *
  * Intentionally conservative: only countries we know with a high-confidence
  * dispatch number for medical emergencies are included. For unknown countries
  * the UI omits the call button and shows the message only — never guess a
@@ -225,9 +235,9 @@ export const checkWeightChange = (
 export const EMERGENCY_NUMBERS: Readonly<Record<string, string>> = Object.freeze({
     FR: '15',
     FRANCE: '15',
-    TN: '197',
-    TUNISIA: '197',
-    TUNISIE: '197',
+    TN: '190',
+    TUNISIA: '190',
+    TUNISIE: '190',
     MA: '141',
     MOROCCO: '141',
     MAROC: '141',
@@ -237,9 +247,9 @@ export const EMERGENCY_NUMBERS: Readonly<Record<string, string>> = Object.freeze
     CH: '144',
     SWITZERLAND: '144',
     SUISSE: '144',
-    DZ: '14',
-    ALGERIA: '14',
-    ALGERIE: '14',
+    DZ: '16',
+    ALGERIA: '16',
+    ALGERIE: '16',
     US: '911',
     USA: '911',
     CA: '911',
@@ -272,13 +282,14 @@ export const getEmergencyNumber = (country?: string | null): string | null => {
  * rather than dial a wrong number.
  *
  * Mapping:
- *   ar | tn → 197 (Tunisia SAMU — current default for the AR/TN UI)
+ *   ar | tn → 190 (Tunisia SAMU — current default for the AR/TN UI;
+ *                   note: app's AR locale is Tunisian Arabic, not pan-Arabic)
  *   fr      → 15  (France SAMU)
  *   en      → null (caller should disclose unknown country)
  */
 const LOCALE_FALLBACK: Readonly<Record<string, string>> = Object.freeze({
-    ar: '197',
-    tn: '197',
+    ar: '190',
+    tn: '190',
     fr: '15',
 });
 

@@ -13,6 +13,7 @@ import {
     checkGlucose,
     checkWeightChange,
     getEmergencyNumber,
+    resolveEmergencyNumber,
 } from '../clinicalChecks';
 
 const expectSeverity = (
@@ -194,8 +195,8 @@ describe('getEmergencyNumber', () => {
         expect(getEmergencyNumber('FR')).toBe('15');
         expect(getEmergencyNumber('fr')).toBe('15');
         expect(getEmergencyNumber('France')).toBe('15');
-        expect(getEmergencyNumber('TN')).toBe('197');
-        expect(getEmergencyNumber('Tunisia')).toBe('197');
+        expect(getEmergencyNumber('TN')).toBe('190');
+        expect(getEmergencyNumber('Tunisia')).toBe('190');
         expect(getEmergencyNumber('MA')).toBe('141');
         expect(getEmergencyNumber('US')).toBe('911');
     });
@@ -206,5 +207,56 @@ describe('getEmergencyNumber', () => {
         expect(getEmergencyNumber(undefined)).toBeNull();
         expect(getEmergencyNumber(null)).toBeNull();
         expect(getEmergencyNumber('Atlantis')).toBeNull();
+    });
+});
+
+describe('SAFETY: medical emergency numbers (verified 2026-05-04)', () => {
+    it('returns SAMU 190 for Tunisia (NOT 197 = police)', () => {
+        expect(getEmergencyNumber('TN')).toBe('190');
+        expect(getEmergencyNumber('TUNISIA')).toBe('190');
+        expect(getEmergencyNumber('TUNISIE')).toBe('190');
+    });
+
+    it('returns SAMU 141 for Morocco', () => {
+        expect(getEmergencyNumber('MA')).toBe('141');
+        expect(getEmergencyNumber('MOROCCO')).toBe('141');
+        expect(getEmergencyNumber('MAROC')).toBe('141');
+    });
+
+    it('returns SAMU 16 for Algeria (NOT 14 = protection civile)', () => {
+        expect(getEmergencyNumber('DZ')).toBe('16');
+        expect(getEmergencyNumber('ALGERIA')).toBe('16');
+        expect(getEmergencyNumber('ALGERIE')).toBe('16');
+    });
+
+    it('returns SAMU 15 for France (unchanged)', () => {
+        expect(getEmergencyNumber('FR')).toBe('15');
+        expect(getEmergencyNumber('FRANCE')).toBe('15');
+    });
+
+    it('returns null for unknown countries (never guesses)', () => {
+        expect(getEmergencyNumber('XX')).toBeNull();
+        expect(getEmergencyNumber('JP')).toBeNull();
+        expect(getEmergencyNumber(undefined)).toBeNull();
+        expect(getEmergencyNumber(null)).toBeNull();
+        expect(getEmergencyNumber('')).toBeNull();
+    });
+
+    it('locale fallback ar/tn returns 190 (Tunisia SAMU)', () => {
+        expect(resolveEmergencyNumber(null, 'ar')).toBe('190');
+        expect(resolveEmergencyNumber(null, 'tn')).toBe('190');
+    });
+
+    it('locale fallback fr returns 15', () => {
+        expect(resolveEmergencyNumber(null, 'fr')).toBe('15');
+    });
+
+    it('locale fallback en returns null', () => {
+        expect(resolveEmergencyNumber(null, 'en')).toBeNull();
+    });
+
+    it('country wins over locale', () => {
+        expect(resolveEmergencyNumber('FR', 'ar')).toBe('15');
+        expect(resolveEmergencyNumber('TN', 'fr')).toBe('190');
     });
 });
