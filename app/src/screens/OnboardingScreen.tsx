@@ -12,9 +12,11 @@ import {
     Dimensions,
     Animated,
     BackHandler,
+    Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Localization from 'expo-localization';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { usePregnancy } from '../context/PregnancyContext';
@@ -34,6 +36,7 @@ import { getPickerLocale } from '../utils/pickerLocale';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { calculateFertileWindow } from '../utils/fertility';
+import { validateProfile } from '../utils/validation';
 import {
     getStepCount,
     WEEK_COMPARISONS,
@@ -91,29 +94,29 @@ export const OnboardingScreen = () => {
         log.debug('[Onboarding] 🚀 V2 Started');
         analytics.then(a => a && logEvent(a, 'onboarding_v2_start'));
 
-        // Auto-detect country by IP (HTTPS for security + iOS ATS compliance)
-        const detectCountry = async () => {
-            try {
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                if (data.country_name) {
-                    // Map to our country list
-                    const countryMap: { [key: string]: string } = {
-                        'Tunisia': 'tunisia',
-                        'France': 'france',
-                        'Belgium': 'belgium',
-                        'Morocco': 'morocco',
-                        'Algeria': 'algeria',
-                    };
-                    const detected = countryMap[data.country_name] || 'tunisia';
-                    log.debug(`[Onboarding] 🌍 Detected country: ${data.country_name} → ${detected}`);
+        // F7: detect country from device locale instead of remote IP lookup
+        // (avoids leaking the user's IP to a third party — see C2 audit).
+        try {
+            const region = Localization.getLocales?.()[0]?.regionCode || null;
+            if (region) {
+                const regionMap: { [key: string]: string } = {
+                    TN: 'tunisia',
+                    FR: 'france',
+                    BE: 'belgium',
+                    MA: 'morocco',
+                    DZ: 'algeria',
+                };
+                const detected = regionMap[region.toUpperCase()];
+                if (detected) {
+                    log.debug(`[Onboarding] 🌍 Detected region: ${region} → ${detected}`);
                     setCountry(detected);
+                } else {
+                    log.debug(`[Onboarding] 🌍 Region ${region} not in map, keeping default country`);
                 }
-            } catch (err) {
-                log.debug('[Onboarding] ⚠️ Could not detect country by IP, using default');
             }
-        };
-        detectCountry();
+        } catch (e) {
+            log.debug('[Onboarding] ⚠️ Could not read locale, using default country');
+        }
     }, []);
 
     // Calculate LMP from selected date based on method
@@ -176,6 +179,18 @@ export const OnboardingScreen = () => {
     const handleFinish = async (createAccount: boolean = false) => {
         setError('');
         const lmpDate = getLmpDate();
+
+        // F18: validate the collected profile before creating the account / guest profile.
+        // Blocks invalid first names and impossible LMP dates from reaching AuthContext.
+        const validation = validateProfile({
+            firstName: firstName || t('onboarding.step4.defaultName'),
+            lmp: lmpDate,
+        });
+        if (!validation.valid) {
+            const message = validation.error ? t(validation.error) : t('common.unknownError');
+            Alert.alert(t('common.error'), message);
+            return;
+        }
 
         log.debug('[Onboarding] 🎯 handleFinish called', { createAccount });
         log.debug(`[Onboarding] 📊 Profile data:`, {
