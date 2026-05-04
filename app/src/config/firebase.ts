@@ -1,9 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { initializeFirestore, persistentLocalCache } from 'firebase/firestore';
-// @ts-expect-error - getReactNativePersistence exists at runtime but not in TS types for firebase 12.x
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getAnalytics, isSupported } from 'firebase/analytics';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { createFirebaseAuth } from './createFirebaseAuth';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY!,
@@ -16,11 +14,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// 1. Auth with React Native Persistence
-// @ts-ignore - getReactNativePersistence exists in firebase/auth for React Native
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
+// 1. Auth — platform-specific module (`.web` / `.native`) so web never loads RN persistence.
+const auth = createFirebaseAuth(app);
 
 // 2. Firestore Persistence
 // React Native usually enables persistence by default, but we can be explicit.

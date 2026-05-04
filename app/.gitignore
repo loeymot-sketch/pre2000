@@ -46,3 +46,9 @@ google-services.json
 GoogleService-Info.plist
 **/google-services.json
 **/GoogleService-Info.plist
+
+# Playwright (npm run e2e:web)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -11,6 +11,7 @@ import { scheduleReminderNotification } from './notificationService';
 import { getReminderMessage } from '../utils/notificationMessages';
 import { scheduleTodaysBabyMessage } from './babyMessageService';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 import i18n from '../i18n'; // ── FIX: read current locale dynamically
 
 const log = createLogger('RemindersScheduler');
@@ -68,6 +69,11 @@ export const syncRemindersToNotifications = async (
     // ── FIX-1: Use current app language as notification locale (was hardcoded 'fr')
     const effectiveLocale = locale || i18n.language || 'fr';
     log.info(`🔄 Syncing reminders (locale: ${effectiveLocale}, user: ${userId || 'guest'})...`);
+
+    if (Platform.OS === 'web') {
+        log.info('[RemindersScheduler] Web — skip local notification sync (expo-notifications unavailable)');
+        return;
+    }
 
     try {
         // 1. Cancel ONLY reminder-type notifications (RDV notifications are preserved)

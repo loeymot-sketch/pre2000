@@ -160,6 +160,7 @@ const MainTabs = () => {
   const { t } = useTranslation();
   return (
     <Tab.Navigator
+      detachInactiveScreens
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,

@@ -11,6 +11,9 @@
     "lint": "tsc --noEmit",
     "lint:colors": "bash scripts/check-theme-strings.sh",
     "verify": "npm run lint:colors && npx tsc --noEmit && npm test -- --passWithNoTests",
+    "e2e:web": "playwright test",
+    "e2e:web:ui": "playwright test --ui",
+    "e2e:web:headed": "playwright test --headed",
     "import-data": "tsx scripts/importData.ts",
     "health-check": "node scripts/check-env.js"
   },
@@ -60,6 +63,7 @@
   },
   "devDependencies": {
     "@expo/ngrok": "^4.1.3",
+    "@playwright/test": "^1.59.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^24.10.1",
     "@types/papaparse": "^5.5.0",

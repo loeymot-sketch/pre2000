@@ -159,6 +159,26 @@ npm test
 npm test -- --watch
 ```
 
+### E2E web (Playwright)
+
+Les scénarios vivent dans `e2e/` ; la config est `playwright.config.ts`. Il faut **Expo web** déjà démarré sur l’URL de base (par défaut `http://localhost:8081`).
+
+```bash
+# Terminal 1 — web (port aligné sur baseURL Playwright)
+npx expo start --web --port 8081
+
+# Terminal 2 — smoke Chromium
+npm run e2e:web
+
+# Variantes
+npm run e2e:web:ui
+npm run e2e:web:headed
+```
+
+- **`E2E_BASE_URL`** : surcharger l’URL (ex. preview déployée).
+- Si l’UI montre des **clés i18n brutes** (`common.xxx`) ou un comportement incohérent, relancer Metro avec un cache clean : `npx expo start --web --port 8081 --clear`.
+- Feuille de route détaillée : [`docs/PLAN_E2E_WEB_SUITE.md`](./docs/PLAN_E2E_WEB_SUITE.md).
+
 ## 📝 Conventions de Code
 
 - **TypeScript** obligatoire

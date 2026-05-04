@@ -23,7 +23,7 @@ const screenWidth = Dimensions.get('window').width;
 export const StatisticsScreen = () => {
     useScreenAnalytics('StatisticsScreen');
     const navigation = useNavigation();
-    const { t, i18n } = useTranslation(['common', 'profile', 'reminders']);
+    const { t, i18n } = useTranslation();
     const dateLocale = useDateLocale();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
@@ -97,36 +97,36 @@ export const StatisticsScreen = () => {
 
     if (loading) {
         return (
-            <View style={styles.centerContainer}>
+            <View testID="statistics_screen_root" style={styles.centerContainer}>
                 <ActivityIndicator size="large" color={theme.colors.primary} />
-                <Text style={styles.loadingText}>{t('common.loadingStats')}</Text>
+                <Text style={styles.loadingText}>{t('loadingStats')}</Text>
             </View>
         );
     }
 
     if (!data || data.dates.length === 0) {
         return (
-            <View style={styles.centerContainer}>
+            <View testID="statistics_screen_root" style={styles.centerContainer}>
                 <Text style={styles.emptyEmoji}>📊</Text>
-                <Text style={styles.emptyTitle}>{t('common.noDataYet')}</Text>
+                <Text style={styles.emptyTitle}>{t('noDataYet')}</Text>
                 <Text style={styles.emptyText}>
-                    {t('common.useAppForStats')}
+                    {t('useAppForStats')}
                 </Text>
             </View>
         );
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView testID="statistics_screen_root" style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <View style={styles.backRow}>
                         <RtlAwareChevron direction="back" variant="arrow" size={16} color={theme.colors.primary} />
-                        <Text style={styles.backButtonText}>{t('common.back')}</Text>
+                        <Text style={styles.backButtonText}>{t('back')}</Text>
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.title}>{t('common.myStats')}</Text>
+                <Text style={styles.title}>{t('myStats')}</Text>
             </View>
             {/* Streak Hero Card */}
             <View style={styles.streakContainer}>
@@ -140,8 +140,8 @@ export const StatisticsScreen = () => {
                             {overallStreak >= 14 ? '🔥' : overallStreak >= 7 ? '⚡' : overallStreak >= 3 ? '✨' : '💪'}
                         </Text>
                         <View>
-                        <Text style={styles.streakCount}>{overallStreak} {t('common.gamification.days')}</Text>
-                            <Text style={styles.streakLabel}>{t('common.gamification.currentStreak')}</Text>
+                        <Text style={styles.streakCount}>{overallStreak} {t('gamification.days')}</Text>
+                            <Text style={styles.streakLabel}>{t('gamification.currentStreak')}</Text>
                         </View>
                     </View>
                 </LinearGradient>
@@ -150,7 +150,7 @@ export const StatisticsScreen = () => {
             {/* Reminder Badges */}
             {reminderBadges.length > 0 && (
                 <View style={styles.chartCard}>
-                    <Text style={styles.chartTitle}>{t('common.gamification.reminderStreaks', 'Streaks par rappel')}</Text>
+                    <Text style={styles.chartTitle}>{t('gamification.reminderStreaks')}</Text>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
                         {reminderBadges.map(badge => (
                             <View key={badge.id} style={[styles.badgeItem, !badge.unlocked && styles.badgeLocked]}>
@@ -172,19 +172,19 @@ export const StatisticsScreen = () => {
                     style={[styles.rangeButton, timeRange === 'week' && styles.rangeButtonActive]}
                     onPress={() => setTimeRange('week')}
                 >
-                    <Text style={[styles.rangeText, timeRange === 'week' && styles.rangeTextActive]}>{t('common.sevenDays')}</Text>
+                    <Text style={[styles.rangeText, timeRange === 'week' && styles.rangeTextActive]}>{t('sevenDays')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.rangeButton, timeRange === 'month' && styles.rangeButtonActive]}
                     onPress={() => setTimeRange('month')}
                 >
-                    <Text style={[styles.rangeText, timeRange === 'month' && styles.rangeTextActive]}>{t('common.thirtyDays')}</Text>
+                    <Text style={[styles.rangeText, timeRange === 'month' && styles.rangeTextActive]}>{t('thirtyDays')}</Text>
                 </TouchableOpacity>
             </View>
 
             {/* Global Progress Chart */}
             <View style={styles.chartCard}>
-                <Text style={styles.chartTitle}>{t('common.globalSuccess')}</Text>
+                <Text style={styles.chartTitle}>{t('globalSuccess')}</Text>
                 <LineChart
                     data={{
                         labels: data.dates.map(d => format(parseISO(d), 'dd/MM', { locale: dateLocale })),
@@ -212,7 +212,7 @@ export const StatisticsScreen = () => {
 
             {/* Hydration Chart */}
             <View style={styles.chartCard}>
-                <Text style={styles.chartTitle}>{t('common.hydrationLiters')}</Text>
+                <Text style={styles.chartTitle}>{t('hydrationLiters')}</Text>
                 <BarChart
                     data={{
                         labels: data.dates.map(d => format(parseISO(d), 'dd/MM', { locale: dateLocale })),
@@ -237,7 +237,7 @@ export const StatisticsScreen = () => {
 
             {/* Vitamins Consistency */}
             <View style={styles.chartCard}>
-                <Text style={styles.chartTitle}>{t('common.vitaminIntake')}</Text>
+                <Text style={styles.chartTitle}>{t('vitaminIntake')}</Text>
                 <View style={styles.vitaminGrid}>
                     {data.dates.map((date, index) => (
                         <View key={index} style={styles.vitaminDay}>

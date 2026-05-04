@@ -1,0 +1,63 @@
+{
+  "phase": "E2E_MASSIVE_PHASE1",
+  "date": "2026-05-04",
+  "environment": {
+    "target": "expo-web",
+    "baseUrl": "http://localhost:8081",
+    "notes": "Guest session in Playwright; Firebase env likely incomplete for Firestore reads"
+  },
+  "jest_verify": {
+    "command": "npm run verify",
+    "cwd": "app",
+    "result": "PASS",
+    "testSuites": 26,
+    "tests": 347
+  },
+  "playwright_tab_sequence": [
+    { "tab": "Home", "url": "http://localhost:8081/HomeMain" },
+    { "tab": "Calendar", "url": "http://localhost:8081/CalendarMain" },
+    { "tab": "Reminders", "url": "http://localhost:8081/RemindersMain/RemindersTab" },
+    { "tab": "Resources", "url": "http://localhost:8081/Ressources/ResourcesMain/Articles" },
+    { "tab": "Chatbot", "url": "http://localhost:8081/Chatbot" }
+  ],
+  "playwright_home_testid_probe": [
+    { "testId": "home_quick_appointments", "result": "NO_TESTID_PLAYWRIGHT" },
+    { "testId": "home_quick_add_task", "result": "NO_TESTID_PLAYWRIGHT" },
+    { "testId": "home_quick_add_appointment", "result": "NO_TESTID_PLAYWRIGHT" },
+    { "testId": "home_quick_search", "result": "NO_TESTID_PLAYWRIGHT" }
+  ],
+  "playwright_deep_links": [
+    { "path": "/Home/WeekRecommendations", "observedUrlAfterWait": "http://localhost:8081/HomeMain" },
+    { "path": "/Home/HealthDashboard", "observedUrlAfterWait": "http://localhost:8081/HomeMain" },
+    { "path": "/Home/WeightTracker", "observedUrlAfterWait": "http://localhost:8081/HomeMain" },
+    { "path": "/Home/ForbiddenFoods", "observedUrlAfterWait": "http://localhost:8081/HomeMain" },
+    { "path": "/Home/LanguageSelect", "observedUrlAfterWait": "http://localhost:8081/HomeMain" },
+    { "path": "/Profile", "observedUrlAfterWait": "http://localhost:8081/HomeMain" }
+  ],
+  "playwright_positive_flows": [
+    { "action": "calendar_add_appointment_text", "url": "http://localhost:8081/AddAppointment" },
+    { "action": "reminders_tasks_tab", "url": "http://localhost:8081/RemindersMain/TasksTab" },
+    { "action": "tasks_view_statistics", "url": "http://localhost:8081/Statistics", "title": "My Statistics" }
+  ],
+  "playwright_failures_or_skips": [
+    { "issue": "tab_regex_calendar", "detail": "getByRole(tab, /Calendar/) can match wrong tab; use full emoji label" },
+    { "issue": "profile_by_label", "detail": "getByLabel('User profile') timeout on web" },
+    { "issue": "chatbot_input", "detail": "No textarea/input found for fill on web" },
+    { "issue": "home_week_reco_text", "detail": "getByText week recommendations timeout from Calendar view" },
+    { "issue": "baby_link_text", "detail": "getByText baby/evolution timeout from Calendar view" }
+  ],
+  "console_error_categories": [
+    "firestore_missing_or_insufficient_permissions",
+    "expo_notifications_getAllScheduledNotificationsAsync_web_unavailable",
+    "expo_updates_reload_async_dev_codederror",
+    "legacy_getReactNativePersistence_typeerror_possible_stale_bundle_session"
+  ],
+  "warning_categories": [
+    "i18n_require_cycle",
+    "rtl_register_listener_isInitialized",
+    "animated_useNativeDriver_web",
+    "deprecated_shadow_style_props",
+    "rnfirebase_namespaced_api_deprecation",
+    "dom_password_field_not_in_form"
+  ]
+}
