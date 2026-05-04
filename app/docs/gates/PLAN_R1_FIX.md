@@ -1,6 +1,11 @@
 # Plan de correction R1-sec — orchestré, prêt-à-exécuter
 
 > **Statut** : PRÊT — en attente de GO humain pour démarrer.
+>
+> ## Décisions humaines actées (2026-05-04)
+> - **F1** = **investigate_first** : Claude fait recherche officielle (Ministère Santé TN/MA/DZ + sources médicales) AVANT de modifier `EMERGENCY_NUMBERS`. Présente les sources, l'humain valide, puis commit. **Pas de failsafe immédiat** (les numéros actuels restent en place pendant la recherche, mais le sign-off R1-sec attend la validation).
+> - **F3** = **mode "le plus intelligent et propre sans limitation"** : combinaison **(a)** quick-win API key restrictions GCP + **(b)** resserrer rules statiques `allow read: if isAuthenticated()` sur les 11 collections de contenu + **(c)** Firebase App Check natif via `@react-native-firebase/app-check` (le projet a déjà `app/android/` → prebuild déjà fait, donc faisable sans U1). **3 sous-cycles dédiés**, App Check **inclus dans v1.0**.
+> - **F6** = **no_encrypt_warn** : pas de chiffrement passphrase ; popup d'avertissement clair avant share + export via fichier `expo-sharing.shareAsync`.
 > **Source** : `app/docs/ULTRA_AUDIT_360_2026-05-04.md` (30 findings).
 > **Cible** : signer **R1-sec** (option D — bloque release publique) puis enchaîner V1-smoke + R1-arch + U1.
 > **Méthode** : sub-agent `routine-implementer` pour exécution + Claude orchestrateur pour audit après chaque cycle (boucle audit→exécution→audit, comme la session UI-4…UI-9).
@@ -8,20 +13,22 @@
 
 ---
 
-## 0. Vue d'ensemble (gantt)
+## 0. Vue d'ensemble (gantt — après décisions humaines)
 
 ```
 PHASE A — BLOCKERS R1-sec (sign-off requirements)  ── ~2 jours dev
   C1  : F9 + F2 + F5            (config + ErrorBoundary safe)
   C2  : F7 + F18                (ipapi retrait + validateProfile au submit)
-  C3  : F6                      (export GDPR via fichier)
+  C3  : F6                      (export GDPR via fichier + UX warning)
   C4  : F4                      (deleteAccount reauth flow)
-  C5  : F1                      (escalade médicale + failsafe null TN/MA/DZ)
+  C5  : F1                      (Claude WebSearch officiel TN/MA/DZ → validation humaine → fix)
 
-PHASE B — HIGH escalator (à faire dans 2 cycles post-release)  ── ~5 jours dev
-  C6  : F3 (Firebase App Check) — 2 sous-cycles (quick-win + complet)
-  C7  : F8 (firestore.rules schema validation + tests)
-  C8  : F11 (audit Markdown XSS + plan retrait markdown-display)
+PHASE B — HIGH (INCLUS DANS v1.0 suite décision F3 = "no limitation")  ── ~5 jours dev
+  C6a : F3a rules statiques resserrées (allow read: if isAuthenticated)
+  C6b : F3b API key restrictions GCP (humain, 30 min)
+  C6c : F3c App Check natif (@react-native-firebase/app-check, prebuild OK)
+  C7  : F8 firestore.rules schema validation + tests deep
+  C8  : F11 audit Markdown XSS + decision retrait
 
 PHASE C — MEDIUMS bundlables  ── ~3 jours dev
   C9  : F12 + F18 + F19         (password policy + sentry hash)
@@ -37,8 +44,8 @@ PHASE E — différés (post-release)
   F27, F28 → V1-smoke (vérifications terrain)
 ```
 
-**Total bloquant R1-sec** : Phases A (5 cycles, ~2 jours) → puis sign-off possible.
-**Total souhaitable post-release** : Phases B+C+D (8 cycles, ~8.5 jours).
+**Total bloquant R1-sec v1.0** : Phases A (5 cycles, ~2 jours) **+ Phase B C6a-c (App Check inclus, ~5 jours)** → puis sign-off possible.
+**Total post-release v1.0** : Phases C+D (5 cycles, ~3.5 jours).
 
 ---
 
@@ -99,22 +106,22 @@ PHASE E — différés (post-release)
 
 ---
 
-### Cycle C3 — F6 (export GDPR via fichier)
-**Objectif** : remplacer `Share.share(jsonString)` (PII en mémoire/clipboard) par `expo-sharing.shareAsync(uri, {mimeType: 'application/json'})`.
+### Cycle C3 — F6 (export GDPR via fichier + warning UX)
+**Objectif** : remplacer `Share.share(jsonString)` par `expo-sharing.shareAsync(uri)` + popup d'avertissement explicite. Décision actée = `no_encrypt_warn`.
 
-- **Fichier** : `app/src/services/dataExportService.ts:182-201`
+- **Fichier** : `app/src/services/dataExportService.ts:182-201` + `app/src/screens/ProfileScreen.tsx` (UX warning)
 - **Action** :
-  1. Écrire le JSON dans un fichier temporaire via `expo-file-system` (`FileSystem.documentDirectory + 'mama-bebe-export-DATE.json'`).
-  2. `await Sharing.shareAsync(uri, { mimeType: 'application/json', UTI: 'public.json', dialogTitle: t('profile.gdprExport.title') })`.
-  3. Cleanup du fichier après share (best-effort).
-  4. Optionnel : popup d'avertissement avant export ("Choisissez une destination sécurisée").
-- **Deps requises** : `expo-file-system` (vérifier présence ; si absent, `npx expo install expo-file-system`). `expo-sharing` est déjà en deps.
-- **Risque** : moyen. UX change (sheet de partage natif au lieu de message). Nécessite test V1-smoke iOS+Android.
+  1. **UX warning** : avant l'export, afficher `Alert.alert(title, message, [Cancel, Continue])` avec message explicite : `"Cet export contient TOUTES vos données de santé (poids, tension, glycémie, symptômes, rendez-vous, contacts d'urgence). Choisissez une destination sécurisée et privée. Évitez les apps de stockage cloud non chiffrées."` (i18n fr/en/ar/tn).
+  2. Si Continue → écrire le JSON dans `FileSystem.documentDirectory + 'mama-bebe-export-DATE.json'`.
+  3. `await Sharing.shareAsync(uri, { mimeType: 'application/json', UTI: 'public.json', dialogTitle: t('profile.gdprExport.title') })`.
+  4. Cleanup du fichier après share (best-effort, ne bloque pas si fail).
+- **Deps requises** : `expo-file-system` (vérifier présence ; si absent, `npx expo install expo-file-system`). `expo-sharing` déjà en deps.
+- **Risque** : moyen. UX change (Alert + sheet de partage natif au lieu de message). Nécessite test V1-smoke iOS+Android.
 - **Test** : `verify` + ajout test unitaire mock `Sharing.shareAsync`.
-- **Décision optionnelle (humain)** : faut-il chiffrer l'export avec passphrase utilisateur ? **Non recommandé** pour v1.0 (UX lourde) ; ajouter avertissement clair suffit. Décision dans formulaire ci-dessous.
+- **PAS de chiffrement** (décision actée).
 
 **Sub-agent** : `routine-implementer`.
-**Commit** : `fix(gdpr): R1S-6 export user data via shareAsync file (no PII in clipboard)`.
+**Commit** : `fix(gdpr): R1S-6 export via shareAsync file + UX warning (no clipboard PII)`.
 **Critère sortie** : verify vert, mock test Sharing OK, V1-smoke iOS+Android validé.
 
 ---
@@ -140,30 +147,36 @@ PHASE E — différés (post-release)
 
 ---
 
-### Cycle C5 — F1 (numéros d'urgence — ESCALADE)
-**Objectif** : NE PAS deviner. Failsafe + escalade médicale humaine.
+### Cycle C5 — F1 (numéros d'urgence — INVESTIGATION officielle)
+**Objectif** : recherche sourcée avant toute modification. Décision humaine actée = `investigate_first`.
 
-#### Action immédiate (auto, sécurise sans bloquer)
+#### C5.1 — Recherche par Claude (PAS de modif code)
+- **Action** : Claude (orchestrateur) utilise **WebSearch** sur sources officielles :
+  - Ministère de la Santé Tunisie (`http://www.santetunisie.rns.tn` ou équivalent), site officiel SAMU 190 vs Protection Civile 198, recommandations urgences obstétricales.
+  - Ministère de la Santé Maroc, SAMU/Heure Médicale 141 vs Protection Civile 150, couverture régionale.
+  - Ministère de la Santé Algérie, numéro SAMU national (14 ou 115), couverture wilaya.
+  - Cross-check avec OMS, ambassades de France au TN/MA/DZ (recommandations expatriés), guides voyage médecine.
+- **Livrable Claude** : `docs/gates/EMERGENCY_NUMBERS_RESEARCH.md` avec :
+  - Tableau pays × numéro proposé × source URL × date consultation × niveau de confiance
+  - Recommandation explicite par pays (numéro à mettre, fallback si confiance basse)
+  - Cas spéciaux : Maroc régional (Casablanca vs autres), Algérie nord vs sud
+- **Effort** : ~30 min Claude.
+
+#### C5.2 — Validation humaine
+- **Owner** : utilisateur lit `EMERGENCY_NUMBERS_RESEARCH.md`, signe ou demande complément.
+- **Optionnel** : valider avec 1 médecin tunisien si possible (best effort).
+
+#### C5.3 — Implémentation après validation
 - **Fichier** : `app/src/utils/clinicalChecks.ts:225-249, 275-283`
-- **Action** :
-  1. **TN, MA, DZ → retourner `null`** dans `EMERGENCY_NUMBERS` (commenté `unverified — pending medical review #F1`).
-  2. **HealthDashboardScreen** déjà respecte `getEmergencyNumber → null` (le bouton est masqué). Vérifier que c'est bien le cas (audit `grep "EMERGENCY_NUMBERS"`).
-  3. Garder FR=15 (validé).
-  4. Ajouter dans le UI une icône info qui dirige vers les numéros officiels du pays (lien externe `Linking.openURL` vers la page officielle Ministère de la Santé du pays sélectionné).
-  5. Ajouter test fixture `clinicalChecks.test.ts` : `getEmergencyNumber('TN') === null` jusqu'à validation médicale.
+- **Action sub-agent** :
+  1. Mettre à jour `EMERGENCY_NUMBERS` avec les numéros validés.
+  2. Pour pays sans confiance suffisante → **`null`** + masquer bouton (failsafe).
+  3. Ajouter test fixture `clinicalChecks.test.ts` avec source citée en commentaire.
+  4. Ajouter dans le UI un lien "Voir tous les numéros officiels du pays" (Linking vers Ministère Santé local).
 
-#### Action humaine (escalade — bloque sign-off complet)
-- **Owner** : utilisateur doit obtenir confirmation par 1 médecin tunisien (et idéalement marocain, algérien) ou source officielle (sites Ministère de la Santé) sur :
-  - **TN** : SAMU = 190 ? Protection Civile / ambulance = 198 ? Numéro à choisir prioritairement ?
-  - **MA** : SAMU = 141 (Casablanca/Rabat) ou Protection Civile = 150 ?
-  - **DZ** : SAMU = 14 ou 115 selon région ?
-- **Livrable humain** : `docs/gates/EMERGENCY_NUMBERS_VALIDATION.md` avec source officielle + signature.
-
-**Sub-agent** : `routine-implementer` (action auto seulement).
-**Commit** : `fix(safety): R1S-8 emergency numbers TN/MA/DZ -> null pending medical review (#F1)`.
-**Critère sortie** : verify vert, test fixture ajouté, **gate signé seulement après validation médicale**.
-
-**Note** : ce cycle est le seul où le sign-off R1-sec dépend d'une action humaine externe (médecin). Tous les autres cycles sont auto-validables.
+**Sub-agent** : `routine-implementer` (uniquement C5.3 après validation humaine).
+**Commit** : `fix(safety): F1 emergency numbers updated from official ministry sources (#R1S-8)`.
+**Critère sortie** : verify vert, doc research validée, fixture test ajoutée.
 
 ---
 
@@ -177,24 +190,40 @@ Après C1 + C2 + C3 + C4 + C5 (auto) + validation médicale F1 :
 
 ## 2. PHASE B — HIGH escalator (3 cycles, post sign-off ou en parallèle si bande passante)
 
-### Cycle C6 — F3 (Firebase App Check) — 2 sous-cycles
-**Stratégie** : quick-win immédiat + chantier complet en U1.
+### Cycle C6 — F3 (Firebase App Check) — 3 sous-cycles, INCLUS DANS v1.0
+**Stratégie actée** = `mode "le plus intelligent et propre sans limitation"` : (a) + (b) + (c) combinés. App Check natif **fait partie de la release v1.0** (pas reporté à U1).
 
-#### C6a — Quick-win API key restrictions GCP
+#### C6a — Resserrer rules statiques (auto, sub-agent)
+- **Fichier** : `firestore.rules:126-136`
+- **Action** :
+  1. Pour les 11 collections de contenu (`articles`, `articlesAntigravity`, `tips`, `weeks`, `babyMessages`, `supplements`, `redFlags`, `chatbotSuggestionsAG`, `weeklyTasks`, `reminderTemplates`, `calendarTemplates`) → passer de `allow read: if true` à `allow read: if request.auth != null`.
+  2. **Pré-vérification** : confirmer qu'AUCUN écran n'est lu en pre-auth (Onboarding lit-il `weeks` ou `calendarTemplates` avant `loginAsGuest` ? À vérifier — si oui, déplacer la lecture POST-loginAsGuest car même guest est authentifié anonymously par Firebase).
+  3. Vérifier `loginAsGuest` utilise `signInAnonymously` Firebase (sinon ajouter, c'est ce qui donne `request.auth != null` en mode guest).
+  4. Mettre à jour test `firestoreRulesParity` pour couvrir le nouveau contrat.
+- **Risque** : moyen (peut casser pre-auth read si guest n'est pas anonymously signed). **Pré-audit obligatoire** avant délégation sub-agent.
+
+#### C6b — Quick-win API key restrictions GCP (humain)
 - **Action humaine** (pas d'agent) :
-  1. GCP Console → Project `pregnancy-app-1f939` → APIs & Services → Credentials → API key `EXPO_PUBLIC_FIREBASE_API_KEY`.
-  2. Restreindre par : Application restrictions = iOS bundle ID `com.mamabebe.pregnancyapp` + Android SHA-1 (du keystore release) + HTTP referrers (web).
-  3. Restreindre par API : Cloud Firestore API + Identity Toolkit API (Firebase Auth) uniquement.
+  1. GCP Console → Project Firebase → APIs & Services → Credentials → API key `EXPO_PUBLIC_FIREBASE_API_KEY`.
+  2. Restreindre par : Application restrictions = iOS bundle ID + Android SHA-1 (keystore release) + HTTP referrers (si web).
+  3. Restreindre par API : Cloud Firestore API + Identity Toolkit API uniquement.
 - **Effort** : 30 min, zéro code.
-- **Limite** : ne bloque pas un attaquant qui aurait extrait le bundle iOS/Android et signé une app bidon avec le même bundle ID (très improbable hors device root).
 
-#### C6b — Firebase App Check natif (cycle U1)
-- **Différé** dans `feat/expo-55` (U1) car nécessite :
-  - migration partielle vers `@react-native-firebase/app-check` ou
-  - `expo-app-check` (si publié pour SDK 55) ou
-  - prebuild propre + AppAttest iOS + PlayIntegrity Android + tests TestFlight/Internal Testing.
+#### C6c — Firebase App Check natif (auto, sub-agent)
+- **Pré-requis confirmés** : le projet a déjà `app/android/` (prebuild fait), donc pas besoin d'attendre U1.
+- **Action** :
+  1. `npx expo install @react-native-firebase/app-check` (vérifier compat SDK 54 ; sinon utiliser `expo-app-check` si publié).
+  2. Activer App Attest (iOS) + Play Integrity (Android) via Firebase console.
+  3. Initialiser App Check dans `app/src/config/firebase.ts` (avant `initializeAuth` et `initializeFirestore`).
+  4. **Mode debug pour dev** : `FIREBASE_APPCHECK_DEBUG_TOKEN` pour Expo Go / simulateurs.
+  5. Côté Firebase console : passer App Check en **enforcement** sur Cloud Firestore + Auth après vérification 1-2 jours en mode "monitor only".
+  6. Ajouter au `app.json` les permissions/configs natives requises (DeviceCheck.framework côté iOS, etc.).
+  7. Test : tenter `curl` direct Firestore avec API key → doit échouer 403 après enforcement.
+- **Risque** : élevé (touche init Firebase + native deps). **Tester sur device réel obligatoire** avant merge.
 
-**Sub-agent** : aucun pour C6a (humain) ; C6b lié à U1.
+**Sub-agent** : `routine-implementer` pour C6a + C6c ; humain pour C6b.
+**Commits** : 3 commits séparés (`fix(rules): F3a tighten static collections to authenticated reads`, `feat(security): F3c Firebase App Check (Play Integrity + App Attest)`, doc humain pour C6b).
+**Critère sortie** : verify vert, App Check enforcement actif Firebase console (mode monitor avant enforcement), curl test 403 confirmé.
 
 ---
 
@@ -352,9 +381,9 @@ Pour chaque cycle :
 
 ---
 
-## 7. Décisions humaines requises AVANT démarrage
+## 7. Décisions humaines actées (2026-05-04)
 
-3 points qui modifient le plan ci-dessus selon ton choix. Voir formulaire séparé dans la conversation chat.
+Voir bloc en tête du document. F1=investigate_first, F3=mode complet (App Check inclus v1.0), F6=warn sans chiffrement.
 
 ---
 
