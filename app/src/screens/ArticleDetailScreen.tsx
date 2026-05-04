@@ -16,6 +16,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { trackPositiveAction } from '../services/inAppReviewService';
 import { getLocalizedContent } from '../utils/i18nHelpers';
+import { isSafeUrl } from '../utils/safeOpenUrl';
 import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
 
 export const ArticleDetailScreen = () => {
@@ -303,6 +304,12 @@ export const ArticleDetailScreen = () => {
                         style={markdownStyles}
                         rules={rules}
                         onLinkPress={(url) => {
+                            // SAFETY: whitelist scheme before dispatching to native handler
+                            // (defense-in-depth even when content is from internal CMS).
+                            if (!isSafeUrl(url)) {
+                                log.warn('Blocked Markdown link with non-whitelisted scheme:', url);
+                                return false;
+                            }
                             Linking.openURL(url).catch((err: any) => log.error('Failed to open link:', err));
                             return true;
                         }}
