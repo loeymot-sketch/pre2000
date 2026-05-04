@@ -26,7 +26,7 @@ import { useScreenAnalytics } from '../hooks/useScreenAnalytics';
 
 export const ProfileScreen = () => {
     useScreenAnalytics('ProfileScreen');
-    const { user, logout, resetProfile, updateProfile, deleteAccount } = useAuth();
+    const { user, logout, resetProfile, updateProfile, deleteAccount, reauthenticateAndDelete } = useAuth();
     const { profile, setProfile } = usePregnancy();
     const { currentWeekNumber } = useCurrentWeek();
     const navigation = useNavigation();
@@ -43,6 +43,9 @@ export const ProfileScreen = () => {
         profile?.lmp ? new Date(profile.lmp) : new Date()
     );
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [reauthModalVisible, setReauthModalVisible] = useState(false);
+    const [reauthPassword, setReauthPassword] = useState('');
+    const [reauthLoading, setReauthLoading] = useState(false);
     // PROFILE-FIX: Physical data for BMI + weight gain tracking
     const [height, setHeight] = useState(
         profile?.height ? String(profile.height) : ''
@@ -187,6 +190,33 @@ export const ProfileScreen = () => {
                 },
             ]
         );
+    };
+
+    // F4: Re-authenticate then retry the auth-side delete. Firestore data has
+    // already been purged by the prior `deleteAccount()` call; this finalizes
+    // the flow and navigates back to AuthChoice.
+    const runReauthAndDelete = async (password: string) => {
+        if (!password) {
+            Alert.alert(t('common.error'), t('profile.reauthMissingPassword'));
+            return;
+        }
+        try {
+            setReauthLoading(true);
+            setLoading(true);
+            await reauthenticateAndDelete(password);
+            setReauthModalVisible(false);
+            setReauthPassword('');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'AuthChoice' } as any],
+            });
+        } catch (reauthErr: any) {
+            log.error('Reauthenticate-and-delete error:', reauthErr);
+            Alert.alert(t('common.error'), t('profile.deleteAccountError'));
+        } finally {
+            setReauthLoading(false);
+            setLoading(false);
+        }
     };
 
     const COUNTRIES = [
@@ -491,9 +521,34 @@ export const ProfileScreen = () => {
                                                             index: 0,
                                                             routes: [{ name: 'AuthChoice' } as any],
                                                         });
-                                                    } catch (error) {
-                                                        log.error('Delete account error:', error);
-                                                        Alert.alert(t('common.error'), t('profile.deleteAccountError'));
+                                                    } catch (error: any) {
+                                                        if (error?.code === 'REAUTH_REQUIRED' || error?.message === 'REAUTH_REQUIRED') {
+                                                            // F4: Firestore data was purged but auth.delete() needs fresh
+                                                            // credentials — re-prompt for the password and retry.
+                                                            if (Platform.OS === 'ios') {
+                                                                Alert.prompt(
+                                                                    t('profile.reauthTitle'),
+                                                                    t('profile.reauthMessage'),
+                                                                    [
+                                                                        { text: t('common.cancel'), style: 'cancel' },
+                                                                        {
+                                                                            text: t('common.confirm'),
+                                                                            style: 'destructive',
+                                                                            onPress: (password?: string) => {
+                                                                                runReauthAndDelete(password ?? '');
+                                                                            },
+                                                                        },
+                                                                    ],
+                                                                    'secure-text',
+                                                                );
+                                                            } else {
+                                                                setReauthPassword('');
+                                                                setReauthModalVisible(true);
+                                                            }
+                                                        } else {
+                                                            log.error('Delete account error:', error);
+                                                            Alert.alert(t('common.error'), t('profile.deleteAccountError'));
+                                                        }
                                                     } finally {
                                                         setLoading(false);
                                                     }
@@ -528,6 +583,64 @@ export const ProfileScreen = () => {
 
                 </View>
             </ScrollView>
+
+            {/* F4: Android-only reauth prompt (Alert.prompt is iOS-only) */}
+            <Modal
+                visible={reauthModalVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() => {
+                    if (!reauthLoading) {
+                        setReauthModalVisible(false);
+                        setReauthPassword('');
+                    }
+                }}
+            >
+                <View style={styles.reauthOverlay}>
+                    <View style={styles.reauthCard}>
+                        <Text style={styles.reauthTitle}>{t('profile.reauthTitle')}</Text>
+                        <Text style={styles.reauthMessage}>{t('profile.reauthMessage')}</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={reauthPassword}
+                            onChangeText={setReauthPassword}
+                            secureTextEntry
+                            autoFocus
+                            editable={!reauthLoading}
+                            placeholder="••••••••"
+                            accessibilityLabel={t('profile.reauthMessage')}
+                        />
+                        <View style={styles.reauthActions}>
+                            <TouchableOpacity
+                                style={styles.reauthCancelButton}
+                                onPress={() => {
+                                    if (reauthLoading) return;
+                                    setReauthModalVisible(false);
+                                    setReauthPassword('');
+                                }}
+                                disabled={reauthLoading}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('common.cancel')}
+                            >
+                                <Text style={styles.reauthCancelText}>{t('common.cancel')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.reauthConfirmButton, reauthLoading && styles.saveButtonDisabled]}
+                                onPress={() => runReauthAndDelete(reauthPassword)}
+                                disabled={reauthLoading}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('common.confirm')}
+                            >
+                                {reauthLoading ? (
+                                    <ActivityIndicator color="white" />
+                                ) : (
+                                    <Text style={styles.reauthConfirmText}>{t('common.confirm')}</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </KeyboardAvoidingView>
     );
 };
