@@ -1,4 +1,6 @@
-import { Share, Alert, Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system/legacy';
 import { createLogger } from '../utils/logger';
 import { getWeightHistory as getWeightEntriesHistory } from './weightService';
 import { loadUserSettings } from './remindersV2Service';
@@ -177,23 +179,39 @@ export const generateExportData = async (user: any, profile: any) => {
 };
 
 /**
- * Share the exported data as a JSON string
+ * Share the exported data as a JSON file (RGPD C3 / F6).
+ *
+ * Writes the export to the app's cache directory and hands the file URI to
+ * the OS share sheet. Avoids `Share.share({ message })` because that path
+ * passes the full PII payload as plain text — share-targets on Android may
+ * log it, and iOS surfaces it inline in the share sheet.
  */
 export const exportUserData = async (user: any, profile: any, t: any) => {
     try {
         const data = await generateExportData(user, profile);
         const jsonString = JSON.stringify(data, null, 2);
 
-        const result = await Share.share({
-            message: jsonString,
-            title: `mama-bebe-export-${new Date().toISOString().split('T')[0]}.json`
+        const dateStamp = new Date().toISOString().split('T')[0];
+        const fileName = `mama-bebe-export-${dateStamp}.json`;
+        const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+
+        await FileSystem.writeAsStringAsync(fileUri, jsonString, {
+            encoding: FileSystem.EncodingType.UTF8,
         });
 
-        if (result.action === Share.sharedAction) {
-            log.info('Data shared successfully');
-        } else if (result.action === Share.dismissedAction) {
-            log.info('Data share dismissed');
+        const isAvailable = await Sharing.isAvailableAsync();
+        if (!isAvailable) {
+            Alert.alert(t('common.error'), t('export.errorMessage') || t('common.error'));
+            return;
         }
+
+        await Sharing.shareAsync(fileUri, {
+            mimeType: 'application/json',
+            dialogTitle: t('common.privacyData.export'),
+            UTI: 'public.json',
+        });
+
+        log.info('Data shared via file');
     } catch (error) {
         log.error('Error exporting data', error);
         Alert.alert(t('common.error'), t('export.errorMessage') || t('common.error'));

@@ -347,7 +347,21 @@ export const SettingsScreen = () => {
                     accessibilityLabel={t('common.privacyData.export')}
                     accessibilityHint={t('common.privacyData.exportDesc')}
                     // P3.6 FIX: pass real Profile, not pregnancyInfo (week/day only).
-                    onPress={() => exportUserData(user, profile, t)}
+                    // C3/F6: explicit confirmation — exported file contains ALL medical data in plain text.
+                    onPress={() => {
+                        Alert.alert(
+                            t('export.warningTitle'),
+                            t('export.warningMessage'),
+                            [
+                                { text: t('common.cancel'), style: 'cancel' },
+                                {
+                                    text: t('common.continue'),
+                                    style: 'destructive',
+                                    onPress: () => exportUserData(user, profile, t),
+                                },
+                            ],
+                        );
+                    }}
                 >
                     <View style={styles.settingRowLeft}>
                         <Text style={styles.menuIcon}>📤</Text>
