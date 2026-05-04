@@ -9,7 +9,7 @@
  */
 
 import { db } from '../config/firebase';
-import { collection, addDoc, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, getDocs, query, setDoc, where, orderBy, Timestamp } from 'firebase/firestore';
 import { HealthMetric, HealthStats } from '../types';
 import { loadUserEvents } from './calendarService';
 import { loadTaskStatusesAuth } from './reminderPersistence';
@@ -223,37 +223,22 @@ export const saveDailySymptoms = async (
         return 'guest_blocked';
     }
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // C10/F13: deterministic doc ID eliminates the query→addDoc race window
+    // (two concurrent writes for the same day previously could produce 2 docs).
+    // Firestore rule constrains logId to `${auth.uid}_YYYY-MM-DD` to prevent
+    // cross-user namespace squatting.
+    const docId = `${userId}_${today}`;
     try {
-        // Upsert: check if an entry exists for today
-        const q = query(
-            collection(db, 'symptomsLog'),
-            where('user_id', '==', userId),
-            where('date', '==', today)
-        );
-        const snapshot = await getDocs(q);
-        if (!snapshot.empty) {
-            // Update existing entry (import setDoc/updateDoc had it)
-            const existingId = snapshot.docs[0].id;
-            const { setDoc, doc: firestoreDoc } = await import('firebase/firestore');
-            await setDoc(firestoreDoc(db, 'symptomsLog', existingId), {
-                user_id: userId,
-                date: today,
-                week,
-                symptoms,
-                notes: notes || '',
-                updated_at: Timestamp.now().toDate().toISOString(),
-            });
-            return existingId;
-        }
-        const docRef = await addDoc(collection(db, 'symptomsLog'), {
+        const ref = doc(db, 'symptomsLog', docId);
+        await setDoc(ref, {
             user_id: userId,
             date: today,
             week,
             symptoms,
             notes: notes || '',
-            created_at: Timestamp.now().toDate().toISOString(),
-        });
-        return docRef.id;
+            updated_at: Timestamp.now().toDate().toISOString(),
+        }, { merge: true });
+        return docId;
     } catch (error) {
         log.error('Error saving symptoms:', error);
         throw error;

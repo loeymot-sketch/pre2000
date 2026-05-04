@@ -1,6 +1,8 @@
 import { Alert, Platform } from 'react-native';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system/legacy';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { createLogger } from '../utils/logger';
 import { getWeightHistory as getWeightEntriesHistory } from './weightService';
 import { loadUserSettings } from './remindersV2Service';
@@ -14,24 +16,26 @@ import {
 } from './healthService';
 import {
     loadReminderSettingsAuth,
-    loadTaskStatusesAuth,
 } from './reminderPersistence';
 
 const log = createLogger('DataExportService');
 
-// Schema version for the JSON export envelope. Bump when structure changes.
-// v2: RGPD parity with deleteAccount — all 9 collections covered.
-const EXPORT_SCHEMA_VERSION = 2;
+/**
+ * Schema version for the JSON export envelope. Bump when structure changes.
+ * - v2: RGPD parity with deleteAccount — all 9 collections covered.
+ * - v3 (C10/F14): `reminders.taskStatuses` shape changed.
+ *   Before: keyed by `${task_id}_w${week_number}` with values
+ *           `{ completed, completedAt }` (transformed by loadTaskStatusesAuth).
+ *   After:  keyed by raw Firestore doc.id `${userId}_${task_id}_w${week_number}`
+ *           with values = full UserTaskStatus document
+ *           (`{ user_id, task_id, week_number, completed, completed_at }`).
+ *   Reason: collapsed 46 per-week round-trips into 1 query for cost/perf.
+ */
+const EXPORT_SCHEMA_VERSION = 3;
 
 // Symptoms history helper takes a look-back in days. Use ~11 years so every
 // entry the user ever created is exported (RGPD Art. 15 / Art. 20 — full data).
 const SYMPTOMS_LOOKBACK_DAYS = 4000;
-
-// Task statuses are stored per `week_number`. Pregnancy tracking spans weeks
-// 1..42, with a small buffer for pre-pregnancy tasks stored at week 0 and
-// post-term entries. Export all of them to match deleteAccount parity.
-const TASK_STATUS_MIN_WEEK = 0;
-const TASK_STATUS_MAX_WEEK = 45;
 
 /**
  * Safely unwrap a Promise.allSettled result. On rejection we log a warning
@@ -66,31 +70,27 @@ export const generateExportData = async (user: any, profile: any) => {
         const userId: string = user?.uid || 'guest';
         const isGuest: boolean = !!user?.isGuest || userId.startsWith('guest');
 
-        // Task statuses are per-week. Build one promise per week so the whole
-        // history is exported (loadTaskStatusesAuth only covers a single week).
-        const weekRange: number[] = [];
-        for (let w = TASK_STATUS_MIN_WEEK; w <= TASK_STATUS_MAX_WEEK; w++) {
-            weekRange.push(w);
-        }
-
+        // C10/F14: collapse the previous 46-week per-week loop into a single
+        // `where('user_id','==',uid)` query on `userTaskStatuses`. Saves ~45
+        // Firestore round-trips per export. Shape change documented in
+        // EXPORT_SCHEMA_VERSION JSDoc above (bumped 2 → 3).
         const taskStatusesPromise = isGuest
             ? Promise.resolve({} as Record<string, any>)
-            : Promise.allSettled(
-                weekRange.map(week => loadTaskStatusesAuth(userId, week))
-            ).then(results => {
-                const merged: Record<string, any> = {};
-                results.forEach((r, idx) => {
-                    if (r.status === 'fulfilled') {
-                        Object.assign(merged, r.value);
-                    } else {
-                        log.warn(
-                            `[DataExportService] Failed to fetch taskStatuses week=${weekRange[idx]}`,
-                            r.reason
-                        );
-                    }
-                });
-                return merged;
-            });
+            : (async () => {
+                try {
+                    const q = query(
+                        collection(db, 'userTaskStatuses'),
+                        where('user_id', '==', userId),
+                    );
+                    const snap = await getDocs(q);
+                    const merged: Record<string, any> = {};
+                    snap.docs.forEach(d => { merged[d.id] = d.data(); });
+                    return merged;
+                } catch (err) {
+                    log.warn('[DataExportService] Failed to fetch userTaskStatuses (1-query)', err);
+                    return {} as Record<string, any>;
+                }
+            })();
 
         const settled = await Promise.allSettled([
             loadUserEvents(userId),              // 0 userEvents → appointments

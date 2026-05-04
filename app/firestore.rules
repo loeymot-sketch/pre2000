@@ -200,9 +200,13 @@ service cloud.firestore {
     // Symptoms Log (healthService.saveSymptomEntry / getDailySymptoms)
     // Added P1.1 — was missing, causing all symptom writes to fail in prod.
     // C7: schema validation (symptoms is list, size bornée)
+    // C10/F13: docId contraint à `${auth.uid}_YYYY-MM-DD` pour empêcher un
+    // user A de squatter le namespace d'un user B (le code utilise un doc ID
+    // déterministe `${userId}_${today}` pour éliminer la race window).
     match /symptomsLog/{logId} {
       allow read: if isOwnerOfResource();
-      allow create: if validSymptoms();
+      allow create: if validSymptoms()
+                  && logId.matches('^' + request.auth.uid + '_[0-9]{4}-[0-9]{2}-[0-9]{2}$');
       allow update: if isOwnerOfResource() && validSymptoms();
       allow delete: if isOwnerOfResource();
     }
